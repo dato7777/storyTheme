@@ -1,0 +1,226 @@
+/**
+ * Deal spotlight with live countdown.
+ */
+
+.sp-deal {
+	position: relative;
+	padding-block: var(--sp-section-y);
+}
+
+.sp-deal__panel {
+	position: relative;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+	align-items: center;
+	gap: clamp(1.5rem, 4vw, 3.5rem);
+	padding: clamp(1.5rem, 4vw, 3.25rem);
+	border: 1px solid var(--sp-line);
+	border-radius: var(--sp-radius-xl);
+	background: linear-gradient(135deg, rgba(124, 92, 255, 0.16), rgba(255, 77, 157, 0.08));
+	overflow: hidden;
+	isolation: isolate;
+	box-shadow: var(--sp-shadow-lg);
+}
+
+.sp-deal__copy {
+	position: relative;
+	z-index: 2;
+}
+
+.sp-deal__kicker {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	padding: 0.35rem 0.9rem;
+	border-radius: var(--sp-radius-pill);
+	background: rgba(255, 176, 32, 0.16);
+	border: 1px solid rgba(255, 176, 32, 0.4);
+	color: var(--sp-amber);
+	font-size: var(--sp-fs-micro);
+	font-weight: 800;
+	letter-spacing: 0.02em;
+}
+
+.sp-deal__bolt {
+	animation: sp-flicker 2.6s ease-in-out infinite;
+}
+
+@keyframes sp-flicker {
+	45%,
+	55% {
+		opacity: 0.45;
+	}
+}
+
+.sp-deal__title {
+	margin-block: 1rem 0.75rem;
+	font-size: clamp(1.5rem, 3.2vw, 2.35rem);
+	line-height: 1.15;
+}
+
+.sp-deal__title a:hover {
+	color: var(--sp-cyan);
+}
+
+.sp-deal__price {
+	font-family: var(--sp-font-display);
+	font-size: clamp(1.5rem, 3vw, 2rem);
+	font-weight: 800;
+	color: var(--sp-text);
+}
+
+.sp-deal__price del {
+	color: var(--sp-text-dim);
+	font-size: 0.6em;
+	font-weight: 600;
+	margin-inline-end: 0.5rem;
+}
+
+.sp-deal__price ins {
+	text-decoration: none;
+	color: var(--sp-text);
+}
+
+/* ---------- countdown ---------- */
+
+.sp-countdown {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	margin-block: 1.5rem;
+}
+
+.sp-countdown__cell {
+	display: grid;
+	justify-items: center;
+	gap: 0.2rem;
+	min-inline-size: 64px;
+	padding: 0.6rem 0.5rem;
+	border: 1px solid var(--sp-line-strong);
+	border-radius: var(--sp-radius);
+	background: rgba(4, 5, 14, 0.5);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+}
+
+.sp-countdown__cell b {
+	font-family: var(--sp-font-display);
+	font-size: 1.65rem;
+	font-weight: 900;
+	line-height: 1;
+	color: var(--sp-text);
+	font-variant-numeric: tabular-nums;
+}
+
+.sp-countdown__cell i {
+	font-style: normal;
+	font-size: 0.6875rem;
+	color: var(--sp-text-dim);
+	letter-spacing: 0.02em;
+}
+
+.sp-countdown__sep {
+	font-family: var(--sp-font-display);
+	font-size: 1.4rem;
+	font-weight: 800;
+	color: var(--sp-text-dim);
+	animation: sp-blink 1s steps(2) infinite;
+}
+
+@keyframes sp-blink {
+	50% {
+		opacity: 0.25;
+	}
+}
+
+.sp-countdown.is-done .sp-countdown__cell b {
+	color: var(--sp-text-dim);
+}
+
+.sp-deal__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.65rem;
+}
+
+/* ---------- media ---------- */
+
+.sp-deal__media {
+	position: relative;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	aspect-ratio: 1;
+	border-radius: var(--sp-radius-xl);
+	background: #fff;
+	overflow: hidden;
+	transform: rotateX(var(--sp-tilt-x, 0deg)) rotateY(var(--sp-tilt-y, 0deg));
+	transition: transform 400ms var(--sp-ease);
+	box-shadow: var(--sp-shadow-lg);
+}
+
+.sp-deal__img {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: contain;
+	padding: 1.75rem;
+}
+
+.sp-deal__save {
+	position: absolute;
+	inset-block-start: 1rem;
+	inset-inline-start: 1rem;
+	inline-size: 74px;
+	block-size: 74px;
+	display: grid;
+	place-items: center;
+	align-content: center;
+	border-radius: 50%;
+	background: var(--sp-grad-primary);
+	color: #fff;
+	box-shadow: var(--sp-shadow-accent);
+	animation: sp-bob 3.4s ease-in-out infinite;
+}
+
+.sp-deal__save b {
+	font-family: var(--sp-font-display);
+	font-size: 1.35rem;
+	font-weight: 900;
+	line-height: 1;
+}
+
+.sp-deal__save i {
+	font-style: normal;
+	font-size: 0.6875rem;
+	font-weight: 700;
+}
+
+@keyframes sp-bob {
+	50% {
+		transform: translateY(-6px) rotate(-4deg);
+	}
+}
+
+@media (max-width: 900px) {
+	.sp-deal__panel {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.sp-deal__media {
+		order: -1;
+		max-inline-size: 320px;
+		inline-size: 100%;
+		margin-inline: auto;
+	}
+}
+
+@media (max-width: 420px) {
+	.sp-countdown__cell {
+		min-inline-size: 0;
+		flex: 1 1 0;
+	}
+
+	.sp-countdown__cell b {
+		font-size: 1.35rem;
+	}
+}

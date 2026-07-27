@@ -1,0 +1,74 @@
+/**
+ * Site footer.
+ */
+
+.sp-footer {
+	position: relative;
+	padding-block: clamp(2.75rem, 6vw, 4.5rem);
+	border-block-start: 1px solid var(--sp-line);
+	background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.45));
+	color: var(--sp-text-soft);
+}
+
+.sp-footer__top {
+	display: grid;
+	gap: clamp(1.75rem, 4vw, 3rem);
+}
+
+@media (min-width: 760px) {
+	.sp-footer__top {
+		grid-template-columns: 1.6fr 1fr 1fr;
+	}
+}
+
+.sp-footer__logo {
+	color: #fff;
+	font-family: var(--sp-font-display);
+	font-size: 1.15rem;
+	font-weight: 800;
+}
+
+.sp-footer__blurb {
+	max-width: 42ch;
+	margin-block-start: 0.75rem;
+	font-size: var(--sp-fs-small);
+	line-height: 1.7;
+}
+
+.sp-footer__heading {
+	margin-block-end: 0.9rem;
+	color: #fff;
+	font-size: 0.9375rem;
+	font-weight: 700;
+}
+
+.sp-footer__list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.55rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: var(--sp-fs-small);
+}
+
+.sp-footer__list a {
+	transition: color var(--sp-dur) var(--sp-ease);
+}
+
+.sp-footer__list a:hover {
+	color: #fff;
+}
+
+.sp-footer__bottom {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem 1.5rem;
+	margin-block-start: clamp(2rem, 5vw, 3rem);
+	padding-block-start: 1.5rem;
+	border-block-start: 1px solid var(--sp-line);
+	font-size: var(--sp-fs-small);
+	color: var(--sp-text-dim);
+}

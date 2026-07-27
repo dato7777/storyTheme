@@ -1,0 +1,17 @@
+{
+  "name": "storyphone-pages",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Custom front-end page templates for StoryPhone (WordPress + WooCommerce)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && printf '%s\\n' '<?php' '// Silence is golden.' > build/index.php",
+    "lint:php": "node scripts/lint-php.mjs",
+    "zip": "npm run build && bash scripts/make-zip.sh"
+  },
+  "devDependencies": {
+    "php-parser": "^3.7.0",
+    "vite": "^5.4.11"
+  }
+}

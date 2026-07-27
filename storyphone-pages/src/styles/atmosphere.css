@@ -1,0 +1,243 @@
+/**
+ * Shared atmosphere: aurora light, film grain, and the furniture every
+ * section reuses (eyebrows, section heads, chips, badges).
+ */
+
+/* ---------- aurora ---------- */
+
+.sp-aurora {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 0;
+}
+
+.sp-aurora__blob {
+	position: absolute;
+	display: block;
+	border-radius: 50%;
+	filter: blur(90px);
+	opacity: 0.55;
+	will-change: transform;
+}
+
+.sp-aurora__blob--1 {
+	inset-block-start: -18%;
+	inset-inline-end: -8%;
+	inline-size: 46vw;
+	block-size: 46vw;
+	min-inline-size: 340px;
+	min-block-size: 340px;
+	background: radial-gradient(circle, rgba(124, 92, 255, 0.85), transparent 68%);
+	animation: sp-drift-a 22s var(--sp-ease) infinite alternate;
+}
+
+.sp-aurora__blob--2 {
+	inset-block-start: 22%;
+	inset-inline-start: -12%;
+	inline-size: 38vw;
+	block-size: 38vw;
+	min-inline-size: 280px;
+	min-block-size: 280px;
+	background: radial-gradient(circle, rgba(36, 227, 210, 0.6), transparent 68%);
+	animation: sp-drift-b 26s var(--sp-ease) infinite alternate;
+}
+
+.sp-aurora__blob--3 {
+	inset-block-end: -20%;
+	inset-inline-start: 28%;
+	inline-size: 40vw;
+	block-size: 40vw;
+	min-inline-size: 300px;
+	min-block-size: 300px;
+	background: radial-gradient(circle, rgba(255, 77, 157, 0.55), transparent 70%);
+	animation: sp-drift-c 30s var(--sp-ease) infinite alternate;
+}
+
+.sp-aurora--soft .sp-aurora__blob {
+	opacity: 0.3;
+	filter: blur(120px);
+}
+
+@keyframes sp-drift-a {
+	to {
+		transform: translate3d(-6%, 8%, 0) scale(1.15);
+	}
+}
+
+@keyframes sp-drift-b {
+	to {
+		transform: translate3d(9%, -7%, 0) scale(1.2);
+	}
+}
+
+@keyframes sp-drift-c {
+	to {
+		transform: translate3d(-8%, -10%, 0) scale(1.1);
+	}
+}
+
+/* ---------- grain + grid ---------- */
+
+.sp-noise {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	opacity: 0.5;
+	mix-blend-mode: overlay;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+.sp-hero__grid-lines {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
+	opacity: 0.35;
+	background-image:
+		linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+	background-size: 72px 72px;
+	mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 20%, transparent 78%);
+}
+
+/* ---------- section furniture ---------- */
+
+.sp-section {
+	position: relative;
+	padding-block: var(--sp-section-y);
+}
+
+.sp-section__head {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1.5rem;
+	flex-wrap: wrap;
+	margin-block-end: clamp(1.75rem, 4vw, 3rem);
+	position: relative;
+	z-index: 2;
+}
+
+.sp-section__title {
+	font-size: var(--sp-fs-h2);
+	color: var(--sp-text);
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+.sp-section__subtitle {
+	margin-block-start: 0.6rem;
+	color: var(--sp-text-soft);
+	max-inline-size: 56ch;
+	font-size: 1.0625rem;
+}
+
+.sp-eyebrow {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+	padding: 0.4rem 0.95rem;
+	border: 1px solid var(--sp-line);
+	border-radius: var(--sp-radius-pill);
+	background: var(--sp-surface);
+	backdrop-filter: blur(12px);
+	color: var(--sp-text-soft);
+	font-size: var(--sp-fs-micro);
+	font-weight: 600;
+	letter-spacing: 0.01em;
+}
+
+.sp-eyebrow__dot {
+	inline-size: 7px;
+	block-size: 7px;
+	border-radius: 50%;
+	background: var(--sp-cyan);
+	box-shadow: 0 0 0 0 rgba(36, 227, 210, 0.7);
+	animation: sp-ping 2.4s ease-out infinite;
+}
+
+@keyframes sp-ping {
+	70%,
+	100% {
+		box-shadow: 0 0 0 10px rgba(36, 227, 210, 0);
+	}
+}
+
+/* ---------- chips ---------- */
+
+.sp-chip {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.42rem 0.95rem;
+	border: 1px solid var(--sp-line);
+	border-radius: var(--sp-radius-pill);
+	background: var(--sp-surface);
+	color: var(--sp-text-soft);
+	font-size: var(--sp-fs-small);
+	font-weight: 600;
+	white-space: nowrap;
+	transition:
+		border-color var(--sp-dur) var(--sp-ease),
+		color var(--sp-dur) var(--sp-ease),
+		background var(--sp-dur) var(--sp-ease),
+		transform var(--sp-dur) var(--sp-ease);
+}
+
+.sp-chip:hover {
+	border-color: rgba(124, 92, 255, 0.55);
+	background: rgba(124, 92, 255, 0.14);
+	color: var(--sp-text);
+	transform: translateY(-2px);
+}
+
+/* ---------- badges ---------- */
+
+.sp-badge {
+	position: absolute;
+	inset-block-start: 0.75rem;
+	inset-inline-start: 0.75rem;
+	z-index: 3;
+	padding: 0.3rem 0.7rem;
+	border-radius: var(--sp-radius-pill);
+	font-size: var(--sp-fs-micro);
+	font-weight: 800;
+	letter-spacing: 0.01em;
+	line-height: 1;
+	color: #fff;
+}
+
+.sp-badge--sale {
+	background: linear-gradient(135deg, #ff4d6d, #ff2d78);
+	box-shadow: 0 6px 18px rgba(255, 45, 120, 0.4);
+}
+
+.sp-badge--muted {
+	background: rgba(10, 13, 32, 0.82);
+	border: 1px solid var(--sp-line-strong);
+	color: var(--sp-text-soft);
+}
+
+/* ---------- text link ---------- */
+
+.sp-textlink {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	color: var(--sp-text);
+	font-weight: 700;
+	font-size: var(--sp-fs-small);
+	padding-block-end: 2px;
+	border-block-end: 1px solid transparent;
+	transition:
+		border-color var(--sp-dur) var(--sp-ease),
+		gap var(--sp-dur) var(--sp-ease);
+}
+
+.sp-textlink:hover {
+	border-block-end-color: var(--sp-cyan);
+	gap: 0.75rem;
+}

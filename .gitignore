@@ -1,0 +1,7 @@
+node_modules/
+lintscratch/
+preview/shots/
+preview/index.html
+.pw-browsers/
+*.zip
+.DS_Store

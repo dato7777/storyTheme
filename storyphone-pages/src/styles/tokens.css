@@ -1,0 +1,106 @@
+/**
+ * Design tokens.
+ *
+ * Change the brand here rather than in component rules.
+ *
+ * The palette is deliberately dark: product photography from WooCommerce
+ * almost always sits on white, so cards keep a light "media well" while the
+ * page around them stays cinematic. That contrast is what makes the catalog
+ * read as premium instead of as a spreadsheet.
+ */
+
+:root {
+	/* Ink — page depths, darkest first */
+	--sp-ink-900: #04050e;
+	--sp-ink-850: #070919;
+	--sp-ink-800: #0a0d20;
+	--sp-ink-700: #10142c;
+	--sp-ink-600: #171d3d;
+
+	/* Glass surfaces layered over ink */
+	--sp-surface: rgba(255, 255, 255, 0.045);
+	--sp-surface-2: rgba(255, 255, 255, 0.075);
+	--sp-surface-3: rgba(255, 255, 255, 0.11);
+	--sp-line: rgba(255, 255, 255, 0.1);
+	--sp-line-strong: rgba(255, 255, 255, 0.2);
+
+	/* Text */
+	--sp-text: #f3f5ff;
+	--sp-text-soft: #a7aed2;
+	--sp-text-dim: #6d759e;
+	--sp-on-light: #0a0d20;
+
+	/* Brand — the "story" spectrum */
+	--sp-violet: #7c5cff;
+	--sp-indigo: #4b3df0;
+	--sp-magenta: #ff4d9d;
+	--sp-cyan: #24e3d2;
+	--sp-amber: #ffb020;
+
+	--sp-accent: var(--sp-violet);
+	--sp-accent-2: var(--sp-cyan);
+
+	--sp-grad-primary: linear-gradient(135deg, #7c5cff 0%, #a04dff 48%, #ff4d9d 100%);
+	--sp-grad-cool: linear-gradient(135deg, #4b3df0 0%, #24e3d2 100%);
+	--sp-grad-heat: linear-gradient(90deg, #ffb020 0%, #ff4d9d 55%, #7c5cff 100%);
+	--sp-grad-story: conic-gradient(
+		from 200deg,
+		#ff4d9d,
+		#ffb020,
+		#24e3d2,
+		#7c5cff,
+		#ff4d9d
+	);
+	--sp-grad-text: linear-gradient(100deg, #24e3d2 0%, #7c5cff 45%, #ff4d9d 100%);
+
+	/* Feedback */
+	--sp-sale: #ff4d6d;
+	--sp-danger: #ff5a5a;
+	--sp-success: #24e3d2;
+
+	/* Type */
+	--sp-font-display: 'Heebo', 'Arial Hebrew', system-ui, -apple-system, sans-serif;
+	--sp-font-body: 'Assistant', 'Heebo', system-ui, -apple-system, sans-serif;
+
+	--sp-fs-hero: clamp(2.75rem, 7.2vw, 6rem);
+	--sp-fs-h2: clamp(1.85rem, 3.8vw, 3rem);
+	--sp-fs-h3: clamp(1.05rem, 1.4vw, 1.2rem);
+	--sp-fs-body: clamp(1rem, 1.15vw, 1.0625rem);
+	--sp-fs-small: 0.875rem;
+	--sp-fs-micro: 0.78125rem;
+
+	/* Space */
+	--sp-shell: 1280px;
+	--sp-shell-narrow: 780px;
+	--sp-gutter: clamp(1rem, 4vw, 2.5rem);
+	--sp-section-y: clamp(3.5rem, 8vw, 7rem);
+
+	/* Shape */
+	--sp-radius-sm: 10px;
+	--sp-radius: 16px;
+	--sp-radius-lg: 24px;
+	--sp-radius-xl: 32px;
+	--sp-radius-pill: 999px;
+
+	/* Depth */
+	--sp-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+	--sp-shadow: 0 8px 24px rgba(0, 0, 0, 0.38);
+	--sp-shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.55);
+	--sp-shadow-accent: 0 14px 40px rgba(124, 92, 255, 0.42);
+	--sp-glow-cyan: 0 0 0 1px rgba(36, 227, 210, 0.28), 0 12px 40px rgba(36, 227, 210, 0.18);
+
+	/* Motion */
+	--sp-ease: cubic-bezier(0.22, 1, 0.36, 1);
+	--sp-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+	--sp-dur: 240ms;
+	--sp-dur-slow: 520ms;
+
+	/* Layers */
+	--sp-z-header: 100;
+	--sp-z-viewer: 300;
+	--sp-z-palette: 320;
+	--sp-z-drawer: 400;
+	--sp-z-toast: 500;
+
+	--sp-header-h: 74px;
+}

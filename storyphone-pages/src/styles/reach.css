@@ -1,0 +1,224 @@
+/**
+ * Quick reach tiles and the trust marquee.
+ */
+
+.sp-reach__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+	gap: clamp(0.75rem, 1.6vw, 1.1rem);
+}
+
+.sp-tile {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: 1rem 1.15rem;
+	border: 1px solid var(--sp-line);
+	border-radius: var(--sp-radius-lg);
+	background: var(--sp-surface);
+	overflow: hidden;
+	isolation: isolate;
+	transition:
+		border-color var(--sp-dur) var(--sp-ease),
+		transform var(--sp-dur) var(--sp-ease),
+		box-shadow var(--sp-dur) var(--sp-ease);
+}
+
+/* Each tile gets its own hue from a PHP-set custom property, so a long
+   category list stays visually varied without hand-picking colours. */
+.sp-tile__glow {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	opacity: 0;
+	background: radial-gradient(
+		120% 120% at 100% 0%,
+		hsl(var(--sp-tile-hue, 260) 90% 62% / 0.3),
+		transparent 62%
+	);
+	transition: opacity var(--sp-dur) var(--sp-ease);
+}
+
+.sp-tile:hover {
+	border-color: hsl(var(--sp-tile-hue, 260) 90% 68% / 0.55);
+	transform: translateY(-4px);
+	box-shadow: var(--sp-shadow);
+}
+
+.sp-tile:hover .sp-tile__glow {
+	opacity: 1;
+}
+
+.sp-tile__media {
+	inline-size: 54px;
+	block-size: 54px;
+	flex: 0 0 auto;
+	border-radius: var(--sp-radius);
+	background: #fff;
+	overflow: hidden;
+	display: grid;
+	place-items: center;
+}
+
+.sp-tile__img {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: contain;
+	padding: 0.3rem;
+}
+
+/* A white frame around nothing looks broken, so unillustrated categories get
+   a tinted monogram in the tile's own hue instead. */
+.sp-tile__media--empty {
+	background: hsl(var(--sp-tile-hue, 260) 70% 60% / 0.18);
+	border: 1px solid hsl(var(--sp-tile-hue, 260) 80% 65% / 0.35);
+}
+
+.sp-tile__mono {
+	font-family: var(--sp-font-display);
+	font-size: 1.5rem;
+	font-weight: 800;
+	color: hsl(var(--sp-tile-hue, 260) 90% 78%);
+}
+
+.sp-tile__body {
+	flex: 1 1 auto;
+	min-inline-size: 0;
+	display: grid;
+	gap: 0.15rem;
+}
+
+.sp-tile__name {
+	font-family: var(--sp-font-display);
+	font-weight: 700;
+	font-size: 1rem;
+	color: var(--sp-text);
+	line-height: 1.3;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sp-tile__count {
+	font-size: 0.8125rem;
+	color: var(--sp-text-dim);
+}
+
+.sp-tile__arrow {
+	flex: 0 0 auto;
+	color: var(--sp-text-dim);
+	font-size: 1.15rem;
+	transition:
+		transform var(--sp-dur) var(--sp-ease),
+		color var(--sp-dur) var(--sp-ease);
+}
+
+.sp-tile:hover .sp-tile__arrow {
+	color: var(--sp-text);
+	transform: translateX(-4px);
+}
+
+/* ==================================================================
+   Trust marquee
+   ================================================================== */
+
+.sp-marquee {
+	position: relative;
+	padding-block: clamp(1.5rem, 3vw, 2.25rem);
+	border-block: 1px solid var(--sp-line);
+	background: rgba(255, 255, 255, 0.02);
+	overflow: hidden;
+}
+
+.sp-marquee__viewport {
+	mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+	-webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.sp-marquee__track {
+	display: flex;
+	inline-size: max-content;
+	animation: sp-marquee 42s linear infinite;
+}
+
+.sp-marquee:hover .sp-marquee__track {
+	animation-play-state: paused;
+}
+
+/* The track holds two identical runs, so resetting at -50% is seamless. */
+@keyframes sp-marquee {
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+/* Direction is mirrored under RTL so the content still reads forwards. */
+[dir='rtl'] .sp-marquee__track {
+	animation-name: sp-marquee-rtl;
+}
+
+@keyframes sp-marquee-rtl {
+	to {
+		transform: translateX(50%);
+	}
+}
+
+.sp-marquee__run {
+	display: flex;
+	align-items: center;
+	gap: clamp(1.5rem, 4vw, 3.5rem);
+	list-style: none;
+	margin: 0;
+	padding-inline: clamp(0.75rem, 2vw, 1.75rem);
+}
+
+.sp-marquee__item {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	white-space: nowrap;
+}
+
+.sp-marquee__icon {
+	inline-size: 38px;
+	block-size: 38px;
+	flex: 0 0 auto;
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	background: var(--sp-surface-2);
+	border: 1px solid var(--sp-line);
+	color: var(--sp-cyan);
+}
+
+.sp-marquee__icon svg {
+	inline-size: 20px;
+	block-size: 20px;
+}
+
+.sp-marquee__body {
+	display: grid;
+}
+
+.sp-marquee__title {
+	font-family: var(--sp-font-display);
+	font-size: 0.9375rem;
+	font-weight: 700;
+	color: var(--sp-text);
+}
+
+.sp-marquee__text {
+	font-size: 0.8125rem;
+	color: var(--sp-text-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sp-marquee__track {
+		animation: none;
+	}
+
+	.sp-marquee__viewport {
+		overflow-x: auto;
+	}
+}

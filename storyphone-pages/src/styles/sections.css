@@ -1,0 +1,93 @@
+/**
+ * Closing call-to-action and editor prose.
+ */
+
+/* ---------- Closing CTA ---------- */
+
+.sp-cta {
+	padding-block: var(--sp-section-y);
+}
+
+.sp-cta__panel {
+	position: relative;
+	isolation: isolate;
+	overflow: hidden;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: clamp(1.5rem, 4vw, 3rem);
+	padding: clamp(2rem, 5vw, 4rem);
+	border: 1px solid var(--sp-line);
+	border-radius: var(--sp-radius-xl);
+	background:
+		radial-gradient(90% 140% at 90% 0%, rgba(124, 92, 255, 0.5) 0%, transparent 62%),
+		radial-gradient(70% 120% at 0% 100%, rgba(36, 227, 210, 0.28) 0%, transparent 60%),
+		linear-gradient(150deg, var(--sp-ink-700) 0%, var(--sp-ink-900) 100%);
+	color: #fff;
+	box-shadow: var(--sp-shadow-lg);
+}
+
+.sp-cta__title {
+	color: #fff;
+	font-size: var(--sp-fs-h2);
+}
+
+.sp-cta__text {
+	max-inline-size: 48ch;
+	margin-block-start: 0.85rem;
+	color: rgba(255, 255, 255, 0.72);
+}
+
+.sp-cta__actions {
+	flex: 0 0 auto;
+}
+
+/* ---------- Editor prose ---------- */
+
+.sp-prose {
+	color: var(--sp-text-soft);
+}
+
+.sp-prose > * + * {
+	margin-block-start: 1.15rem;
+}
+
+.sp-prose :where(h2, h3, h4) {
+	margin-block-start: 2.25rem;
+	color: var(--sp-text);
+}
+
+.sp-prose :where(h2) {
+	font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+}
+
+.sp-prose :where(h3) {
+	font-size: 1.25rem;
+}
+
+.sp-prose :where(ul, ol) {
+	padding-inline-start: 1.35rem;
+}
+
+.sp-prose :where(li) {
+	margin-block-start: 0.45rem;
+}
+
+.sp-prose :where(a) {
+	color: var(--sp-cyan);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.sp-prose :where(img) {
+	border-radius: var(--sp-radius-lg);
+}
+
+.sp-prose :where(blockquote) {
+	margin: 0;
+	padding-inline-start: 1.15rem;
+	border-inline-start: 3px solid var(--sp-violet);
+	color: var(--sp-text);
+	font-size: 1.15rem;
+}

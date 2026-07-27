@@ -1,0 +1,380 @@
+/**
+ * Sticky header. Transparent over the hero, then condenses into frosted glass
+ * once the page scrolls.
+ */
+
+.sp-header {
+	position: sticky;
+	inset-block-start: 0;
+	z-index: var(--sp-z-header);
+	background: transparent;
+	transition:
+		background var(--sp-dur) var(--sp-ease),
+		border-color var(--sp-dur) var(--sp-ease),
+		box-shadow var(--sp-dur) var(--sp-ease);
+	border-block-end: 1px solid transparent;
+}
+
+.sp-header.is-stuck {
+	background: rgba(7, 9, 25, 0.72);
+	backdrop-filter: blur(20px) saturate(160%);
+	-webkit-backdrop-filter: blur(20px) saturate(160%);
+	border-block-end-color: var(--sp-line);
+	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+
+.sp-header__inner {
+	min-block-size: var(--sp-header-h);
+	display: flex;
+	align-items: center;
+	gap: clamp(0.5rem, 1.6vw, 1.25rem);
+}
+
+/* ---------- brand ---------- */
+
+.sp-header__brand {
+	flex: 0 0 auto;
+}
+
+.sp-brand {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.6rem;
+}
+
+.sp-brand__mark {
+	position: relative;
+	inline-size: 34px;
+	block-size: 34px;
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	background: var(--sp-ink-800);
+}
+
+/* The brand mark is a story ring: it is the whole idea of the site in 34px. */
+.sp-brand__mark::before {
+	content: '';
+	position: absolute;
+	inset: -2px;
+	border-radius: 50%;
+	background: var(--sp-grad-story);
+	animation: sp-spin 6s linear infinite;
+}
+
+.sp-brand__ring {
+	position: relative;
+	inline-size: 26px;
+	block-size: 26px;
+	border-radius: 50%;
+	background: var(--sp-ink-900);
+	display: grid;
+	place-items: center;
+}
+
+.sp-brand__ring::after {
+	content: '';
+	inline-size: 9px;
+	block-size: 9px;
+	border-radius: 50%;
+	background: var(--sp-grad-primary);
+}
+
+@keyframes sp-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.sp-brand__text {
+	font-family: var(--sp-font-display);
+	font-weight: 800;
+	font-size: 1.15rem;
+	color: var(--sp-text);
+	letter-spacing: -0.02em;
+	white-space: nowrap;
+}
+
+.sp-header__brand .custom-logo-link img,
+.sp-header__brand .custom-logo {
+	max-block-size: 40px;
+	inline-size: auto;
+}
+
+/* ---------- nav ---------- */
+
+.sp-nav__list {
+	display: flex;
+	align-items: center;
+	gap: clamp(0.5rem, 1.4vw, 1.25rem);
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.sp-nav__list a {
+	position: relative;
+	display: inline-block;
+	padding: 0.4rem 0.15rem;
+	color: var(--sp-text-soft);
+	font-size: 0.9375rem;
+	font-weight: 600;
+	white-space: nowrap;
+	transition: color var(--sp-dur) var(--sp-ease);
+}
+
+.sp-nav__list a::after {
+	content: '';
+	position: absolute;
+	inset-block-end: 0;
+	inset-inline: 0;
+	block-size: 2px;
+	border-radius: 2px;
+	background: var(--sp-grad-primary);
+	transform: scaleX(0);
+	transform-origin: inline-start;
+	transition: transform var(--sp-dur) var(--sp-ease);
+}
+
+.sp-nav__list a:hover {
+	color: var(--sp-text);
+}
+
+.sp-nav__list a:hover::after {
+	transform: scaleX(1);
+}
+
+/* Sub-menus stay simple: this header is not the primary way to browse. */
+.sp-nav__list .sub-menu {
+	display: none;
+}
+
+/* ---------- search pill ---------- */
+
+.sp-searchpill {
+	flex: 1 1 auto;
+	max-inline-size: 340px;
+	margin-inline-start: auto;
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	padding: 0.55rem 0.9rem;
+	border: 1px solid var(--sp-line);
+	border-radius: var(--sp-radius-pill);
+	background: var(--sp-surface);
+	color: var(--sp-text-dim);
+	text-align: start;
+	transition:
+		border-color var(--sp-dur) var(--sp-ease),
+		background var(--sp-dur) var(--sp-ease),
+		box-shadow var(--sp-dur) var(--sp-ease);
+}
+
+.sp-searchpill:hover {
+	border-color: rgba(124, 92, 255, 0.5);
+	background: var(--sp-surface-2);
+	box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.1);
+}
+
+.sp-searchpill__icon {
+	inline-size: 17px;
+	block-size: 17px;
+	flex: 0 0 auto;
+	opacity: 0.8;
+}
+
+.sp-searchpill__label {
+	flex: 1 1 auto;
+	font-size: 0.875rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.sp-searchpill__kbd {
+	flex: 0 0 auto;
+	padding: 0.1rem 0.42rem;
+	border: 1px solid var(--sp-line);
+	border-radius: 6px;
+	background: rgba(255, 255, 255, 0.06);
+	font-family: inherit;
+	font-size: 0.75rem;
+	color: var(--sp-text-soft);
+}
+
+/* ---------- actions ---------- */
+
+.sp-header__actions {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+}
+
+.sp-iconbtn {
+	position: relative;
+	inline-size: 40px;
+	block-size: 40px;
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	color: var(--sp-text-soft);
+	transition:
+		background var(--sp-dur) var(--sp-ease),
+		color var(--sp-dur) var(--sp-ease),
+		transform var(--sp-dur) var(--sp-ease);
+}
+
+.sp-iconbtn svg {
+	inline-size: 21px;
+	block-size: 21px;
+}
+
+.sp-iconbtn:hover {
+	background: var(--sp-surface-2);
+	color: var(--sp-text);
+	transform: translateY(-1px);
+}
+
+.sp-iconbtn--search {
+	display: none;
+}
+
+.sp-cartcount {
+	position: absolute;
+	inset-block-start: 2px;
+	inset-inline-end: 2px;
+	min-inline-size: 18px;
+	block-size: 18px;
+	padding-inline: 4px;
+	display: grid;
+	place-items: center;
+	border-radius: var(--sp-radius-pill);
+	background: var(--sp-grad-primary);
+	color: #fff;
+	font-size: 0.6875rem;
+	font-weight: 800;
+	line-height: 1;
+	box-shadow: 0 0 0 2px var(--sp-ink-850);
+	animation: sp-pop 320ms var(--sp-ease-spring);
+}
+
+@keyframes sp-pop {
+	from {
+		transform: scale(0.4);
+		opacity: 0;
+	}
+}
+
+.sp-header__shop {
+	margin-inline-start: 0.4rem;
+}
+
+/* ---------- burger ---------- */
+
+.sp-header__burger {
+	display: none;
+	inline-size: 40px;
+	block-size: 40px;
+	place-items: center;
+	gap: 5px;
+	border-radius: 50%;
+	color: var(--sp-text);
+}
+
+.sp-burger__bar {
+	inline-size: 19px;
+	block-size: 2px;
+	border-radius: 2px;
+	background: currentColor;
+	transition: transform var(--sp-dur) var(--sp-ease), opacity var(--sp-dur) var(--sp-ease);
+}
+
+html.sp-nav-open .sp-burger__bar:nth-child(1) {
+	transform: translateY(7px) rotate(45deg);
+}
+
+html.sp-nav-open .sp-burger__bar:nth-child(2) {
+	opacity: 0;
+}
+
+html.sp-nav-open .sp-burger__bar:nth-child(3) {
+	transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1080px) {
+	.sp-nav {
+		display: none;
+	}
+
+	.sp-searchpill {
+		max-inline-size: none;
+	}
+}
+
+@media (max-width: 860px) {
+	.sp-header__burger {
+		display: grid;
+		grid-auto-flow: row;
+	}
+
+	.sp-header__brand {
+		margin-inline-end: auto;
+	}
+
+	.sp-searchpill,
+	.sp-header__shop {
+		display: none;
+	}
+
+	.sp-iconbtn--search {
+		display: grid;
+	}
+
+	/* Mobile nav: full-screen sheet driven by the burger. */
+	.sp-nav {
+		display: block;
+		position: fixed;
+		inset: var(--sp-header-h) 0 0;
+		z-index: calc(var(--sp-z-header) - 1);
+		padding: 2rem var(--sp-gutter);
+		background: rgba(4, 5, 14, 0.96);
+		backdrop-filter: blur(24px);
+		-webkit-backdrop-filter: blur(24px);
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(-12px);
+		transition:
+			opacity var(--sp-dur) var(--sp-ease),
+			transform var(--sp-dur) var(--sp-ease),
+			visibility var(--sp-dur);
+		overflow-y: auto;
+	}
+
+	html.sp-nav-open .sp-nav {
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+	}
+
+	.sp-nav__list {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0;
+	}
+
+	.sp-nav__list > li {
+		border-block-end: 1px solid var(--sp-line);
+	}
+
+	.sp-nav__list a {
+		display: block;
+		padding-block: 1rem;
+		font-size: 1.25rem;
+		font-family: var(--sp-font-display);
+		font-weight: 700;
+		color: var(--sp-text);
+	}
+}
