@@ -246,6 +246,8 @@ const marqueeRun = (hidden) => `
 </ul>`;
 
 const heroPick = hot[0];
+// Mirrors hero.php: the deck must never rotate a card onto itself.
+const heroDeal = deal && heroPick && deal.id === heroPick.id ? null : deal;
 const dealDeadline = new Date();
 dealDeadline.setHours(24, 0, 0, 0);
 
@@ -322,17 +324,41 @@ const html = `<!DOCTYPE html>
 				${categories.slice(0, 5).map((term) => `<a class="sp-chip" href="${esc(term.permalink || '#')}">${esc(term.name)}</a>`).join('')}
 			</div>
 		</div>
-		<aside class="sp-hero__pick" data-sp-reveal>
-			<div class="sp-pick" data-sp-tilt>
-				<div class="sp-pick__glow"></div>
-				<p class="sp-pick__kicker"><span class="sp-pick__flame">&#128293;</span>הנמכר ביותר</p>
-				<a class="sp-pick__media" href="${esc(heroPick.permalink)}">
-					<img class="sp-pick__img" src="${esc(img(heroPick))}" alt="">
-					${discount(heroPick) > 0 ? `<span class="sp-badge sp-badge--sale">${discount(heroPick)}%- הנחה</span>` : ''}
-				</a>
-				<h2 class="sp-pick__title"><a href="${esc(heroPick.permalink)}">${esc(heroPick.name)}</a></h2>
-				<div class="sp-pick__price">${priceHtml(heroPick)}</div>
-				<button type="button" class="sp-btn sp-btn--primary sp-btn--block" data-sp-add-to-cart data-product-id="${heroPick.id}"><span class="sp-btn__label">הוספה לסל</span></button>
+		<aside class="sp-hero__pick" data-sp-reveal aria-label="מומלצים">
+			<div class="sp-pickDeck" data-sp-deck data-sp-tilt>
+				<div class="sp-pickDeck__stack">
+					<article class="sp-pick sp-pick--hot is-active" data-sp-deck-face>
+						<div class="sp-pick__glow"></div>
+						<p class="sp-pick__kicker"><span class="sp-pick__flame">&#128293;</span>הנמכר ביותר</p>
+						<a class="sp-pick__media" href="${esc(heroPick.permalink)}">
+							<img class="sp-pick__img" src="${esc(img(heroPick))}" alt="">
+							${discount(heroPick) > 0 ? `<span class="sp-badge sp-badge--sale">${discount(heroPick)}%- הנחה</span>` : ''}
+						</a>
+						<h2 class="sp-pick__title"><a href="${esc(heroPick.permalink)}">${esc(heroPick.name)}</a></h2>
+						<div class="sp-pick__price">${priceHtml(heroPick)}</div>
+						<button type="button" class="sp-btn sp-btn--primary sp-btn--block" data-sp-add-to-cart data-product-id="${heroPick.id}"><span class="sp-btn__label">הוספה לסל</span></button>
+					</article>
+					${heroDeal ? `<article class="sp-pick sp-pick--deal" data-sp-deck-face>
+						<div class="sp-pick__glow"></div>
+						<p class="sp-pick__kicker sp-pick__kicker--deal"><span class="sp-pick__bolt">&#9889;</span>הדיל של היום</p>
+						<a class="sp-pick__media" href="${esc(heroDeal.permalink)}">
+							<img class="sp-pick__img" src="${esc(img(heroDeal))}" alt="">
+							${discount(heroDeal) > 0 ? `<span class="sp-badge sp-badge--sale">${discount(heroDeal)}%- הנחה</span>` : ''}
+						</a>
+						<h2 class="sp-pick__title"><a href="${esc(heroDeal.permalink)}">${esc(heroDeal.name)}</a></h2>
+						<div class="sp-pick__price">${priceHtml(heroDeal)}</div>
+						<div class="sp-pick__timer" data-sp-countdown="${dealDeadline.toISOString()}" aria-label="הזמן שנותר למבצע">
+							<span class="sp-pick__timerIcon"></span>
+							<b data-sp-cd-h>--</b><i>:</i><b data-sp-cd-m>--</b><i>:</i><b data-sp-cd-s>--</b>
+							<span class="sp-pick__timerNote">עד סוף המבצע</span>
+						</div>
+						<button type="button" class="sp-btn sp-btn--primary sp-btn--block" data-sp-add-to-cart data-product-id="${heroDeal.id}"><span class="sp-btn__label">תפסו את המבצע</span></button>
+					</article>` : ''}
+				</div>
+				${heroDeal ? `<div class="sp-pickDeck__pips">
+					<button type="button" class="sp-pickDeck__pip is-on" data-sp-deck-pip data-index="0" aria-pressed="true"><span class="sp-pickDeck__pipFill"></span><span class="sp-srOnly">הנמכר ביותר</span></button>
+					<button type="button" class="sp-pickDeck__pip" data-sp-deck-pip data-index="1" aria-pressed="false"><span class="sp-pickDeck__pipFill"></span><span class="sp-srOnly">הדיל של היום</span></button>
+				</div>` : ''}
 			</div>
 		</aside>
 	</div>

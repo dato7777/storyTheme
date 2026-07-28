@@ -172,14 +172,112 @@
 	font-weight: 600;
 }
 
-/* ---------- featured pick ---------- */
+/* ---------- featured pick deck ---------- */
+
+/*
+ * Registering the tilt channels as typed custom properties is what lets a
+ * keyframe animation interpolate them at all — an unregistered custom property
+ * jumps between keyframes instead of easing.
+ *
+ * The payoff: the automatic camera sweep and the pointer tilt drive the exact
+ * same four variables. Handing control from one to the other needs no second
+ * transform and produces no visible jump.
+ */
+@property --sp-tilt-x {
+	syntax: '<angle>';
+	inherits: true;
+	initial-value: 0deg;
+}
+
+@property --sp-tilt-y {
+	syntax: '<angle>';
+	inherits: true;
+	initial-value: 0deg;
+}
+
+@property --sp-tilt-mx {
+	syntax: '<percentage>';
+	inherits: true;
+	initial-value: 50%;
+}
+
+@property --sp-tilt-my {
+	syntax: '<percentage>';
+	inherits: true;
+	initial-value: 0%;
+}
 
 .sp-hero__pick {
-	perspective: 1200px;
+	perspective: 1150px;
+}
+
+.sp-pickDeck {
+	position: relative;
+	transform: rotateX(var(--sp-tilt-x)) rotateY(var(--sp-tilt-y));
+	transform-style: preserve-3d;
+	transition: transform 400ms var(--sp-ease);
+	will-change: transform;
+}
+
+/*
+ * The establishing shot: the card turns to show its right edge, then its left,
+ * then squares up to the viewer — so the surface reads as a physical object
+ * before anyone touches it. Transition is suppressed while it runs, otherwise
+ * it would try to smooth every frame the animation already computed.
+ */
+.sp-pickDeck.is-sweeping {
+	transition: none;
+	animation: sp-deck-sweep var(--sp-sweep-duration, 1600ms) cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+
+@keyframes sp-deck-sweep {
+	0% {
+		--sp-tilt-y: 0deg;
+		--sp-tilt-x: 0deg;
+		--sp-tilt-mx: 50%;
+		--sp-tilt-my: 0%;
+	}
+	28% {
+		--sp-tilt-y: 11deg;
+		--sp-tilt-x: -3.5deg;
+		--sp-tilt-mx: 97%;
+		--sp-tilt-my: 74%;
+	}
+	62% {
+		--sp-tilt-y: -10deg;
+		--sp-tilt-x: 3deg;
+		--sp-tilt-mx: 4%;
+		--sp-tilt-my: 22%;
+	}
+	84% {
+		--sp-tilt-y: 2.5deg;
+		--sp-tilt-x: -0.9deg;
+		--sp-tilt-mx: 64%;
+		--sp-tilt-my: 10%;
+	}
+	100% {
+		--sp-tilt-y: 0deg;
+		--sp-tilt-x: 0deg;
+		--sp-tilt-mx: 50%;
+		--sp-tilt-my: 0%;
+	}
+}
+
+/* Both faces share one grid cell, so the deck is always as tall as the taller
+   card and the two never resize the layout as they swap. */
+.sp-pickDeck__stack {
+	display: grid;
+	transform-style: preserve-3d;
+}
+
+.sp-pickDeck__stack > * {
+	grid-area: 1 / 1;
 }
 
 .sp-pick {
 	position: relative;
+	display: flex;
+	flex-direction: column;
 	padding: 1.25rem;
 	border: 1px solid var(--sp-line);
 	border-radius: var(--sp-radius-xl);
@@ -187,19 +285,40 @@
 	backdrop-filter: blur(22px);
 	-webkit-backdrop-filter: blur(22px);
 	box-shadow: var(--sp-shadow-lg);
-	transform: rotateX(var(--sp-tilt-x, 0deg)) rotateY(var(--sp-tilt-y, 0deg));
-	transform-style: preserve-3d;
-	transition: transform 400ms var(--sp-ease);
+
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transform: rotateY(-26deg) translate3d(0, 0, -70px) scale(0.94);
+	transition:
+		opacity 560ms var(--sp-ease),
+		transform 760ms var(--sp-ease),
+		visibility 760ms;
 }
 
-/* Specular highlight that tracks the pointer. */
+.sp-pick.is-active {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transform: none;
+}
+
+/* The outgoing card turns away to the opposite side of the incoming one, so a
+   swap reads as one carousel rotation rather than a crossfade. */
+.sp-pick.is-leaving {
+	visibility: visible;
+	opacity: 0;
+	transform: rotateY(26deg) translate3d(0, 0, -70px) scale(0.94);
+}
+
+/* Specular highlight, driven by the same variables as the tilt. */
 .sp-pick__glow {
 	position: absolute;
 	inset: 0;
 	border-radius: inherit;
 	pointer-events: none;
 	background: radial-gradient(
-		420px circle at var(--sp-tilt-mx, 50%) var(--sp-tilt-my, 0%),
+		420px circle at var(--sp-tilt-mx) var(--sp-tilt-my),
 		rgba(255, 255, 255, 0.1),
 		transparent 60%
 	);
@@ -219,10 +338,14 @@
 	font-weight: 800;
 }
 
+/* Grows to absorb whatever height the other face needs, which keeps the two
+   cards visually balanced even though only one of them carries a countdown. */
 .sp-pick__media {
 	position: relative;
 	display: block;
+	flex: 1 1 auto;
 	aspect-ratio: 4 / 3;
+	min-block-size: 140px;
 	border-radius: var(--sp-radius-lg);
 	background: #fff;
 	overflow: hidden;
@@ -269,6 +392,128 @@
 .sp-pick__price ins {
 	text-decoration: none;
 	color: var(--sp-text);
+}
+
+/* ---------- deal face ---------- */
+
+.sp-pick__kicker--deal {
+	background: rgba(255, 77, 157, 0.14);
+	border-color: rgba(255, 77, 157, 0.38);
+	color: var(--sp-magenta);
+}
+
+/* The full deal section lower down uses boxed digit cells; up here the clock
+   has to stay a single slim row or the two faces stop matching in height. */
+.sp-pick__timer {
+	display: flex;
+	align-items: center;
+	gap: 0.3rem;
+	margin-block-end: 1rem;
+	padding: 0.45rem 0.75rem;
+	border: 1px solid var(--sp-line-strong);
+	border-radius: var(--sp-radius-pill);
+	background: rgba(4, 5, 14, 0.5);
+	font-variant-numeric: tabular-nums;
+}
+
+.sp-pick__timerIcon {
+	inline-size: 7px;
+	block-size: 7px;
+	border-radius: 50%;
+	background: var(--sp-sale);
+	box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.2);
+	animation: sp-pulse 1.8s ease-in-out infinite;
+}
+
+.sp-pick__timer b {
+	min-inline-size: 2ch;
+	color: var(--sp-text);
+	font-family: var(--sp-font-display);
+	font-size: 1rem;
+	font-weight: 800;
+	text-align: center;
+}
+
+.sp-pick__timer i {
+	color: var(--sp-text-dim);
+	font-style: normal;
+	animation: sp-blink 1s steps(2, jump-none) infinite;
+}
+
+.sp-pick__timerNote {
+	margin-inline-start: auto;
+	color: var(--sp-text-dim);
+	font-size: 0.6875rem;
+	font-weight: 600;
+}
+
+/* ---------- deck pips ---------- */
+
+.sp-pickDeck__pips {
+	display: flex;
+	justify-content: center;
+	gap: 0.4rem;
+	margin-block-start: 0.9rem;
+}
+
+.sp-pickDeck__pip {
+	position: relative;
+	display: block;
+	padding: 0;
+	inline-size: 30px;
+	block-size: 4px;
+	border-radius: var(--sp-radius-pill);
+	background: var(--sp-line-strong);
+	overflow: hidden;
+	cursor: pointer;
+	transition: inline-size var(--sp-dur) var(--sp-ease);
+}
+
+.sp-pickDeck__pip.is-on {
+	inline-size: 52px;
+}
+
+/* Grown with inline-size rather than scaleX: transform-origin has no logical
+   keywords, so a scaled fill would have to hard-code a side and would drain
+   the wrong way in RTL. */
+.sp-pickDeck__pipFill {
+	position: absolute;
+	inset-block: 0;
+	inset-inline-start: 0;
+	inline-size: 0;
+	border-radius: inherit;
+	background: var(--sp-grad-primary);
+}
+
+/* Fills in step with the dwell timer, so the swap is announced rather than
+   sprung on the reader. Gated on is-live because without JS nothing rotates
+   and a filling pip would be a lie. */
+.sp-pickDeck.is-live .sp-pickDeck__pip.is-on .sp-pickDeck__pipFill {
+	animation: sp-pip var(--sp-dwell-duration, 6000ms) linear forwards;
+}
+
+.sp-pickDeck.is-paused .sp-pickDeck__pipFill {
+	animation-play-state: paused;
+}
+
+@keyframes sp-pip {
+	to {
+		inline-size: 100%;
+	}
+}
+
+/* With reduced motion the faces still take turns, but they cross-fade in place
+   instead of turning in 3D. */
+@media (prefers-reduced-motion: reduce) {
+	.sp-pickDeck,
+	.sp-pick,
+	.sp-pick.is-leaving {
+		transform: none;
+	}
+
+	.sp-pickDeck.is-sweeping {
+		animation: none;
+	}
 }
 
 /* ---------- scroll cue ---------- */

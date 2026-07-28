@@ -37,7 +37,15 @@ $sp_hero_pick  = ! empty( $sp_hot ) ? $sp_hot[0] : ( ! empty( $sp_showcase ) ? $
 
 <main id="sp-main" class="sp-main">
 
-	<?php StoryPhone_Pages_Render::part( 'hero', array( 'product' => $sp_hero_pick ) ); ?>
+	<?php
+	StoryPhone_Pages_Render::part(
+		'hero',
+		array(
+			'product' => $sp_hero_pick,
+			'deal'    => $sp_deal,
+		)
+	);
+	?>
 
 	<?php StoryPhone_Pages_Render::part( 'story-rail', array( 'stories' => $sp_stories ) ); ?>
 

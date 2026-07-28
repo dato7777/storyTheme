@@ -18,9 +18,29 @@ is standard in this vertical.
 | **Heat Board** | Best sellers ranked by WooCommerce's own `total_sales`, with bars showing popularity *relative* to the top seller. |
 | **Quick reach** | Two-tap tiles for shoppers who already know what they want. |
 | **Deal spotlight** | Deepest genuine discount in the catalog, with a countdown to the sale's end date. |
+| **Hero pick deck** | One card that alternates between the best seller and a compact version of the deal, turning in 3D between the two. |
 
 Search is the hero's primary action rather than a banner button, because on a catalog this
 size typing beats browsing.
+
+### The hero pick deck
+
+The card in the hero holds two faces. The best seller is on screen for the first ~2 seconds,
+then the deal turns into view with its countdown; from there the two alternate every ~6
+seconds. Both faces share a single CSS grid cell, so the deck is always as tall as the taller
+card and a swap never resizes the page.
+
+Before anyone touches it, the card plays a short establishing sweep: it turns to show its
+right edge, then its left, then squares up to the viewer. That sweep and the pointer tilt
+drive the *same* four custom properties (`--sp-tilt-x/y/mx/my`), which is why the hand-off
+between them is seamless — the first pointer move simply cancels the sweep and takes over the
+same channel. Making that work needs the properties registered with `@property`; an
+unregistered custom property jumps between keyframes instead of interpolating.
+
+Guards worth knowing about: the rotation pauses on hover, on focus and when the tab is
+hidden; the progress pips below the card double as manual controls; the off-screen face is
+`inert` so it cannot catch keyboard focus mid-turn; and if the best seller *is* the deal,
+the second face is dropped rather than rotating the card onto itself.
 
 ## Why a plugin and not a theme
 
@@ -129,6 +149,9 @@ npm run build
 - [ ] `/` and `Cmd/Ctrl+K` open search; typing returns real products; `↑ ↓ ↵` work.
 - [ ] Heat Board order matches Products → sort by "Total Sales" in wp-admin.
 - [ ] Deal countdown reaches zero without breaking the page.
+- [ ] Hero card sweeps right → left → straight on load, then swaps to the deal after ~2s.
+- [ ] Hovering the hero card stops the swapping and hands the tilt to the pointer.
+- [ ] Both hero faces are the same size; the swap does not shift anything below it.
 - [ ] Quantity steppers and remove work; totals update.
 - [ ] Open WooCommerce's own cart page — the same items are there.
 - [ ] Checkout loads normally with the usual payment options.
@@ -171,7 +194,7 @@ storyphone-pages/
     lib/cart.js                 Cart drawer
     lib/stories.js              Stories rail + full-screen viewer
     lib/search.js               Command palette
-    lib/motion.js               Tilt, countdown, hero typing hint
+    lib/motion.js               Tilt, hero pick deck, countdown, typing hint
     lib/focus-trap.js           Keeps Tab inside open dialogs
     lib/nav.js                  Header + mobile nav
     lib/reveal.js               Scroll reveal

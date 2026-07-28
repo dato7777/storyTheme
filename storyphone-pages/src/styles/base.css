@@ -125,6 +125,19 @@ html.sp-nav-open {
 	inset-block-start: 1rem;
 }
 
+/* Visible to screen readers only. */
+.sp-srOnly {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	margin: -1px;
+	padding: 0;
+	border: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
 /* Layout shell */
 .sp-shell {
 	width: 100%;
