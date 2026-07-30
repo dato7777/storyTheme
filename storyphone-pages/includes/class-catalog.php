@@ -297,6 +297,75 @@ class StoryPhone_Pages_Catalog {
 	}
 
 	/**
+	 * Direct child categories of a term, busiest first.
+	 *
+	 * @param WP_Term $parent Parent category.
+	 * @param int     $limit  Maximum children.
+	 * @return WP_Term[]
+	 */
+	public static function get_child_categories( $parent, $limit = 6 ) {
+		if ( ! $parent instanceof WP_Term || ! taxonomy_exists( 'product_cat' ) ) {
+			return array();
+		}
+
+		$args = array(
+			'taxonomy'   => 'product_cat',
+			'parent'     => (int) $parent->term_id,
+			'hide_empty' => true,
+			'number'     => max( 1, absint( $limit ) ),
+			'orderby'    => 'count',
+			'order'      => 'DESC',
+		);
+
+		$default_cat = (int) get_option( 'default_product_cat', 0 );
+		if ( $default_cat > 0 ) {
+			$args['exclude'] = array( $default_cat );
+		}
+
+		$terms = get_terms( $args );
+
+		return ( is_wp_error( $terms ) || ! is_array( $terms ) ) ? array() : $terms;
+	}
+
+	/**
+	 * Top-level categories for the hoverable primary nav.
+	 *
+	 * Parents with children are preferred (they are the whole point of the
+	 * expandable nav), then popular leaf categories fill the remaining slots
+	 * so the bar still uses the space freed by removing the header search.
+	 *
+	 * @param int $limit Maximum nav items.
+	 * @return array<int, array{term: WP_Term, children: WP_Term[]}>
+	 */
+	public static function get_nav_tree( $limit = 9 ) {
+		$limit   = max( 1, absint( $limit ) );
+		$parents = self::get_categories( max( $limit * 2, 16 ), true );
+
+		if ( empty( $parents ) ) {
+			return array();
+		}
+
+		$with_kids    = array();
+		$without_kids = array();
+
+		foreach ( $parents as $parent ) {
+			$children = self::get_child_categories( $parent, 6 );
+			$entry    = array(
+				'term'     => $parent,
+				'children' => $children,
+			);
+
+			if ( ! empty( $children ) ) {
+				$with_kids[] = $entry;
+			} else {
+				$without_kids[] = $entry;
+			}
+		}
+
+		return array_slice( array_merge( $with_kids, $without_kids ), 0, $limit );
+	}
+
+	/**
 	 * Products belonging to one category.
 	 *
 	 * @param WP_Term $term  Category.

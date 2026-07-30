@@ -2,35 +2,19 @@
 /**
  * Part: cinematic hero.
  *
- * Search is the hero's primary action rather than a banner CTA: on a catalog
- * this large, the fastest path to a sale is letting people type what they want.
+ * Search is the only search control on the page. The side stage hosts compact
+ * child-category cards revealed by hovering a parent item in the header —
+ * parents themselves are not links.
  *
  * @package StoryPhone_Pages
  *
- * @var array<string, mixed> $args Expects 'product' and 'deal' => WC_Product|null.
+ * @var array<string, mixed> $args Expects 'nav' => nav tree from Catalog::get_nav_tree().
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$sp_product  = isset( $args['product'] ) ? $args['product'] : null;
-$sp_deal     = isset( $args['deal'] ) ? $args['deal'] : null;
-$sp_shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
-
+$sp_nav   = isset( $args['nav'] ) && is_array( $args['nav'] ) ? $args['nav'] : array();
 $sp_chips = StoryPhone_Pages_Catalog::get_categories( 5 );
-
-// Never show the same product on both faces — rotating a card onto itself
-// reads as a glitch rather than as a second offer.
-if ( $sp_deal instanceof WC_Product && $sp_product instanceof WC_Product
-	&& $sp_deal->get_id() === $sp_product->get_id() ) {
-	$sp_deal = null;
-}
-
-if ( $sp_deal instanceof WC_Product ) {
-	$sp_deal_end = $sp_deal->get_date_on_sale_to();
-	$sp_deadline = $sp_deal_end instanceof WC_DateTime
-		? $sp_deal_end->getTimestamp()
-		: current_datetime()->modify( 'tomorrow midnight' )->getTimestamp();
-}
 ?>
 <section class="sp-hero">
 	<div class="sp-aurora" aria-hidden="true">
@@ -88,176 +72,99 @@ if ( $sp_deal instanceof WC_Product ) {
 			<?php endif; ?>
 		</div>
 
-		<?php if ( $sp_product instanceof WC_Product ) : ?>
-			<?php
-			$sp_link     = get_permalink( $sp_product->get_id() );
-			$sp_link     = $sp_link ? $sp_link : home_url( '/' );
-			$sp_discount = StoryPhone_Pages_Render::get_discount_percent( $sp_product );
-			?>
-			<aside class="sp-hero__pick" data-sp-reveal aria-label="<?php esc_attr_e( 'מומלצים', 'storyphone-pages' ); ?>">
-				<div class="sp-pickDeck" data-sp-deck data-sp-tilt>
+		<aside
+			class="sp-hero__stage"
+			data-sp-nav-stage
+			data-sp-reveal
+			aria-live="polite"
+			aria-label="<?php esc_attr_e( 'קטגוריות משנה', 'storyphone-pages' ); ?>"
+		>
+			<div class="sp-navStage is-idle is-active" data-sp-nav-idle>
+				<div class="sp-navStage__idle">
+					<span class="sp-navStage__idleMark" aria-hidden="true"></span>
+					<p class="sp-navStage__idleTitle"><?php esc_html_e( 'גלו קטגוריה', 'storyphone-pages' ); ?></p>
+					<p class="sp-navStage__idleHint"><?php esc_html_e( 'רחפו מעל פריט בתפריט — תת-הקטגוריות יופיעו כאן', 'storyphone-pages' ); ?></p>
+				</div>
+			</div>
 
-					<div class="sp-pickDeck__stack">
-
-						<article class="sp-pick sp-pick--hot is-active" data-sp-deck-face>
-							<div class="sp-pick__glow" aria-hidden="true"></div>
-
-							<p class="sp-pick__kicker">
-								<span class="sp-pick__flame" aria-hidden="true">&#128293;</span>
-								<?php esc_html_e( 'הנמכר ביותר', 'storyphone-pages' ); ?>
-							</p>
-
-							<a class="sp-pick__media" href="<?php echo esc_url( $sp_link ); ?>">
+			<?php foreach ( $sp_nav as $sp_entry ) : ?>
+				<?php
+				if ( empty( $sp_entry['term'] ) || ! $sp_entry['term'] instanceof WP_Term ) {
+					continue;
+				}
+				$sp_parent   = $sp_entry['term'];
+				$sp_children = isset( $sp_entry['children'] ) && is_array( $sp_entry['children'] ) ? $sp_entry['children'] : array();
+				$sp_panel_id = 'cat-' . (int) $sp_parent->term_id;
+				?>
+				<div class="sp-navStage" data-sp-nav-panel="<?php echo esc_attr( $sp_panel_id ); ?>" hidden>
+					<p class="sp-navStage__label"><?php echo esc_html( $sp_parent->name ); ?></p>
+					<div class="sp-navCards">
+						<?php if ( ! empty( $sp_children ) ) : ?>
+							<?php foreach ( $sp_children as $sp_child ) : ?>
 								<?php
-								echo wp_kses_post(
-									$sp_product->get_image(
-										'woocommerce_single',
-										array(
-											'class'    => 'sp-pick__img',
-											'loading'  => 'eager',
-											'decoding' => 'async',
-										)
-									)
-								);
+								if ( ! $sp_child instanceof WP_Term ) {
+									continue;
+								}
+								$sp_child_link = get_term_link( $sp_child );
+								if ( is_wp_error( $sp_child_link ) ) {
+									continue;
+								}
+								$sp_cover = StoryPhone_Pages_Catalog::get_category_cover( $sp_child, 'woocommerce_thumbnail' );
+								$sp_mono  = function_exists( 'mb_substr' )
+									? mb_substr( $sp_child->name, 0, 1 )
+									: substr( $sp_child->name, 0, 1 );
 								?>
-								<?php if ( $sp_discount > 0 ) : ?>
-									<span class="sp-badge sp-badge--sale">
-										<?php
-										printf(
-											/* translators: %d: discount percentage. */
-											esc_html__( '%d%%- הנחה', 'storyphone-pages' ),
-											absint( $sp_discount )
-										);
-										?>
+								<a class="sp-navCard" href="<?php echo esc_url( $sp_child_link ); ?>" data-sp-tilt>
+									<span class="sp-navCard__glow" aria-hidden="true"></span>
+									<span class="sp-navCard__media<?php echo '' === $sp_cover ? ' sp-navCard__media--empty' : ''; ?>">
+										<?php if ( '' !== $sp_cover ) : ?>
+											<img class="sp-navCard__img" src="<?php echo esc_url( $sp_cover ); ?>" alt="" loading="lazy" decoding="async">
+										<?php else : ?>
+											<span class="sp-navCard__mono" aria-hidden="true"><?php echo esc_html( $sp_mono ); ?></span>
+										<?php endif; ?>
 									</span>
-								<?php endif; ?>
-							</a>
-
-							<h2 class="sp-pick__title">
-								<a href="<?php echo esc_url( $sp_link ); ?>"><?php echo esc_html( $sp_product->get_name() ); ?></a>
-							</h2>
-
-							<div class="sp-pick__price"><?php echo wp_kses_post( $sp_product->get_price_html() ); ?></div>
-
-							<?php if ( StoryPhone_Pages_Catalog::supports_quick_add( $sp_product ) ) : ?>
-								<button
-									type="button"
-									class="sp-btn sp-btn--primary sp-btn--block"
-									data-sp-add-to-cart
-									data-product-id="<?php echo esc_attr( (string) $sp_product->get_id() ); ?>"
-								>
-									<span class="sp-btn__label"><?php esc_html_e( 'הוספה לסל', 'storyphone-pages' ); ?></span>
-								</button>
-							<?php else : ?>
-								<a class="sp-btn sp-btn--primary sp-btn--block" href="<?php echo esc_url( $sp_link ); ?>">
-									<?php esc_html_e( 'לצפייה במוצר', 'storyphone-pages' ); ?>
-								</a>
-							<?php endif; ?>
-						</article>
-
-						<?php if ( $sp_deal instanceof WC_Product ) : ?>
-							<?php
-							$sp_deal_link     = get_permalink( $sp_deal->get_id() );
-							$sp_deal_link     = $sp_deal_link ? $sp_deal_link : home_url( '/' );
-							$sp_deal_discount = StoryPhone_Pages_Render::get_discount_percent( $sp_deal );
-							?>
-							<article class="sp-pick sp-pick--deal" data-sp-deck-face>
-								<div class="sp-pick__glow" aria-hidden="true"></div>
-
-								<p class="sp-pick__kicker sp-pick__kicker--deal">
-									<span class="sp-pick__bolt" aria-hidden="true">&#9889;</span>
-									<?php esc_html_e( 'הדיל של היום', 'storyphone-pages' ); ?>
-								</p>
-
-								<a class="sp-pick__media" href="<?php echo esc_url( $sp_deal_link ); ?>">
-									<?php
-									echo wp_kses_post(
-										$sp_deal->get_image(
-											'woocommerce_single',
-											array(
-												'class'    => 'sp-pick__img',
-												'loading'  => 'lazy',
-												'decoding' => 'async',
-											)
-										)
-									);
-									?>
-									<?php if ( $sp_deal_discount > 0 ) : ?>
-										<span class="sp-badge sp-badge--sale">
+									<span class="sp-navCard__body">
+										<span class="sp-navCard__name"><?php echo esc_html( $sp_child->name ); ?></span>
+										<span class="sp-navCard__count">
 											<?php
 											printf(
-												/* translators: %d: discount percentage. */
-												esc_html__( '%d%%- הנחה', 'storyphone-pages' ),
-												absint( $sp_deal_discount )
+												/* translators: %d: product count. */
+												esc_html( _n( '%d מוצרים', '%d מוצרים', (int) $sp_child->count, 'storyphone-pages' ) ),
+												(int) $sp_child->count
 											);
 											?>
 										</span>
-									<?php endif; ?>
+									</span>
 								</a>
-
-								<h2 class="sp-pick__title">
-									<a href="<?php echo esc_url( $sp_deal_link ); ?>"><?php echo esc_html( $sp_deal->get_name() ); ?></a>
-								</h2>
-
-								<div class="sp-pick__price"><?php echo wp_kses_post( $sp_deal->get_price_html() ); ?></div>
-
-								<div
-									class="sp-pick__timer"
-									data-sp-countdown="<?php echo esc_attr( gmdate( 'c', $sp_deadline ) ); ?>"
-									aria-label="<?php esc_attr_e( 'הזמן שנותר למבצע', 'storyphone-pages' ); ?>"
-								>
-									<span class="sp-pick__timerIcon" aria-hidden="true"></span>
-									<b data-sp-cd-h>--</b><i aria-hidden="true">:</i><b data-sp-cd-m>--</b><i aria-hidden="true">:</i><b data-sp-cd-s>--</b>
-									<span class="sp-pick__timerNote"><?php esc_html_e( 'עד סוף המבצע', 'storyphone-pages' ); ?></span>
-								</div>
-
-								<?php if ( StoryPhone_Pages_Catalog::supports_quick_add( $sp_deal ) ) : ?>
-									<button
-										type="button"
-										class="sp-btn sp-btn--primary sp-btn--block"
-										data-sp-add-to-cart
-										data-product-id="<?php echo esc_attr( (string) $sp_deal->get_id() ); ?>"
-									>
-										<span class="sp-btn__label"><?php esc_html_e( 'תפסו את המבצע', 'storyphone-pages' ); ?></span>
-									</button>
-								<?php else : ?>
-									<a class="sp-btn sp-btn--primary sp-btn--block" href="<?php echo esc_url( $sp_deal_link ); ?>">
-										<?php esc_html_e( 'לצפייה במבצע', 'storyphone-pages' ); ?>
-									</a>
-								<?php endif; ?>
-							</article>
+							<?php endforeach; ?>
+						<?php else : ?>
+							<?php
+							// Leaf parents still need a useful panel: show a few
+							// products from the category in the same compact card skin.
+							$sp_leaf_products = StoryPhone_Pages_Catalog::get_category_products( $sp_parent, 4 );
+							foreach ( $sp_leaf_products as $sp_leaf ) :
+								$sp_leaf_link = get_permalink( $sp_leaf->get_id() );
+								$sp_leaf_link = $sp_leaf_link ? $sp_leaf_link : home_url( '/' );
+								$sp_leaf_img  = StoryPhone_Pages_Catalog::get_product_image_url( $sp_leaf, 'woocommerce_thumbnail' );
+								?>
+								<a class="sp-navCard" href="<?php echo esc_url( $sp_leaf_link ); ?>" data-sp-tilt>
+									<span class="sp-navCard__glow" aria-hidden="true"></span>
+									<span class="sp-navCard__media">
+										<?php if ( '' !== $sp_leaf_img ) : ?>
+											<img class="sp-navCard__img" src="<?php echo esc_url( $sp_leaf_img ); ?>" alt="" loading="lazy" decoding="async">
+										<?php endif; ?>
+									</span>
+									<span class="sp-navCard__body">
+										<span class="sp-navCard__name"><?php echo esc_html( $sp_leaf->get_name() ); ?></span>
+										<span class="sp-navCard__count"><?php echo wp_kses_post( $sp_leaf->get_price_html() ); ?></span>
+									</span>
+								</a>
+							<?php endforeach; ?>
 						<?php endif; ?>
-
 					</div>
-
-					<?php if ( $sp_deal instanceof WC_Product ) : ?>
-						<div class="sp-pickDeck__pips">
-							<button
-								type="button"
-								class="sp-pickDeck__pip is-on"
-								data-sp-deck-pip
-								data-index="0"
-								aria-pressed="true"
-							>
-								<span class="sp-pickDeck__pipFill" aria-hidden="true"></span>
-								<span class="sp-srOnly"><?php esc_html_e( 'הנמכר ביותר', 'storyphone-pages' ); ?></span>
-							</button>
-							<button
-								type="button"
-								class="sp-pickDeck__pip"
-								data-sp-deck-pip
-								data-index="1"
-								aria-pressed="false"
-							>
-								<span class="sp-pickDeck__pipFill" aria-hidden="true"></span>
-								<span class="sp-srOnly"><?php esc_html_e( 'הדיל של היום', 'storyphone-pages' ); ?></span>
-							</button>
-						</div>
-					<?php endif; ?>
-
 				</div>
-			</aside>
-		<?php endif; ?>
+			<?php endforeach; ?>
+		</aside>
 
 	</div>
 

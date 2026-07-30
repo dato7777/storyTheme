@@ -12,12 +12,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$sp_stories    = StoryPhone_Pages_Stories::build( 10, 6 );
-$sp_hot        = StoryPhone_Pages_Catalog::get_hot_products( 6 );
-$sp_showcase   = StoryPhone_Pages_Catalog::get_showcase_products( 8 );
-$sp_families   = StoryPhone_Pages_Catalog::get_categories( 8, true );
-$sp_deal       = StoryPhone_Pages_Catalog::get_deal_product();
-$sp_hero_pick  = ! empty( $sp_hot ) ? $sp_hot[0] : ( ! empty( $sp_showcase ) ? $sp_showcase[0] : null );
+$sp_stories   = StoryPhone_Pages_Stories::build( 10, 6 );
+$sp_hot       = StoryPhone_Pages_Catalog::get_hot_products( 6 );
+$sp_showcase  = StoryPhone_Pages_Catalog::get_showcase_products( 8 );
+$sp_families  = StoryPhone_Pages_Catalog::get_categories( 8, true );
+$sp_deal      = StoryPhone_Pages_Catalog::get_deal_product();
+$sp_nav       = StoryPhone_Pages_Catalog::get_nav_tree( 9 );
+$sp_pick      = ! empty( $sp_hot ) ? $sp_hot[0] : ( ! empty( $sp_showcase ) ? $sp_showcase[0] : null );
 
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -33,21 +34,23 @@ $sp_hero_pick  = ! empty( $sp_hot ) ? $sp_hot[0] : ( ! empty( $sp_showcase ) ? $
 
 <a class="sp-skip" href="#sp-main"><?php esc_html_e( 'דלג לתוכן הראשי', 'storyphone-pages' ); ?></a>
 
-<?php StoryPhone_Pages_Render::part( 'site-header' ); ?>
+<?php StoryPhone_Pages_Render::part( 'site-header', array( 'nav' => $sp_nav ) ); ?>
 
 <main id="sp-main" class="sp-main">
 
+	<?php StoryPhone_Pages_Render::part( 'hero', array( 'nav' => $sp_nav ) ); ?>
+
+	<?php StoryPhone_Pages_Render::part( 'story-rail', array( 'stories' => $sp_stories ) ); ?>
+
 	<?php
 	StoryPhone_Pages_Render::part(
-		'hero',
+		'pick-deck',
 		array(
-			'product' => $sp_hero_pick,
+			'product' => $sp_pick,
 			'deal'    => $sp_deal,
 		)
 	);
 	?>
-
-	<?php StoryPhone_Pages_Render::part( 'story-rail', array( 'stories' => $sp_stories ) ); ?>
 
 	<?php StoryPhone_Pages_Render::part( 'quick-reach', array( 'categories' => $sp_families ) ); ?>
 

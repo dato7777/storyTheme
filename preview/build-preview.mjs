@@ -100,11 +100,32 @@ const thumb = (product) => (product.images && product.images[0] ? product.images
 
 console.log('Fetching catalog…');
 
-const categories = (
-	await api('/products/categories?per_page=14&orderby=count&order=desc&_fields=id,name,slug,count,image,permalink')
-)
-	.filter((term) => term.count > 0)
-	.slice(0, 10);
+const allCategories = (
+	await api('/products/categories?per_page=100&orderby=count&order=desc&_fields=id,name,slug,count,image,permalink,parent')
+).filter((term) => term.count > 0);
+
+const categories = allCategories.slice(0, 10);
+
+const tops = allCategories.filter((term) => !term.parent).sort((a, b) => b.count - a.count);
+const withKids = [];
+const withoutKids = [];
+for (const parent of tops) {
+	const children = allCategories
+		.filter((term) => term.parent === parent.id)
+		.sort((a, b) => b.count - a.count)
+		.slice(0, 6);
+	const entry = { term: parent, children };
+	if (children.length) withKids.push(entry);
+	else withoutKids.push(entry);
+}
+const navTree = [...withKids, ...withoutKids].slice(0, 9);
+
+const coverFor = (term) => {
+	if (term.image?.thumbnail || term.image?.src) {
+		return term.image.thumbnail || term.image.src;
+	}
+	return '';
+};
 
 const stories = [];
 for (const term of categories) {
@@ -279,16 +300,19 @@ const html = `<!DOCTYPE html>
 		</div>
 		<nav id="sp-nav" class="sp-nav" aria-label="תפריט ראשי">
 			<ul class="sp-nav__list">
-				${categories.slice(0, 5).map((term) => `<li class="menu-item"><a href="${esc(term.permalink || '#')}">${esc(term.name)}</a></li>`).join('')}
+				${navTree.map(({ term, children }) => {
+					const panelId = `cat-${term.id}`;
+					const drawer = children.length
+						? children.map((child) => `<li><a href="${esc(child.permalink || '#')}">${esc(child.name)}<span class="sp-nav__drawerCount">${child.count}</span></a></li>`).join('')
+						: `<li><a href="${esc(term.permalink || '#')}">לכל המוצרים ב${esc(term.name)}</a></li>`;
+					return `<li class="sp-nav__item">
+						<button type="button" class="sp-nav__trigger" data-sp-nav-trigger="${panelId}" aria-expanded="false" aria-controls="sp-nav-panel-${panelId}">${esc(term.name)}<span class="sp-nav__chev"></span></button>
+						<ul class="sp-nav__drawer" id="sp-nav-panel-${panelId}" hidden>${drawer}</ul>
+					</li>`;
+				}).join('')}
 			</ul>
 		</nav>
-		<button type="button" class="sp-searchpill" data-sp-search-open>
-			<svg class="sp-searchpill__icon" viewBox="0 0 24 24">${searchIcon}</svg>
-			<span class="sp-searchpill__label">חיפוש מכשיר, מותג או דגם…</span>
-			<kbd class="sp-searchpill__kbd">/</kbd>
-		</button>
 		<div class="sp-header__actions">
-			<button type="button" class="sp-iconbtn sp-iconbtn--search" data-sp-search-open aria-label="חיפוש"><svg viewBox="0 0 24 24">${searchIcon}</svg></button>
 			<a class="sp-iconbtn sp-iconbtn--account" href="#" aria-label="האזור האישי"><svg viewBox="0 0 24 24"><path d="M12 12.8a4.4 4.4 0 1 0 0-8.8 4.4 4.4 0 0 0 0 8.8Zm0 2c-4 0-7.2 2.3-7.2 5.2 0 .6.4 1 1 1h12.4c.6 0 1-.4 1-1 0-2.9-3.2-5.2-7.2-5.2Z"/></svg></a>
 			<button type="button" class="sp-iconbtn sp-iconbtn--cart" data-sp-cart-toggle aria-label="פתיחת סל הקניות">
 				<svg viewBox="0 0 24 24"><path d="M7 8V6.8a5 5 0 0 1 10 0V8h2.1a1 1 0 0 1 1 1.1l-1 10.3a2 2 0 0 1-2 1.8H6.9a2 2 0 0 1-2-1.8l-1-10.3A1 1 0 0 1 4.9 8H7Zm2 0h6V6.8a3 3 0 0 0-6 0V8Z"/></svg>
@@ -324,7 +348,67 @@ const html = `<!DOCTYPE html>
 				${categories.slice(0, 5).map((term) => `<a class="sp-chip" href="${esc(term.permalink || '#')}">${esc(term.name)}</a>`).join('')}
 			</div>
 		</div>
-		<aside class="sp-hero__pick" data-sp-reveal aria-label="מומלצים">
+		<aside class="sp-hero__stage" data-sp-nav-stage data-sp-reveal aria-live="polite" aria-label="קטגוריות משנה">
+			<div class="sp-navStage is-idle is-active" data-sp-nav-idle>
+				<div class="sp-navStage__idle">
+					<span class="sp-navStage__idleMark"></span>
+					<p class="sp-navStage__idleTitle">גלו קטגוריה</p>
+					<p class="sp-navStage__idleHint">רחפו מעל פריט בתפריט — תת-הקטגוריות יופיעו כאן</p>
+				</div>
+			</div>
+			${navTree.map(({ term, children }) => {
+				const panelId = `cat-${term.id}`;
+				const sources = children.length ? children : [term];
+				const cards = sources.map((child) => {
+					const cover = coverFor(child) || coverFor(term);
+					const mono = esc(String(child.name || '?').charAt(0));
+					return `<a class="sp-navCard" href="${esc(child.permalink || '#')}" data-sp-tilt>
+						<span class="sp-navCard__glow"></span>
+						<span class="sp-navCard__media${cover ? '' : ' sp-navCard__media--empty'}">
+							${cover ? `<img class="sp-navCard__img" src="${esc(cover)}" alt="" loading="lazy">` : `<span class="sp-navCard__mono">${mono}</span>`}
+						</span>
+						<span class="sp-navCard__body">
+							<span class="sp-navCard__name">${esc(child.name)}</span>
+							<span class="sp-navCard__count">${child.count} מוצרים</span>
+						</span>
+					</a>`;
+				}).join('');
+				return `<div class="sp-navStage" data-sp-nav-panel="${panelId}" hidden>
+					<p class="sp-navStage__label">${esc(term.name)}</p>
+					<div class="sp-navCards">${cards}</div>
+				</div>`;
+			}).join('')}
+		</aside>
+	</div>
+	<a class="sp-hero__scroll" href="#sp-stories" aria-label="גלילה לסטוריז"><span class="sp-hero__scrollDot"></span></a>
+</section>
+
+<section class="sp-stories" id="sp-stories" aria-labelledby="sp-stories-title">
+	<div class="sp-shell">
+		<header class="sp-stories__head" data-sp-reveal>
+			<div>
+				<h2 class="sp-section__title" id="sp-stories-title">הסטוריז של החנות</h2>
+				<p class="sp-section__subtitle">הקטגוריות שלנו, בלי תפריטים. לחצו על עיגול וצפו במה שיש בפנים.</p>
+			</div>
+			<p class="sp-stories__hint">החליקו לצדדים</p>
+		</header>
+		<div class="sp-rail" data-sp-rail>
+			<ul class="sp-rail__track" data-sp-rail-track>${stories.map(bubble).join('')}</ul>
+			<button type="button" class="sp-rail__nav sp-rail__nav--prev" data-sp-rail-prev aria-label="הקודם"><svg viewBox="0 0 24 24"><path d="M9.3 12 15 6.3 13.6 4.9 6.5 12l7.1 7.1L15 17.7 9.3 12Z"/></svg></button>
+			<button type="button" class="sp-rail__nav sp-rail__nav--next" data-sp-rail-next aria-label="הבא"><svg viewBox="0 0 24 24"><path d="M14.7 12 9 17.7l1.4 1.4 7.1-7.1-7.1-7.1L9 6.3 14.7 12Z"/></svg></button>
+		</div>
+	</div>
+</section>
+
+<section class="sp-spotlight" id="sp-spotlight" aria-label="מומלצים">
+	<div class="sp-shell sp-spotlight__inner">
+		<header class="sp-section__head" data-sp-reveal>
+			<div>
+				<h2 class="sp-section__title">הבחירה של החנות</h2>
+				<p class="sp-section__subtitle">הנמכר ביותר והדיל של היום — מתחלפים באותה כרטיסייה</p>
+			</div>
+		</header>
+		<div class="sp-spotlight__deck" data-sp-reveal>
 			<div class="sp-pickDeck" data-sp-deck data-sp-tilt>
 				<div class="sp-pickDeck__stack">
 					<article class="sp-pick sp-pick--hot is-active" data-sp-deck-face>
@@ -360,24 +444,6 @@ const html = `<!DOCTYPE html>
 					<button type="button" class="sp-pickDeck__pip" data-sp-deck-pip data-index="1" aria-pressed="false"><span class="sp-pickDeck__pipFill"></span><span class="sp-srOnly">הדיל של היום</span></button>
 				</div>` : ''}
 			</div>
-		</aside>
-	</div>
-	<a class="sp-hero__scroll" href="#sp-stories" aria-label="גלילה לסטוריז"><span class="sp-hero__scrollDot"></span></a>
-</section>
-
-<section class="sp-stories" id="sp-stories" aria-labelledby="sp-stories-title">
-	<div class="sp-shell">
-		<header class="sp-stories__head" data-sp-reveal>
-			<div>
-				<h2 class="sp-section__title" id="sp-stories-title">הסטוריז של החנות</h2>
-				<p class="sp-section__subtitle">הקטגוריות שלנו, בלי תפריטים. לחצו על עיגול וצפו במה שיש בפנים.</p>
-			</div>
-			<p class="sp-stories__hint">החליקו לצדדים</p>
-		</header>
-		<div class="sp-rail" data-sp-rail>
-			<ul class="sp-rail__track" data-sp-rail-track>${stories.map(bubble).join('')}</ul>
-			<button type="button" class="sp-rail__nav sp-rail__nav--prev" data-sp-rail-prev aria-label="הקודם"><svg viewBox="0 0 24 24"><path d="M9.3 12 15 6.3 13.6 4.9 6.5 12l7.1 7.1L15 17.7 9.3 12Z"/></svg></button>
-			<button type="button" class="sp-rail__nav sp-rail__nav--next" data-sp-rail-next aria-label="הבא"><svg viewBox="0 0 24 24"><path d="M14.7 12 9 17.7l1.4 1.4 7.1-7.1-7.1-7.1L9 6.3 14.7 12Z"/></svg></button>
 		</div>
 	</div>
 </section>

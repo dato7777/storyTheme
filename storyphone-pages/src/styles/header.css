@@ -1,6 +1,7 @@
 /**
  * Sticky header. Transparent over the hero, then condenses into frosted glass
- * once the page scrolls.
+ * once the page scrolls. Primary items are hoverable category parents — search
+ * lives only in the hero.
  */
 
 .sp-header {
@@ -52,7 +53,6 @@
 	background: var(--sp-ink-800);
 }
 
-/* The brand mark is a story ring: it is the whole idea of the site in 34px. */
 .sp-brand__mark::before {
 	content: '';
 	position: absolute;
@@ -103,27 +103,47 @@
 
 /* ---------- nav ---------- */
 
+.sp-nav {
+	flex: 1 1 auto;
+	min-inline-size: 0;
+}
+
 .sp-nav__list {
 	display: flex;
 	align-items: center;
-	gap: clamp(0.5rem, 1.4vw, 1.25rem);
+	flex-wrap: nowrap;
+	gap: 0.1rem clamp(0.3rem, 0.9vw, 0.7rem);
 	list-style: none;
 	margin: 0;
-	padding: 0;
+	padding: 0.15rem 0;
+	justify-content: flex-start;
+	overflow-x: auto;
+	scrollbar-width: none;
 }
 
-.sp-nav__list a {
+.sp-nav__list::-webkit-scrollbar {
+	display: none;
+}
+
+.sp-nav__item {
 	position: relative;
-	display: inline-block;
-	padding: 0.4rem 0.15rem;
+}
+
+.sp-nav__trigger {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0.45rem 0.2rem;
 	color: var(--sp-text-soft);
-	font-size: 0.9375rem;
+	font-size: clamp(0.8125rem, 1.05vw, 0.9375rem);
 	font-weight: 600;
 	white-space: nowrap;
+	cursor: default;
 	transition: color var(--sp-dur) var(--sp-ease);
 }
 
-.sp-nav__list a::after {
+.sp-nav__trigger::after {
 	content: '';
 	position: absolute;
 	inset-block-end: 0;
@@ -136,70 +156,37 @@
 	transition: transform var(--sp-dur) var(--sp-ease);
 }
 
-.sp-nav__list a:hover {
+.sp-nav__trigger:hover,
+.sp-nav__trigger:focus-visible,
+.sp-nav__trigger.is-hot {
 	color: var(--sp-text);
 }
 
-.sp-nav__list a:hover::after {
+.sp-nav__trigger:hover::after,
+.sp-nav__trigger:focus-visible::after,
+.sp-nav__trigger.is-hot::after {
 	transform: scaleX(1);
 }
 
-/* Sub-menus stay simple: this header is not the primary way to browse. */
-.sp-nav__list .sub-menu {
-	display: none;
-}
-
-/* ---------- search pill ---------- */
-
-.sp-searchpill {
-	flex: 1 1 auto;
-	max-inline-size: 340px;
-	margin-inline-start: auto;
-	display: flex;
-	align-items: center;
-	gap: 0.6rem;
-	padding: 0.55rem 0.9rem;
-	border: 1px solid var(--sp-line);
-	border-radius: var(--sp-radius-pill);
-	background: var(--sp-surface);
-	color: var(--sp-text-dim);
-	text-align: start;
+.sp-nav__chev {
+	inline-size: 0;
+	block-size: 0;
+	border-inline: 3.5px solid transparent;
+	border-block-start: 4px solid currentColor;
+	opacity: 0.45;
 	transition:
-		border-color var(--sp-dur) var(--sp-ease),
-		background var(--sp-dur) var(--sp-ease),
-		box-shadow var(--sp-dur) var(--sp-ease);
+		transform var(--sp-dur) var(--sp-ease),
+		opacity var(--sp-dur) var(--sp-ease);
 }
 
-.sp-searchpill:hover {
-	border-color: rgba(124, 92, 255, 0.5);
-	background: var(--sp-surface-2);
-	box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.1);
+.sp-nav__trigger.is-hot .sp-nav__chev {
+	opacity: 1;
+	transform: rotate(180deg);
 }
 
-.sp-searchpill__icon {
-	inline-size: 17px;
-	block-size: 17px;
-	flex: 0 0 auto;
-	opacity: 0.8;
-}
-
-.sp-searchpill__label {
-	flex: 1 1 auto;
-	font-size: 0.875rem;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.sp-searchpill__kbd {
-	flex: 0 0 auto;
-	padding: 0.1rem 0.42rem;
-	border: 1px solid var(--sp-line);
-	border-radius: 6px;
-	background: rgba(255, 255, 255, 0.06);
-	font-family: inherit;
-	font-size: 0.75rem;
-	color: var(--sp-text-soft);
+/* Desktop drawers stay in the DOM for mobile; hide them on wide screens. */
+.sp-nav__drawer {
+	display: none;
 }
 
 /* ---------- actions ---------- */
@@ -209,6 +196,7 @@
 	display: flex;
 	align-items: center;
 	gap: 0.35rem;
+	margin-inline-start: auto;
 }
 
 .sp-iconbtn {
@@ -234,10 +222,6 @@
 	background: var(--sp-surface-2);
 	color: var(--sp-text);
 	transform: translateY(-1px);
-}
-
-.sp-iconbtn--search {
-	display: none;
 }
 
 .sp-cartcount {
@@ -305,12 +289,8 @@ html.sp-nav-open .sp-burger__bar:nth-child(3) {
 /* ---------- responsive ---------- */
 
 @media (max-width: 1080px) {
-	.sp-nav {
+	.sp-header__shop {
 		display: none;
-	}
-
-	.sp-searchpill {
-		max-inline-size: none;
 	}
 }
 
@@ -324,22 +304,12 @@ html.sp-nav-open .sp-burger__bar:nth-child(3) {
 		margin-inline-end: auto;
 	}
 
-	.sp-searchpill,
-	.sp-header__shop {
-		display: none;
-	}
-
-	.sp-iconbtn--search {
-		display: grid;
-	}
-
-	/* Mobile nav: full-screen sheet driven by the burger. */
 	.sp-nav {
 		display: block;
 		position: fixed;
 		inset: var(--sp-header-h) 0 0;
 		z-index: calc(var(--sp-z-header) - 1);
-		padding: 2rem var(--sp-gutter);
+		padding: 1.25rem var(--sp-gutter) 2rem;
 		background: rgba(4, 5, 14, 0.96);
 		backdrop-filter: blur(24px);
 		-webkit-backdrop-filter: blur(24px);
@@ -351,6 +321,7 @@ html.sp-nav-open .sp-burger__bar:nth-child(3) {
 			transform var(--sp-dur) var(--sp-ease),
 			visibility var(--sp-dur);
 		overflow-y: auto;
+		flex: none;
 	}
 
 	html.sp-nav-open .sp-nav {
@@ -363,18 +334,61 @@ html.sp-nav-open .sp-burger__bar:nth-child(3) {
 		flex-direction: column;
 		align-items: stretch;
 		gap: 0;
+		justify-content: flex-start;
 	}
 
-	.sp-nav__list > li {
+	.sp-nav__item {
 		border-block-end: 1px solid var(--sp-line);
 	}
 
-	.sp-nav__list a {
-		display: block;
+	.sp-nav__trigger {
+		inline-size: 100%;
+		justify-content: space-between;
 		padding-block: 1rem;
-		font-size: 1.25rem;
+		font-size: 1.15rem;
 		font-family: var(--sp-font-display);
 		font-weight: 700;
 		color: var(--sp-text);
+		cursor: pointer;
+	}
+
+	.sp-nav__trigger::after {
+		display: none;
+	}
+
+	.sp-nav__chev {
+		inline-size: 0;
+		block-size: 0;
+		border-inline: 5px solid transparent;
+		border-block-start: 6px solid currentColor;
+		opacity: 0.7;
+	}
+
+	.sp-nav__drawer {
+		display: block;
+		list-style: none;
+		margin: 0;
+		padding: 0 0 0.75rem;
+	}
+
+	.sp-nav__drawer a {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		padding: 0.65rem 0.25rem;
+		color: var(--sp-text-soft);
+		font-size: 1rem;
+		font-weight: 600;
+	}
+
+	.sp-nav__drawer a:hover {
+		color: var(--sp-cyan);
+	}
+
+	.sp-nav__drawerCount {
+		color: var(--sp-text-dim);
+		font-size: 0.8125rem;
+		font-weight: 700;
 	}
 }

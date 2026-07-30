@@ -18,7 +18,8 @@ is standard in this vertical.
 | **Heat Board** | Best sellers ranked by WooCommerce's own `total_sales`, with bars showing popularity *relative* to the top seller. |
 | **Quick reach** | Two-tap tiles for shoppers who already know what they want. |
 | **Deal spotlight** | Deepest genuine discount in the catalog, with a countdown to the sale's end date. |
-| **Hero pick deck** | One card that alternates between the best seller and a compact version of the deal, turning in 3D between the two. |
+| **Hoverable nav** | Parent categories are hover-only; child categories appear as compact pick-style cards in the hero stage. |
+| **Spotlight deck** | Below Stories: one card that alternates between the best seller and a compact deal-of-the-day. |
 
 Search is the hero's primary action rather than a banner button, because on a catalog this
 size typing beats browsing.
@@ -149,9 +150,10 @@ npm run build
 - [ ] `/` and `Cmd/Ctrl+K` open search; typing returns real products; `↑ ↓ ↵` work.
 - [ ] Heat Board order matches Products → sort by "Total Sales" in wp-admin.
 - [ ] Deal countdown reaches zero without breaking the page.
-- [ ] Hero card sweeps right → left → straight on load, then swaps to the deal after ~2s.
-- [ ] Hovering the hero card stops the swapping and hands the tilt to the pointer.
-- [ ] Both hero faces are the same size; the swap does not shift anything below it.
+- [ ] Header has no search field; only the hero search opens the palette.
+- [ ] Hovering a nav parent fills the hero stage with child-category cards (parents are not links).
+- [ ] Spotlight deck below Stories sweeps, then swaps to the deal after ~2s.
+- [ ] Mobile burger expands parents into child links (accordion).
 - [ ] Quantity steppers and remove work; totals update.
 - [ ] Open WooCommerce's own cart page — the same items are there.
 - [ ] Checkout loads normally with the usual payment options.

@@ -164,19 +164,21 @@ await deckPage.evaluate(() => {
 	document.querySelectorAll('[data-sp-reveal]').forEach((node) => node.classList.add('is-revealed'));
 });
 
+await deckPage.locator('#sp-spotlight').scrollIntoViewIfNeeded();
+
 // Wait for the state rather than for a duration: network idle lands at an
 // unpredictable point relative to the deck's own 2.1s handover.
 await deckPage.waitForSelector('.sp-pick--deal.is-active', { timeout: 8000 });
 await deckPage.waitForTimeout(1200);
 
-const deckBox = await deckPage.locator('.sp-hero__pick').boundingBox();
+const deckBox = await deckPage.locator('.sp-spotlight__deck').boundingBox();
 // A fixed clip, padded out, so the tilt never pushes the card out of frame.
 const deckClip = deckBox
 	? {
 		x: Math.max(0, deckBox.x - 80),
 		y: Math.max(0, deckBox.y - 50),
-		width: Math.min(1440, deckBox.width + 160),
-		height: deckBox.height + 100,
+		width: Math.min(1440 - Math.max(0, deckBox.x - 80), deckBox.width + 160),
+		height: Math.min(960 - Math.max(0, deckBox.y - 50), deckBox.height + 100),
 	}
 	: null;
 
@@ -273,6 +275,15 @@ await settle(desktop);
 
 await desktop.screenshot({ path: `${shots}desktop-hero.png` });
 await pinReveals(desktop);
+
+// Hover the first parent with children so the hero stage fills with compact cards.
+const firstTrigger = desktop.locator('[data-sp-nav-trigger]').first();
+await firstTrigger.hover();
+await desktop.waitForTimeout(700);
+await desktop.screenshot({ path: `${shots}desktop-nav-stage.png` });
+await desktop.mouse.move(0, 0);
+await desktop.waitForTimeout(300);
+
 await desktop.screenshot({ path: `${shots}desktop-full.png`, fullPage: true });
 
 // Stories viewer.
@@ -322,7 +333,7 @@ await mobile.screenshot({ path: `${shots}mobile-story.png` });
 await mobile.keyboard.press('Escape');
 await mobile.waitForTimeout(400);
 
-await mobile.click('.sp-iconbtn--search');
+await mobile.click('[data-sp-search-open]');
 await mobile.waitForTimeout(500);
 await mobile.fill('[data-sp-palette-input]', 'JBL');
 await mobile.waitForTimeout(900);
@@ -332,6 +343,8 @@ await mobile.waitForTimeout(400);
 
 await mobile.click('[data-sp-nav-toggle]');
 await mobile.waitForTimeout(600);
+await mobile.click('[data-sp-nav-trigger]');
+await mobile.waitForTimeout(400);
 await mobile.screenshot({ path: `${shots}mobile-nav.png` });
 
 /* ---------- tablet ---------- */

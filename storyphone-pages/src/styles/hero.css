@@ -172,7 +172,237 @@
 	font-weight: 600;
 }
 
-/* ---------- featured pick deck ---------- */
+/* ---------- hero nav stage ---------- */
+
+/*
+ * The side column that used to hold the rotating product deck. Parents in the
+ * header paint their children into this exact box — compact cards, no scroll.
+ */
+.sp-hero__stage {
+	position: relative;
+	align-self: stretch;
+	/* Locked to the old pick-deck footprint so a panel never asks the page to scroll. */
+	block-size: clamp(320px, 56vh, 580px);
+	overflow: hidden;
+	perspective: 1150px;
+}
+
+.sp-navStage {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0.65rem;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transform: translateY(10px) scale(0.98);
+	transition:
+		opacity 280ms var(--sp-ease),
+		transform 360ms var(--sp-ease),
+		visibility 360ms;
+}
+
+.sp-navStage.is-active {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transform: none;
+}
+
+.sp-navStage__idle {
+	flex: 1 1 auto;
+	display: grid;
+	place-content: center;
+	gap: 0.55rem;
+	padding: 1.5rem;
+	border: 1px dashed var(--sp-line-strong);
+	border-radius: var(--sp-radius-xl);
+	background: rgba(16, 20, 44, 0.35);
+	text-align: center;
+}
+
+.sp-navStage__idleMark {
+	inline-size: 42px;
+	block-size: 42px;
+	margin-inline: auto;
+	border-radius: 50%;
+	background: var(--sp-grad-primary);
+	opacity: 0.85;
+	mask: radial-gradient(circle at 50% 50%, transparent 38%, #000 40%);
+	-webkit-mask: radial-gradient(circle at 50% 50%, transparent 38%, #000 40%);
+	animation: sp-idle-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes sp-idle-pulse {
+	50% {
+		transform: scale(1.08);
+		opacity: 1;
+	}
+}
+
+.sp-navStage__idleTitle {
+	margin: 0;
+	color: var(--sp-text);
+	font-family: var(--sp-font-display);
+	font-size: 1.15rem;
+	font-weight: 800;
+}
+
+.sp-navStage__idleHint {
+	margin: 0;
+	max-inline-size: 28ch;
+	margin-inline: auto;
+	color: var(--sp-text-dim);
+	font-size: var(--sp-fs-small);
+	line-height: 1.45;
+}
+
+.sp-navStage__label {
+	margin: 0;
+	padding-inline: 0.15rem;
+	color: var(--sp-text-soft);
+	font-size: var(--sp-fs-micro);
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+/* Fill the reserved stage; never grow past it (no scroll). */
+.sp-navCards {
+	flex: 1 1 auto;
+	min-block-size: 0;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	grid-auto-rows: 1fr;
+	gap: 0.55rem;
+	overflow: hidden;
+}
+
+.sp-navCard {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	min-block-size: 0;
+	padding: 0.55rem;
+	border: 1px solid var(--sp-line);
+	border-radius: var(--sp-radius-lg);
+	background: rgba(16, 20, 44, 0.62);
+	backdrop-filter: blur(18px);
+	-webkit-backdrop-filter: blur(18px);
+	box-shadow: var(--sp-shadow);
+	overflow: hidden;
+	transform: rotateX(var(--sp-tilt-x, 0deg)) rotateY(var(--sp-tilt-y, 0deg));
+	transform-style: preserve-3d;
+	transition:
+		transform 400ms var(--sp-ease),
+		border-color var(--sp-dur) var(--sp-ease),
+		box-shadow var(--sp-dur) var(--sp-ease);
+}
+
+.sp-navCard:hover {
+	border-color: rgba(124, 92, 255, 0.45);
+	box-shadow: var(--sp-shadow-lg);
+}
+
+.sp-navCard__glow {
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	background: radial-gradient(
+		280px circle at var(--sp-tilt-mx, 50%) var(--sp-tilt-my, 0%),
+		rgba(255, 255, 255, 0.1),
+		transparent 60%
+	);
+}
+
+.sp-navCard__media {
+	position: relative;
+	flex: 1 1 auto;
+	min-block-size: 72px;
+	aspect-ratio: 4 / 3;
+	border-radius: calc(var(--sp-radius-lg) - 4px);
+	background: #fff;
+	overflow: hidden;
+	margin-block-end: 0.45rem;
+}
+
+.sp-navCard__media--empty {
+	display: grid;
+	place-items: center;
+	background: linear-gradient(145deg, rgba(124, 92, 255, 0.35), rgba(36, 227, 210, 0.2));
+}
+
+.sp-navCard__img {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: contain;
+	padding: 0.45rem;
+	transition: transform var(--sp-dur-slow) var(--sp-ease);
+}
+
+.sp-navCard:hover .sp-navCard__img {
+	transform: scale(1.06);
+}
+
+.sp-navCard__mono {
+	font-family: var(--sp-font-display);
+	font-size: 1.75rem;
+	font-weight: 900;
+	color: #fff;
+}
+
+.sp-navCard__body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+	min-block-size: 0;
+}
+
+.sp-navCard__name {
+	color: var(--sp-text);
+	font-size: 0.8125rem;
+	font-weight: 700;
+	line-height: 1.25;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.sp-navCard__count {
+	color: var(--sp-text-dim);
+	font-size: 0.6875rem;
+	font-weight: 600;
+}
+
+.sp-navCard__count del {
+	margin-inline-end: 0.3rem;
+	opacity: 0.7;
+}
+
+.sp-navCard__count ins {
+	text-decoration: none;
+	color: var(--sp-text-soft);
+}
+
+/* When a panel has 1–3 cards, still fill the stage elegantly. */
+.sp-navCards:has(> :only-child) {
+	grid-template-columns: 1fr;
+}
+
+.sp-navCards:has(> :nth-child(3):last-child) {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sp-navCards:has(> :nth-child(3):last-child) > :last-child {
+	grid-column: 1 / -1;
+	max-inline-size: 70%;
+	justify-self: center;
+}
+
+/* ---------- pick deck (spotlight below Stories) ---------- */
 
 /*
  * Registering the tilt channels as typed custom properties is what lets a
@@ -207,7 +437,19 @@
 	initial-value: 0%;
 }
 
-.sp-hero__pick {
+.sp-spotlight {
+	position: relative;
+	padding-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.sp-spotlight__inner {
+	display: grid;
+	gap: clamp(1.25rem, 3vw, 2rem);
+}
+
+.sp-spotlight__deck {
+	max-inline-size: 420px;
+	margin-inline: auto;
 	perspective: 1150px;
 }
 
@@ -562,10 +804,9 @@
 		grid-template-columns: minmax(0, 1fr);
 	}
 
-	.sp-hero__pick {
-		max-inline-size: 420px;
-		inline-size: 100%;
-		margin-inline: auto;
+	/* On stacked layouts the stage is driven from the mobile accordion instead. */
+	.sp-hero__stage {
+		display: none;
 	}
 
 	.sp-hero__scroll {
