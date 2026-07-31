@@ -29,8 +29,18 @@ $sp_chips = StoryPhone_Pages_Catalog::get_categories( 5 );
 
 		<div class="sp-hero__copy">
 			<p class="sp-eyebrow" data-sp-reveal>
-				<span class="sp-eyebrow__dot" aria-hidden="true"></span>
-				<?php esc_html_e( 'יבוא רשמי · אחריות מלאה · משלוח מהיר לכל הארץ', 'storyphone-pages' ); ?>
+				<span class="sp-eyebrow__item">
+					<span class="sp-eyebrow__dot" aria-hidden="true"></span>
+					<?php esc_html_e( 'יבוא רשמי', 'storyphone-pages' ); ?>
+				</span>
+				<span class="sp-eyebrow__item">
+					<span class="sp-eyebrow__dot" aria-hidden="true"></span>
+					<?php esc_html_e( 'אחריות מלאה', 'storyphone-pages' ); ?>
+				</span>
+				<span class="sp-eyebrow__item">
+					<span class="sp-eyebrow__dot" aria-hidden="true"></span>
+					<?php esc_html_e( 'משלוח מהיר לכל הארץ', 'storyphone-pages' ); ?>
+				</span>
 			</p>
 
 			<h1 class="sp-hero__title" data-sp-reveal>
@@ -116,6 +126,7 @@ $sp_chips = StoryPhone_Pages_Catalog::get_categories( 5 );
 								?>
 								<a class="sp-navCard" href="<?php echo esc_url( $sp_child_link ); ?>" data-sp-tilt>
 									<span class="sp-navCard__glow" aria-hidden="true"></span>
+									<span class="sp-navCard__shine" aria-hidden="true"></span>
 									<span class="sp-navCard__media<?php echo '' === $sp_cover ? ' sp-navCard__media--empty' : ''; ?>">
 										<?php if ( '' !== $sp_cover ) : ?>
 											<img class="sp-navCard__img" src="<?php echo esc_url( $sp_cover ); ?>" alt="" loading="lazy" decoding="async">
@@ -125,15 +136,6 @@ $sp_chips = StoryPhone_Pages_Catalog::get_categories( 5 );
 									</span>
 									<span class="sp-navCard__body">
 										<span class="sp-navCard__name"><?php echo esc_html( $sp_child->name ); ?></span>
-										<span class="sp-navCard__count">
-											<?php
-											printf(
-												/* translators: %d: product count. */
-												esc_html( _n( '%d מוצרים', '%d מוצרים', (int) $sp_child->count, 'storyphone-pages' ) ),
-												(int) $sp_child->count
-											);
-											?>
-										</span>
 									</span>
 								</a>
 							<?php endforeach; ?>
@@ -149,6 +151,7 @@ $sp_chips = StoryPhone_Pages_Catalog::get_categories( 5 );
 								?>
 								<a class="sp-navCard" href="<?php echo esc_url( $sp_leaf_link ); ?>" data-sp-tilt>
 									<span class="sp-navCard__glow" aria-hidden="true"></span>
+									<span class="sp-navCard__shine" aria-hidden="true"></span>
 									<span class="sp-navCard__media">
 										<?php if ( '' !== $sp_leaf_img ) : ?>
 											<img class="sp-navCard__img" src="<?php echo esc_url( $sp_leaf_img ); ?>" alt="" loading="lazy" decoding="async">
@@ -156,7 +159,6 @@ $sp_chips = StoryPhone_Pages_Catalog::get_categories( 5 );
 									</span>
 									<span class="sp-navCard__body">
 										<span class="sp-navCard__name"><?php echo esc_html( $sp_leaf->get_name() ); ?></span>
-										<span class="sp-navCard__count"><?php echo wp_kses_post( $sp_leaf->get_price_html() ); ?></span>
 									</span>
 								</a>
 							<?php endforeach; ?>

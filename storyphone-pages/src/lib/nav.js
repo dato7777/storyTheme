@@ -69,6 +69,10 @@ export function initNav() {
 /**
  * Desktop: hovering / focusing a parent paints its panel into the hero stage.
  *
+ * The panel stays latched until another parent is hovered — leaving the bar
+ * must never clear it, or shoppers cannot reach the child cards.
+ * Idle ("גלו קטגוריה") is the cold-start / refresh default only.
+ *
  * @param {HTMLElement[]} triggers Nav trigger buttons.
  * @param {Element|null}  stage    Hero stage container.
  * @return {void}
@@ -80,8 +84,52 @@ function initNavMega(triggers, stage) {
 
 	const idle = stage.querySelector('[data-sp-nav-idle]');
 	const panels = Array.from(stage.querySelectorAll('[data-sp-nav-panel]'));
+	const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 	let activeId = null;
-	let leaveTimer = null;
+	let glowTimer = null;
+	let glowIndex = 0;
+
+	const stopCardGlow = () => {
+		if (glowTimer) {
+			window.clearInterval(glowTimer);
+			glowTimer = null;
+		}
+		stage.querySelectorAll('.sp-navCard.is-lit').forEach((card) => {
+			card.classList.remove('is-lit');
+		});
+		glowIndex = 0;
+	};
+
+	/**
+	 * Walk a soft glow across the visible cards, one every 2 seconds.
+	 *
+	 * @param {Element} panel Active panel.
+	 * @return {void}
+	 */
+	const startCardGlow = (panel) => {
+		stopCardGlow();
+
+		if (reduced.matches) {
+			return;
+		}
+
+		const cards = Array.from(panel.querySelectorAll('.sp-navCard'));
+		if (cards.length === 0) {
+			return;
+		}
+
+		const light = () => {
+			cards.forEach((card) => card.classList.remove('is-lit'));
+			const card = cards[glowIndex % cards.length];
+			// Retrigger the shine keyframes even when the same card is alone.
+			void card.offsetWidth;
+			card.classList.add('is-lit');
+			glowIndex = (glowIndex + 1) % cards.length;
+		};
+
+		light();
+		glowTimer = window.setInterval(light, 2000);
+	};
 
 	const showPanel = (id) => {
 		if (!id || activeId === id) {
@@ -95,10 +143,15 @@ function initNavMega(triggers, stage) {
 			idle.hidden = true;
 		}
 
+		let activePanel = null;
+
 		panels.forEach((panel) => {
 			const match = panel.getAttribute('data-sp-nav-panel') === id;
 			panel.hidden = !match;
 			panel.classList.toggle('is-active', match);
+			if (match) {
+				activePanel = panel;
+			}
 		});
 
 		triggers.forEach((trigger) => {
@@ -108,58 +161,19 @@ function initNavMega(triggers, stage) {
 		});
 
 		stage.classList.add('is-open');
-	};
 
-	const showIdle = () => {
-		activeId = null;
-
-		panels.forEach((panel) => {
-			panel.hidden = true;
-			panel.classList.remove('is-active');
-		});
-
-		if (idle) {
-			idle.hidden = false;
-			idle.classList.add('is-active');
-		}
-
-		triggers.forEach((trigger) => {
-			trigger.classList.remove('is-hot');
-			// Leave mobile accordion state alone when the sheet is open.
-			if (DESKTOP_NAV.matches) {
-				trigger.setAttribute('aria-expanded', 'false');
-			}
-		});
-
-		stage.classList.remove('is-open');
-	};
-
-	const cancelLeave = () => {
-		if (leaveTimer) {
-			window.clearTimeout(leaveTimer);
-			leaveTimer = null;
+		if (activePanel) {
+			startCardGlow(activePanel);
 		}
 	};
 
-	const scheduleLeave = () => {
-		cancelLeave();
-		// A short grace period lets the pointer travel from the bar into the
-		// stage without the panel collapsing underfoot.
-		leaveTimer = window.setTimeout(() => {
-			if (DESKTOP_NAV.matches) {
-				showIdle();
-			}
-		}, 160);
-	};
-
-	const bindDesktop = (trigger) => {
+	triggers.forEach((trigger) => {
 		const id = trigger.getAttribute('data-sp-nav-trigger');
 
 		trigger.addEventListener('pointerenter', () => {
 			if (!FINE_HOVER.matches || !DESKTOP_NAV.matches) {
 				return;
 			}
-			cancelLeave();
 			showPanel(id);
 		});
 
@@ -167,46 +181,16 @@ function initNavMega(triggers, stage) {
 			if (!DESKTOP_NAV.matches) {
 				return;
 			}
-			cancelLeave();
 			showPanel(id);
 		});
 
-		trigger.addEventListener('pointerleave', () => {
-			if (!FINE_HOVER.matches || !DESKTOP_NAV.matches) {
+		// Parents are not links; click latches the same panel (no toggle-off).
+		trigger.addEventListener('click', (event) => {
+			if (!DESKTOP_NAV.matches) {
 				return;
 			}
-			scheduleLeave();
-		});
-	};
-
-	triggers.forEach(bindDesktop);
-
-	stage.addEventListener('pointerenter', cancelLeave);
-	stage.addEventListener('pointerleave', () => {
-		if (DESKTOP_NAV.matches) {
-			scheduleLeave();
-		}
-	});
-
-	document.addEventListener('keydown', (event) => {
-		if (event.key === 'Escape' && activeId && DESKTOP_NAV.matches) {
-			showIdle();
-		}
-	});
-
-	// Parents are deliberately not links — swallow activation so Enter does
-	// not "submit" anything and instead keeps the panel open for Tab.
-	triggers.forEach((trigger) => {
-		trigger.addEventListener('click', (event) => {
-			if (DESKTOP_NAV.matches) {
-				event.preventDefault();
-				const id = trigger.getAttribute('data-sp-nav-trigger');
-				if (activeId === id) {
-					showIdle();
-				} else {
-					showPanel(id);
-				}
-			}
+			event.preventDefault();
+			showPanel(id);
 		});
 	});
 }

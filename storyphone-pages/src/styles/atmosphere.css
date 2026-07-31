@@ -138,20 +138,30 @@
 
 .sp-eyebrow {
 	display: inline-flex;
+	flex-wrap: wrap;
 	align-items: center;
-	gap: 0.6rem;
-	padding: 0.4rem 0.95rem;
+	gap: 0.55rem 1rem;
+	padding: 0.5rem 1.05rem;
 	border: 1px solid var(--sp-line);
 	border-radius: var(--sp-radius-pill);
 	background: var(--sp-surface);
 	backdrop-filter: blur(12px);
 	color: var(--sp-text-soft);
-	font-size: var(--sp-fs-micro);
+	font-size: 0.9375rem;
 	font-weight: 600;
 	letter-spacing: 0.01em;
+	line-height: 1.35;
+}
+
+.sp-eyebrow__item {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	white-space: nowrap;
 }
 
 .sp-eyebrow__dot {
+	flex: 0 0 auto;
 	inline-size: 7px;
 	block-size: 7px;
 	border-radius: 50%;

@@ -283,8 +283,9 @@
 	position: relative;
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	min-block-size: 0;
-	padding: 0.55rem;
+	padding: 0.55rem 0.5rem 0.65rem;
 	border: 1px solid var(--sp-line);
 	border-radius: var(--sp-radius-lg);
 	background: rgba(16, 20, 44, 0.62);
@@ -301,8 +302,50 @@
 }
 
 .sp-navCard:hover {
-	border-color: rgba(124, 92, 255, 0.45);
+	border-color: rgba(36, 227, 210, 0.45);
 	box-shadow: var(--sp-shadow-lg);
+}
+
+/* Soft sweep that rides across the lit card in the sequential glow loop. */
+.sp-navCard__shine {
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	z-index: 2;
+	opacity: 0;
+	background: linear-gradient(
+		115deg,
+		transparent 30%,
+		rgba(36, 227, 210, 0.14) 45%,
+		rgba(255, 255, 255, 0.28) 50%,
+		rgba(124, 92, 255, 0.18) 55%,
+		transparent 70%
+	);
+	transform: translateX(-120%);
+}
+
+.sp-navCard.is-lit {
+	border-color: rgba(36, 227, 210, 0.55);
+	box-shadow:
+		var(--sp-shadow-lg),
+		0 0 0 1px rgba(36, 227, 210, 0.2),
+		0 0 28px rgba(36, 227, 210, 0.22),
+		0 0 48px rgba(124, 92, 255, 0.16);
+}
+
+.sp-navCard.is-lit .sp-navCard__shine {
+	opacity: 1;
+	animation: sp-nav-shine 900ms cubic-bezier(0.33, 0, 0.2, 1) both;
+}
+
+@keyframes sp-nav-shine {
+	from {
+		transform: translateX(-120%);
+	}
+	to {
+		transform: translateX(120%);
+	}
 }
 
 .sp-navCard__glow {
@@ -320,12 +363,13 @@
 .sp-navCard__media {
 	position: relative;
 	flex: 1 1 auto;
-	min-block-size: 72px;
+	inline-size: 100%;
+	min-block-size: 64px;
 	aspect-ratio: 4 / 3;
 	border-radius: calc(var(--sp-radius-lg) - 4px);
 	background: #fff;
 	overflow: hidden;
-	margin-block-end: 0.45rem;
+	margin-block-end: 0.55rem;
 }
 
 .sp-navCard__media--empty {
@@ -355,36 +399,42 @@
 
 .sp-navCard__body {
 	display: flex;
+	flex: 0 0 auto;
 	flex-direction: column;
-	gap: 0.15rem;
-	min-block-size: 0;
+	align-items: center;
+	justify-content: center;
+	inline-size: 100%;
+	min-block-size: 2.85em;
+	padding-inline: 0.15rem;
+	text-align: center;
 }
 
 .sp-navCard__name {
-	color: var(--sp-text);
-	font-size: 0.8125rem;
-	font-weight: 700;
-	line-height: 1.25;
-	display: -webkit-box;
-	-webkit-line-clamp: 2;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
+	inline-size: 100%;
+	text-align: center;
+	font-family: var(--sp-font-display);
+	font-size: clamp(0.9rem, 1.1vw, 1.1rem);
+	font-weight: 800;
+	line-height: 1.3;
+	letter-spacing: -0.012em;
+	/* Fallback colour first — gradient clips over it in supporting browsers. */
+	color: #5ef0e0;
+	background-image: linear-gradient(115deg, #5ef0e0 0%, #7ec8ff 48%, #b8a6ff 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(0 0 10px rgba(36, 227, 210, 0.28));
+	overflow-wrap: anywhere;
+	word-break: break-word;
+	hyphens: auto;
 }
 
-.sp-navCard__count {
-	color: var(--sp-text-dim);
-	font-size: 0.6875rem;
-	font-weight: 600;
-}
-
-.sp-navCard__count del {
-	margin-inline-end: 0.3rem;
-	opacity: 0.7;
-}
-
-.sp-navCard__count ins {
-	text-decoration: none;
-	color: var(--sp-text-soft);
+@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
+	.sp-navCard__name {
+		background-image: none;
+		-webkit-text-fill-color: #7ee8dc;
+		color: #7ee8dc;
+	}
 }
 
 /* When a panel has 1–3 cards, still fill the stage elegantly. */
@@ -400,6 +450,13 @@
 	grid-column: 1 / -1;
 	max-inline-size: 70%;
 	justify-self: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sp-navCard.is-lit .sp-navCard__shine {
+		animation: none;
+		opacity: 0;
+	}
 }
 
 /* ---------- pick deck (spotlight below Stories) ---------- */

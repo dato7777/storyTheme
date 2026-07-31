@@ -331,7 +331,11 @@ const html = `<!DOCTYPE html>
 	<div class="sp-noise"></div>
 	<div class="sp-shell sp-hero__inner">
 		<div class="sp-hero__copy">
-			<p class="sp-eyebrow" data-sp-reveal><span class="sp-eyebrow__dot"></span>יבוא רשמי · אחריות מלאה · משלוח מהיר לכל הארץ</p>
+			<p class="sp-eyebrow" data-sp-reveal>
+				<span class="sp-eyebrow__item"><span class="sp-eyebrow__dot"></span>יבוא רשמי</span>
+				<span class="sp-eyebrow__item"><span class="sp-eyebrow__dot"></span>אחריות מלאה</span>
+				<span class="sp-eyebrow__item"><span class="sp-eyebrow__dot"></span>משלוח מהיר לכל הארץ</span>
+			</p>
 			<h1 class="sp-hero__title" data-sp-reveal>
 				<span class="sp-hero__line">לכל מכשיר</span>
 				<span class="sp-hero__line sp-hero__line--accent">יש סיפור.</span>
@@ -364,12 +368,12 @@ const html = `<!DOCTYPE html>
 					const mono = esc(String(child.name || '?').charAt(0));
 					return `<a class="sp-navCard" href="${esc(child.permalink || '#')}" data-sp-tilt>
 						<span class="sp-navCard__glow"></span>
+						<span class="sp-navCard__shine"></span>
 						<span class="sp-navCard__media${cover ? '' : ' sp-navCard__media--empty'}">
 							${cover ? `<img class="sp-navCard__img" src="${esc(cover)}" alt="" loading="lazy">` : `<span class="sp-navCard__mono">${mono}</span>`}
 						</span>
 						<span class="sp-navCard__body">
 							<span class="sp-navCard__name">${esc(child.name)}</span>
-							<span class="sp-navCard__count">${child.count} מוצרים</span>
 						</span>
 					</a>`;
 				}).join('');
