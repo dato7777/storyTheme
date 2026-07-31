@@ -10,7 +10,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$sp_items = array(
+$sp_default_icon = 'M12 2 4 5.2v6.3c0 4.5 3.2 8.6 8 10.5 4.8-1.9 8-6 8-10.5V5.2L12 2Zm3.9 7.6-4.6 4.6a1 1 0 0 1-1.4 0L8 12.3l1.4-1.4 1.2 1.2 3.9-3.9 1.4 1.4Z';
+$sp_items        = array(
 	array(
 		'title' => __( 'משלוח מהיר', 'storyphone-pages' ),
 		'text'  => __( 'עד הבית, לכל הארץ', 'storyphone-pages' ),
@@ -19,7 +20,7 @@ $sp_items = array(
 	array(
 		'title' => __( 'אחריות רשמית', 'storyphone-pages' ),
 		'text'  => __( 'על כל המוצרים בחנות', 'storyphone-pages' ),
-		'icon'  => 'M12 2 4 5.2v6.3c0 4.5 3.2 8.6 8 10.5 4.8-1.9 8-6 8-10.5V5.2L12 2Zm3.9 7.6-4.6 4.6a1 1 0 0 1-1.4 0L8 12.3l1.4-1.4 1.2 1.2 3.9-3.9 1.4 1.4Z',
+		'icon'  => $sp_default_icon,
 	),
 	array(
 		'title' => __( 'החזרה תוך 14 יום', 'storyphone-pages' ),
@@ -42,6 +43,29 @@ $sp_items = array(
 		'icon'  => 'M12 3a9 9 0 0 0-9 9v4.5A2.5 2.5 0 0 0 5.5 19H7a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a7 7 0 0 1 14 0h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.2a2.5 2.5 0 0 1-2.2 1.3H13v1.7h3a4.2 4.2 0 0 0 4-3.1A2.5 2.5 0 0 0 21 16.5V12a9 9 0 0 0-9-9Z',
 	),
 );
+
+$sp_custom_items = isset( $args['items'] ) && is_array( $args['items'] ) ? $args['items'] : array();
+if ( ! empty( $sp_custom_items ) ) {
+	$sp_items = array();
+	foreach ( $sp_custom_items as $sp_row ) {
+		if ( ! is_array( $sp_row ) ) {
+			continue;
+		}
+		$sp_t = isset( $sp_row['title'] ) ? trim( (string) $sp_row['title'] ) : '';
+		$sp_x = isset( $sp_row['text'] ) ? trim( (string) $sp_row['text'] ) : '';
+		if ( '' === $sp_t && '' === $sp_x ) {
+			continue;
+		}
+		$sp_items[] = array(
+			'title' => $sp_t,
+			'text'  => $sp_x,
+			'icon'  => ! empty( $sp_row['icon'] ) ? (string) $sp_row['icon'] : $sp_default_icon,
+		);
+	}
+	if ( empty( $sp_items ) ) {
+		return;
+	}
+}
 
 /**
  * Render one marquee run.

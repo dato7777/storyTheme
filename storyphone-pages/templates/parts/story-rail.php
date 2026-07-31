@@ -13,7 +13,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$sp_stories = isset( $args['stories'] ) && is_array( $args['stories'] ) ? $args['stories'] : array();
+$sp_stories  = isset( $args['stories'] ) && is_array( $args['stories'] ) ? $args['stories'] : array();
+$sp_title    = isset( $args['title'] ) ? trim( (string) $args['title'] ) : '';
+$sp_subtitle = isset( $args['subtitle'] ) ? trim( (string) $args['subtitle'] ) : '';
 if ( empty( $sp_stories ) ) {
 	return;
 }
@@ -24,10 +26,10 @@ if ( empty( $sp_stories ) ) {
 		<header class="sp-stories__head" data-sp-reveal>
 			<div>
 				<h2 class="sp-section__title" id="sp-stories-title">
-					<?php esc_html_e( 'הסטוריז של החנות', 'storyphone-pages' ); ?>
+					<?php echo esc_html( $sp_title ? $sp_title : __( 'הסטוריז של החנות', 'storyphone-pages' ) ); ?>
 				</h2>
 				<p class="sp-section__subtitle">
-					<?php esc_html_e( 'הקטגוריות שלנו, בלי תפריטים. לחצו על עיגול וצפו במה שיש בפנים.', 'storyphone-pages' ); ?>
+					<?php echo esc_html( $sp_subtitle ? $sp_subtitle : __( 'הקטגוריות שלנו, בלי תפריטים. לחצו על עיגול וצפו במה שיש בפנים.', 'storyphone-pages' ) ); ?>
 				</p>
 			</div>
 			<p class="sp-stories__hint" aria-hidden="true">

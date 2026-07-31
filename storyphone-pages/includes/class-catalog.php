@@ -24,6 +24,17 @@ class StoryPhone_Pages_Catalog {
 	const CACHE_TTL = 15 * MINUTE_IN_SECONDS;
 
 	/**
+	 * Meta about the last get_nav_tree() resolution (for HTML debug attrs).
+	 *
+	 * @var array{mode:string,count:int,ids:int[]}
+	 */
+	private static $last_nav_meta = array(
+		'mode'  => 'auto',
+		'count' => 0,
+		'ids'   => array(),
+	);
+
+	/**
 	 * Fetch storefront-visible products.
 	 *
 	 * Results are additionally filtered through `WC_Product::is_visible()` so the
@@ -92,6 +103,62 @@ class StoryPhone_Pages_Catalog {
 		}
 
 		return $products;
+	}
+
+	/**
+	 * Resolve product IDs (order preserved) for Design / curated sections.
+	 *
+	 * @param int[] $ids   Product IDs.
+	 * @param int   $limit Maximum returned.
+	 * @return WC_Product[]
+	 */
+	public static function get_products_by_ids( array $ids, $limit = 12 ) {
+		if ( ! storyphone_pages_has_woocommerce() ) {
+			return array();
+		}
+
+		$clean = array_values( array_unique( array_filter( array_map( 'absint', $ids ) ) ) );
+		return self::ids_to_products( $clean, max( 1, absint( $limit ) ) );
+	}
+
+	/**
+	 * Single visible product by ID, or null.
+	 *
+	 * @param int $id Product ID.
+	 * @return WC_Product|null
+	 */
+	public static function get_product_by_id( $id ) {
+		$products = self::get_products_by_ids( array( (int) $id ), 1 );
+		return ! empty( $products[0] ) ? $products[0] : null;
+	}
+
+	/**
+	 * Resolve category IDs (order preserved).
+	 *
+	 * @param int[] $ids   Term IDs.
+	 * @param int   $limit Maximum returned.
+	 * @return WP_Term[]
+	 */
+	public static function get_categories_by_ids( array $ids, $limit = 12 ) {
+		if ( ! storyphone_pages_has_woocommerce() || ! taxonomy_exists( 'product_cat' ) ) {
+			return array();
+		}
+
+		$clean = array_values( array_unique( array_filter( array_map( 'absint', $ids ) ) ) );
+		$limit = max( 1, absint( $limit ) );
+		$out   = array();
+
+		foreach ( $clean as $term_id ) {
+			if ( count( $out ) >= $limit ) {
+				break;
+			}
+			$term = get_term( (int) $term_id, 'product_cat' );
+			if ( $term && ! is_wp_error( $term ) ) {
+				$out[] = $term;
+			}
+		}
+
+		return $out;
 	}
 
 	/**
@@ -338,10 +405,44 @@ class StoryPhone_Pages_Catalog {
 	 * @return array<int, array{term: WP_Term, children: WP_Term[]}>
 	 */
 	public static function get_nav_tree( $limit = 9 ) {
-		$limit   = max( 1, absint( $limit ) );
+		$limit = max( 1, absint( $limit ) );
+
+		// Always prefer Design option from DB (not object-cache / not IM helpers alone).
+		// WP_CACHE=false only disables page cache — object cache can still stale get_option().
+		$design = self::get_design_nav_config();
+		if ( ! empty( $design['custom'] ) ) {
+			$tree = array();
+			$ids  = array();
+			foreach ( $design['ids'] as $term_id ) {
+				if ( count( $tree ) >= $limit ) {
+					break;
+				}
+				$term = get_term( (int) $term_id, 'product_cat' );
+				if ( ! $term || is_wp_error( $term ) ) {
+					continue;
+				}
+				$ids[]  = (int) $term->term_id;
+				$tree[] = array(
+					'term'     => $term,
+					'children' => self::get_child_categories( $term, 6 ),
+				);
+			}
+			self::$last_nav_meta = array(
+				'mode'  => 'custom',
+				'count' => count( $tree ),
+				'ids'   => $ids,
+			);
+			return $tree;
+		}
+
 		$parents = self::get_categories( max( $limit * 2, 16 ), true );
 
 		if ( empty( $parents ) ) {
+			self::$last_nav_meta = array(
+				'mode'  => 'auto',
+				'count' => 0,
+				'ids'   => array(),
+			);
 			return array();
 		}
 
@@ -362,7 +463,77 @@ class StoryPhone_Pages_Catalog {
 			}
 		}
 
-		return array_slice( array_merge( $with_kids, $without_kids ), 0, $limit );
+		$tree = array_slice( array_merge( $with_kids, $without_kids ), 0, $limit );
+		self::$last_nav_meta = array(
+			'mode'  => 'auto',
+			'count' => count( $tree ),
+			'ids'   => array_map(
+				static function ( $row ) {
+					return isset( $row['term']->term_id ) ? (int) $row['term']->term_id : 0;
+				},
+				$tree
+			),
+		);
+		return $tree;
+	}
+
+	/**
+	 * Meta from the last get_nav_tree() call (mode/count/ids).
+	 *
+	 * @return array{mode:string,count:int,ids:int[]}
+	 */
+	public static function get_last_nav_meta() {
+		return self::$last_nav_meta;
+	}
+
+	/**
+	 * Read navbar Design config straight from the options table.
+	 *
+	 * Bypasses persistent object cache so staging/admin saves are visible immediately.
+	 *
+	 * @return array{custom:bool,ids:int[]}
+	 */
+	private static function get_design_nav_config() {
+		$raw = self::read_design_option_fresh();
+
+		$home = isset( $raw['pages']['home'] ) && is_array( $raw['pages']['home'] ) ? $raw['pages']['home'] : array();
+		$ids  = array();
+		if ( isset( $home['nav_category_ids'] ) && is_array( $home['nav_category_ids'] ) ) {
+			$ids = array_values( array_filter( array_map( 'absint', $home['nav_category_ids'] ) ) );
+		}
+
+		$custom = ! empty( $home['nav_custom'] ) || ! empty( $ids );
+
+		return array(
+			'custom' => $custom,
+			'ids'    => $ids,
+		);
+	}
+
+	/**
+	 * Fresh read of storyphone_design from DB (+ cache purge).
+	 *
+	 * @return array
+	 */
+	private static function read_design_option_fresh() {
+		global $wpdb;
+
+		wp_cache_delete( 'storyphone_design', 'options' );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$row = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1",
+				'storyphone_design'
+			)
+		);
+
+		if ( null === $row || false === $row ) {
+			return array();
+		}
+
+		$data = maybe_unserialize( $row );
+		return is_array( $data ) ? $data : array();
 	}
 
 	/**

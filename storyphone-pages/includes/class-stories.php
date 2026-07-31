@@ -22,13 +22,41 @@ class StoryPhone_Pages_Stories {
 	 */
 	public static function build( $story_limit = 8, $per_story = 6 ) {
 		$categories = StoryPhone_Pages_Catalog::get_categories( $story_limit );
+		return self::from_categories( $categories, $per_story );
+	}
+
+	/**
+	 * Build stories for an explicit list of category IDs (Design content).
+	 *
+	 * @param int[] $category_ids Term IDs in display order.
+	 * @param int   $per_story    Maximum slides per story.
+	 * @return array<int, array<string, mixed>>
+	 */
+	public static function build_from_category_ids( array $category_ids, $per_story = 6 ) {
+		$categories = StoryPhone_Pages_Catalog::get_categories_by_ids( $category_ids, 12 );
+		return self::from_categories( $categories, $per_story );
+	}
+
+	/**
+	 * Assemble story payloads from category terms.
+	 *
+	 * @param WP_Term[] $categories Categories.
+	 * @param int       $per_story  Max slides.
+	 * @return array<int, array<string, mixed>>
+	 */
+	private static function from_categories( array $categories, $per_story = 6 ) {
 		if ( empty( $categories ) ) {
 			return array();
 		}
 
-		$stories = array();
+		$per_story = max( 1, absint( $per_story ) );
+		$stories   = array();
 
 		foreach ( $categories as $term ) {
+			if ( ! $term instanceof WP_Term ) {
+				continue;
+			}
+
 			$products = StoryPhone_Pages_Catalog::get_category_products( $term, $per_story );
 			if ( empty( $products ) ) {
 				continue;

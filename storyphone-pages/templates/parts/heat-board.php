@@ -14,6 +14,8 @@
 defined( 'ABSPATH' ) || exit;
 
 $sp_products = isset( $args['products'] ) && is_array( $args['products'] ) ? $args['products'] : array();
+$sp_title    = isset( $args['title'] ) ? trim( (string) $args['title'] ) : '';
+$sp_subtitle = isset( $args['subtitle'] ) ? trim( (string) $args['subtitle'] ) : '';
 if ( empty( $sp_products ) ) {
 	return;
 }
@@ -31,9 +33,9 @@ $sp_heat = StoryPhone_Pages_Catalog::get_heat_map( $sp_products );
 			<div>
 				<h2 class="sp-section__title">
 					<span class="sp-heat__flame" aria-hidden="true">&#128293;</span>
-					<?php esc_html_e( 'הכי חם עכשיו', 'storyphone-pages' ); ?>
+					<?php echo esc_html( $sp_title ? $sp_title : __( 'הכי חם עכשיו', 'storyphone-pages' ) ); ?>
 				</h2>
-				<p class="sp-section__subtitle"><?php esc_html_e( 'מה שהלקוחות שלנו קונים הכי הרבה — מתעדכן לפי מכירות אמיתיות', 'storyphone-pages' ); ?></p>
+				<p class="sp-section__subtitle"><?php echo esc_html( $sp_subtitle ? $sp_subtitle : __( 'מה שהלקוחות שלנו קונים הכי הרבה — מתעדכן לפי מכירות אמיתיות', 'storyphone-pages' ) ); ?></p>
 			</div>
 			<p class="sp-heat__live" aria-hidden="true">
 				<span class="sp-heat__pulse"></span>

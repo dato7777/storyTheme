@@ -13,8 +13,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$sp_nav   = isset( $args['nav'] ) && is_array( $args['nav'] ) ? $args['nav'] : array();
-$sp_chips = StoryPhone_Pages_Catalog::get_categories( 5 );
+$sp_nav      = isset( $args['nav'] ) && is_array( $args['nav'] ) ? $args['nav'] : array();
+$sp_chips    = isset( $args['chips'] ) && is_array( $args['chips'] ) ? $args['chips'] : StoryPhone_Pages_Catalog::get_categories( 5 );
+$sp_title    = isset( $args['title'] ) ? trim( (string) $args['title'] ) : '';
+$sp_subtitle = isset( $args['subtitle'] ) ? trim( (string) $args['subtitle'] ) : '';
 ?>
 <section class="sp-hero">
 	<div class="sp-aurora" aria-hidden="true">
@@ -43,14 +45,26 @@ $sp_chips = StoryPhone_Pages_Catalog::get_categories( 5 );
 				</span>
 			</p>
 
-			<h1 class="sp-hero__title" data-sp-reveal>
-				<span class="sp-hero__line"><?php esc_html_e( 'לכל מכשיר', 'storyphone-pages' ); ?></span>
-				<span class="sp-hero__line sp-hero__line--accent"><?php esc_html_e( 'יש סיפור.', 'storyphone-pages' ); ?></span>
-				<span class="sp-hero__line sp-hero__line--sub"><?php esc_html_e( 'בואו נמצא את שלכם.', 'storyphone-pages' ); ?></span>
-			</h1>
+			<?php if ( $sp_title ) : ?>
+				<h1 class="sp-hero__title" data-sp-reveal>
+					<span class="sp-hero__line sp-hero__line--accent"><?php echo esc_html( $sp_title ); ?></span>
+				</h1>
+			<?php else : ?>
+				<h1 class="sp-hero__title" data-sp-reveal>
+					<span class="sp-hero__line"><?php esc_html_e( 'לכל מכשיר', 'storyphone-pages' ); ?></span>
+					<span class="sp-hero__line sp-hero__line--accent"><?php esc_html_e( 'יש סיפור.', 'storyphone-pages' ); ?></span>
+					<span class="sp-hero__line sp-hero__line--sub"><?php esc_html_e( 'בואו נמצא את שלכם.', 'storyphone-pages' ); ?></span>
+				</h1>
+			<?php endif; ?>
 
 			<p class="sp-hero__lede" data-sp-reveal>
-				<?php esc_html_e( 'אלפי מכשירים ואביזרים מקוריים. תגידו מה אתם מחפשים — ואנחנו נביא אתכם לזה בשלוש שניות.', 'storyphone-pages' ); ?>
+				<?php
+				if ( $sp_subtitle ) {
+					echo esc_html( $sp_subtitle );
+				} else {
+					esc_html_e( 'אלפי מכשירים ואביזרים מקוריים. תגידו מה אתם מחפשים — ואנחנו נביא אתכם לזה בשלוש שניות.', 'storyphone-pages' );
+				}
+				?>
 			</p>
 
 			<button type="button" class="sp-heroSearch" data-sp-search-open data-sp-reveal>

@@ -13,6 +13,8 @@
 defined( 'ABSPATH' ) || exit;
 
 $sp_categories = isset( $args['categories'] ) && is_array( $args['categories'] ) ? $args['categories'] : array();
+$sp_title      = isset( $args['title'] ) ? trim( (string) $args['title'] ) : '';
+$sp_subtitle   = isset( $args['subtitle'] ) ? trim( (string) $args['subtitle'] ) : '';
 if ( empty( $sp_categories ) ) {
 	return;
 }
@@ -24,8 +26,8 @@ $sp_shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalin
 
 		<header class="sp-section__head" data-sp-reveal>
 			<div>
-				<h2 class="sp-section__title"><?php esc_html_e( 'מגיעים ישר לעניין', 'storyphone-pages' ); ?></h2>
-				<p class="sp-section__subtitle"><?php esc_html_e( 'יודעים מה אתם רוצים? קפצו ישירות לקטגוריה', 'storyphone-pages' ); ?></p>
+				<h2 class="sp-section__title"><?php echo esc_html( $sp_title ? $sp_title : __( 'מגיעים ישר לעניין', 'storyphone-pages' ) ); ?></h2>
+				<p class="sp-section__subtitle"><?php echo esc_html( $sp_subtitle ? $sp_subtitle : __( 'יודעים מה אתם רוצים? קפצו ישירות לקטגוריה', 'storyphone-pages' ) ); ?></p>
 			</div>
 			<a class="sp-textlink" href="<?php echo esc_url( $sp_shop_url ); ?>">
 				<?php esc_html_e( 'כל הקטגוריות', 'storyphone-pages' ); ?>

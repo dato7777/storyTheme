@@ -12,8 +12,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$sp_product = isset( $args['product'] ) ? $args['product'] : null;
-$sp_deal    = isset( $args['deal'] ) ? $args['deal'] : null;
+$sp_product  = isset( $args['product'] ) ? $args['product'] : null;
+$sp_deal     = isset( $args['deal'] ) ? $args['deal'] : null;
+$sp_title    = isset( $args['title'] ) ? trim( (string) $args['title'] ) : '';
+$sp_subtitle = isset( $args['subtitle'] ) ? trim( (string) $args['subtitle'] ) : '';
 
 if ( ! $sp_product instanceof WC_Product ) {
 	return;
@@ -40,8 +42,8 @@ $sp_discount = StoryPhone_Pages_Render::get_discount_percent( $sp_product );
 	<div class="sp-shell sp-spotlight__inner">
 		<header class="sp-section__head" data-sp-reveal>
 			<div>
-				<h2 class="sp-section__title"><?php esc_html_e( 'הבחירה של החנות', 'storyphone-pages' ); ?></h2>
-				<p class="sp-section__subtitle"><?php esc_html_e( 'הנמכר ביותר והדיל של היום — מתחלפים באותה כרטיסייה', 'storyphone-pages' ); ?></p>
+				<h2 class="sp-section__title"><?php echo esc_html( $sp_title ? $sp_title : __( 'הבחירה של החנות', 'storyphone-pages' ) ); ?></h2>
+				<p class="sp-section__subtitle"><?php echo esc_html( $sp_subtitle ? $sp_subtitle : __( 'הנמכר ביותר והדיל של היום — מתחלפים באותה כרטיסייה', 'storyphone-pages' ) ); ?></p>
 			</div>
 		</header>
 
