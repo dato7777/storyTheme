@@ -118,11 +118,26 @@ class StoryPhone_Pages_Catalog {
 		}
 
 		$clean = array_values( array_unique( array_filter( array_map( 'absint', $ids ) ) ) );
-		return self::ids_to_products( $clean, max( 1, absint( $limit ) ) );
+		$limit = max( 1, absint( $limit ) );
+		$out   = array();
+
+		// Design curation: published is enough. Do not require is_visible()
+		// (out-of-stock / catalog-hidden picks were blanking whole sections).
+		foreach ( $clean as $id ) {
+			if ( count( $out ) >= $limit ) {
+				break;
+			}
+			$product = wc_get_product( (int) $id );
+			if ( $product instanceof WC_Product && 'publish' === $product->get_status() ) {
+				$out[] = $product;
+			}
+		}
+
+		return $out;
 	}
 
 	/**
-	 * Single visible product by ID, or null.
+	 * Single published product by ID, or null.
 	 *
 	 * @param int $id Product ID.
 	 * @return WC_Product|null
@@ -572,6 +587,172 @@ class StoryPhone_Pages_Catalog {
 		}
 
 		return self::ids_to_products( $ids, $limit );
+	}
+
+	/**
+	 * Related products for a PDP reel.
+	 *
+	 * Ranking blends shared categories with overlapping name tokens (so
+	 * "AirPods" surfaces other AirPods / Apple audio, not just the same shelf).
+	 *
+	 * @param WC_Product $product Seed product.
+	 * @param int        $limit   Maximum results.
+	 * @return WC_Product[]
+	 */
+	public static function get_related_products( $product, $limit = 10 ) {
+		if ( ! $product instanceof WC_Product || ! storyphone_pages_has_woocommerce() ) {
+			return array();
+		}
+
+		$limit = max( 1, absint( $limit ) );
+		$key   = 'sp_pages_rel_' . $product->get_id() . '_' . $limit;
+		$ids   = get_transient( $key );
+
+		if ( ! is_array( $ids ) ) {
+			$seed_id     = $product->get_id();
+			$seed_tokens = self::name_tokens( $product->get_name() );
+			$cat_ids     = wc_get_product_term_ids( $seed_id, 'product_cat' );
+			$cat_slugs   = array();
+
+			if ( ! empty( $cat_ids ) ) {
+				foreach ( $cat_ids as $cat_id ) {
+					$term = get_term( (int) $cat_id, 'product_cat' );
+					if ( $term instanceof WP_Term && ! is_wp_error( $term ) ) {
+						$cat_slugs[] = $term->slug;
+					}
+				}
+			}
+
+			$candidates = array();
+
+			if ( ! empty( $cat_slugs ) ) {
+				$candidates = self::get_products(
+					array(
+						'category' => $cat_slugs,
+						'limit'    => 40,
+						'orderby'  => 'popularity',
+					)
+				);
+			}
+
+			// Broaden the pool so name-token matches (AirPods → other AirPods /
+			// Apple audio) can surface even across neighbouring categories.
+			$candidates = array_merge( $candidates, self::get_hot_products( 20 ), self::get_showcase_products( 16 ) );
+
+			if ( empty( $candidates ) ) {
+				$candidates = self::get_products(
+					array(
+						'limit'   => 40,
+						'orderby' => 'date',
+					)
+				);
+			}
+
+			$scored = array();
+
+			foreach ( $candidates as $candidate ) {
+				if ( ! $candidate instanceof WC_Product || $candidate->get_id() === $seed_id ) {
+					continue;
+				}
+
+				$cid = $candidate->get_id();
+				if ( isset( $scored[ $cid ] ) ) {
+					continue;
+				}
+
+				$score = 0;
+
+				$cand_cats = wc_get_product_term_ids( $cid, 'product_cat' );
+				$shared    = array_intersect( $cat_ids, $cand_cats );
+				$score    += count( $shared ) * 12;
+
+				$cand_tokens = self::name_tokens( $candidate->get_name() );
+				$overlap     = array_intersect( $seed_tokens, $cand_tokens );
+				$score      += count( $overlap ) * 18;
+
+				// Strong brand / model tokens deserve an extra push.
+				foreach ( $overlap as $token ) {
+					if ( mb_strlen( $token ) >= 5 ) {
+						$score += 8;
+					}
+				}
+
+				if ( $candidate->is_on_sale() ) {
+					$score += 2;
+				}
+
+				if ( $score < 1 ) {
+					continue;
+				}
+
+				$scored[ $cid ] = $score;
+			}
+
+			arsort( $scored, SORT_NUMERIC );
+			$ids = array_slice( array_map( 'intval', array_keys( $scored ) ), 0, $limit );
+
+			set_transient( $key, $ids, self::CACHE_TTL );
+		}
+
+		return self::ids_to_products( $ids, $limit );
+	}
+
+	/**
+	 * Extract a YouTube video id from a URL or bare id.
+	 *
+	 * @param string $value Raw meta value.
+	 * @return string Video id, or empty string.
+	 */
+	public static function parse_youtube_id( $value ) {
+		$value = trim( (string) $value );
+		if ( '' === $value ) {
+			return '';
+		}
+
+		if ( preg_match( '/^[a-zA-Z0-9_-]{11}$/', $value ) ) {
+			return $value;
+		}
+
+		if ( preg_match( '#(?:youtube(?:-nocookie)?\.com/(?:watch\?v=|embed/|shorts/)|youtu\.be/)([a-zA-Z0-9_-]{11})#', $value, $match ) ) {
+			return $match[1];
+		}
+
+		return '';
+	}
+
+	/**
+	 * Meaningful tokens from a product name (Hebrew + Latin).
+	 *
+	 * @param string $name Product name.
+	 * @return string[]
+	 */
+	private static function name_tokens( $name ) {
+		$name = is_string( $name ) ? $name : '';
+		if ( '' === $name ) {
+			return array();
+		}
+
+		$lower = function_exists( 'mb_strtolower' ) ? mb_strtolower( $name, 'UTF-8' ) : strtolower( $name );
+		$parts = preg_split( '/[^\p{L}\p{N}]+/u', $lower, -1, PREG_SPLIT_NO_EMPTY );
+		if ( ! is_array( $parts ) ) {
+			return array();
+		}
+
+		$stop = array(
+			'the', 'and', 'for', 'with', 'set', 'pro', 'max', 'mini', 'new',
+			'סט', 'של', 'עם', 'לכל', 'מקורי', 'מקוריים', 'מכשיר', 'מוצר', 'מוצרי',
+		);
+
+		$tokens = array();
+		foreach ( $parts as $part ) {
+			$len = function_exists( 'mb_strlen' ) ? mb_strlen( $part, 'UTF-8' ) : strlen( $part );
+			if ( $len < 3 || in_array( $part, $stop, true ) ) {
+				continue;
+			}
+			$tokens[] = $part;
+		}
+
+		return array_values( array_unique( $tokens ) );
 	}
 
 	/**

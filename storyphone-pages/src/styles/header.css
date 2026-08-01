@@ -184,9 +184,48 @@
 	transform: rotate(180deg);
 }
 
-/* Desktop drawers stay in the DOM for mobile; hide them on wide screens. */
+/* Desktop drawers stay in the DOM for mobile; hide them on wide screens —
+   except on product pages, where there is no hero stage to host children. */
 .sp-nav__drawer {
 	display: none;
+}
+
+@media (min-width: 861px) {
+	.sp-page:not(.sp-page--home) .sp-nav__drawer:not([hidden]) {
+		display: block;
+		position: absolute;
+		inset-block-start: calc(100% + 0.45rem);
+		inset-inline-end: 0;
+		z-index: 5;
+		min-inline-size: 220px;
+		padding: 0.55rem;
+		list-style: none;
+		margin: 0;
+		border: 1px solid var(--sp-line);
+		border-radius: var(--sp-radius-lg);
+		background: rgba(7, 9, 25, 0.94);
+		backdrop-filter: blur(18px);
+		-webkit-backdrop-filter: blur(18px);
+		box-shadow: var(--sp-shadow-lg);
+	}
+
+	.sp-page:not(.sp-page--home) .sp-nav__drawer a {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		padding: 0.55rem 0.7rem;
+		border-radius: var(--sp-radius-sm);
+		color: var(--sp-text-soft);
+		font-size: 0.9rem;
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.sp-page:not(.sp-page--home) .sp-nav__drawer a:hover {
+		background: rgba(255, 255, 255, 0.05);
+		color: var(--sp-cyan);
+	}
 }
 
 /* ---------- actions ---------- */
@@ -222,6 +261,15 @@
 	background: var(--sp-surface-2);
 	color: var(--sp-text);
 	transform: translateY(-1px);
+}
+
+/* Homepage keeps search in the hero; other StoryPhone pages show the icon. */
+.sp-iconbtn--search {
+	display: none;
+}
+
+.sp-page:not(.sp-page--home) .sp-iconbtn--search {
+	display: grid;
 }
 
 .sp-cartcount {

@@ -128,6 +128,17 @@ $sp_nav_ids     = isset( $sp_nav_meta['ids'] ) && is_array( $sp_nav_meta['ids'] 
 		</nav>
 
 		<div class="sp-header__actions">
+			<button
+				type="button"
+				class="sp-iconbtn sp-iconbtn--search"
+				data-sp-search-open
+				aria-label="<?php esc_attr_e( 'חיפוש', 'storyphone-pages' ); ?>"
+			>
+				<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+					<path d="M10.5 3a7.5 7.5 0 1 0 4.55 13.46l4.24 4.25 1.42-1.42-4.25-4.24A7.5 7.5 0 0 0 10.5 3Zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z"/>
+				</svg>
+			</button>
+
 			<?php if ( $sp_account_url ) : ?>
 				<a class="sp-iconbtn sp-iconbtn--account" href="<?php echo esc_url( $sp_account_url ); ?>" aria-label="<?php esc_attr_e( 'האזור האישי', 'storyphone-pages' ); ?>">
 					<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">

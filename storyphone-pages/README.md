@@ -20,6 +20,7 @@ is standard in this vertical.
 | **Deal spotlight** | Deepest genuine discount in the catalog, with a countdown to the sale's end date. |
 | **Hoverable nav** | Parent categories are hover-only; child categories appear as compact pick-style cards in the hero stage. |
 | **Spotlight deck** | Below Stories: one card that alternates between the best seller and a compact deal-of-the-day. |
+| **Product page** | Every WooCommerce product opens a cinematic PDP (gallery, buy box, specs, related reel). |
 
 Search is the hero's primary action rather than a banner button, because on a catalog this
 size typing beats browsing.
@@ -154,6 +155,10 @@ npm run build
 - [ ] Hovering a nav parent fills the hero stage with child-category cards (parents are not links).
 - [ ] Spotlight deck below Stories sweeps, then swaps to the deal after ~2s.
 - [ ] Mobile burger expands parents into child links (accordion).
+- [ ] Opening any product URL shows the StoryPhone PDP (not the theme template).
+- [ ] PDP gallery thumbs swap the main image; add-to-cart updates the drawer.
+- [ ] Related reel shows same-category / name-similar products and glows in sequence.
+- [ ] PDP short description types letter-by-letter; YouTube meta `_storyphone_youtube` fills the video slot.
 - [ ] Quantity steppers and remove work; totals update.
 - [ ] Open WooCommerce's own cart page — the same items are there.
 - [ ] Checkout loads normally with the usual payment options.

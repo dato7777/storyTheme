@@ -91,6 +91,16 @@ class StoryPhone_Pages_Templates {
 	 * @return string
 	 */
 	public static function dispatch( $template ) {
+		// Single products always use our cinematic PDP — WooCommerce keeps
+		// catalog/pricing/cart authority; we only own presentation.
+		if ( function_exists( 'is_product' ) && is_product() ) {
+			$path = STORYPHONE_PAGES_PLUGIN_DIR . 'templates/product.php';
+			if ( file_exists( $path ) ) {
+				self::$active_slug = 'storyphone-product';
+				return $path;
+			}
+		}
+
 		if ( ! is_page() ) {
 			return $template;
 		}
@@ -135,6 +145,10 @@ class StoryPhone_Pages_Templates {
 	public static function is_active() {
 		if ( '' !== self::$active_slug ) {
 			return true;
+		}
+
+		if ( function_exists( 'is_product' ) && is_product() ) {
+			return file_exists( STORYPHONE_PAGES_PLUGIN_DIR . 'templates/product.php' );
 		}
 
 		if ( ! is_page() ) {

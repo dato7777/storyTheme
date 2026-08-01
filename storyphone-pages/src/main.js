@@ -7,6 +7,7 @@ import './styles/main.css';
 import { initCart } from './lib/cart.js';
 import { initMotion } from './lib/motion.js';
 import { initNav } from './lib/nav.js';
+import { initProduct } from './lib/product.js';
 import { initReveal } from './lib/reveal.js';
 import { initSearch } from './lib/search.js';
 import { initStories } from './lib/stories.js';
@@ -17,7 +18,7 @@ import { initStories } from './lib/stories.js';
  * @return {void}
  */
 function boot() {
-	[initNav, initReveal, initMotion, initStories, initSearch, initCart].forEach((init) => {
+	[initNav, initReveal, initMotion, initStories, initSearch, initCart, initProduct].forEach((init) => {
 		try {
 			init();
 		} catch (error) {

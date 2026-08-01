@@ -387,6 +387,10 @@ async function handleAdd(button) {
 		return;
 	}
 
+	const buy = button.closest('[data-sp-buy]');
+	const qtyInput = buy ? buy.querySelector('[data-sp-qty]') : null;
+	const quantity = Math.min(99, Math.max(1, Number(qtyInput?.value || button.dataset.quantity || 1) || 1));
+
 	const label = button.querySelector('.sp-btn__label');
 	const original = label ? label.textContent : '';
 
@@ -396,7 +400,7 @@ async function handleAdd(button) {
 		label.textContent = i18n.adding;
 	}
 
-	await mutate(() => addItem(productId, 1), i18n.added);
+	await mutate(() => addItem(productId, quantity), i18n.added);
 
 	button.disabled = false;
 	button.classList.remove('is-busy');
