@@ -350,8 +350,26 @@ export function initSearch() {
 		input.addEventListener('input', () => schedule(input.value));
 	}
 
-	// The form still submits to WordPress search if someone hits Enter with no
-	// result highlighted, which keeps the palette useful without JavaScript.
+	// Keep the shopper inside the live palette. Submitting the form falls through
+	// to the theme search archive, which often shows a bare "כן" stock column
+	// instead of our preview rows.
+	const form = palette.querySelector('.sp-palette__form');
+	form?.addEventListener('submit', (event) => {
+		event.preventDefault();
+		const list = options();
+		if (activeIndex >= 0 && list[activeIndex]) {
+			list[activeIndex].click();
+			return;
+		}
+		if (list[0]) {
+			list[0].click();
+			return;
+		}
+		if (input?.value.trim().length >= MIN_CHARS) {
+			run(input.value);
+		}
+	});
+
 	palette.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape') {
 			event.preventDefault();

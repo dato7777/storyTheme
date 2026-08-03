@@ -135,7 +135,8 @@ export async function searchProducts(term, { signal, limit = 6 } = {}) {
 
 	url.searchParams.set('search', term);
 	url.searchParams.set('per_page', String(limit));
-	url.searchParams.set('catalog_visibility', 'catalog');
+	// "visible" = shop + search. "catalog" wrongly means shop-only (hidden from search).
+	url.searchParams.set('catalog_visibility', 'visible');
 	url.searchParams.set('_fields', 'id,name,permalink,prices,images,is_in_stock,is_purchasable,type');
 	url.searchParams.set('_', String(Date.now()));
 
@@ -152,8 +153,31 @@ export async function searchProducts(term, { signal, limit = 6 } = {}) {
 	}
 
 	const payload = await response.json();
+	const list = Array.isArray(payload)
+		? payload
+		: Array.isArray(payload?.products)
+			? payload.products
+			: [];
 
-	return Array.isArray(payload) ? payload : [];
+	return list.map((product) => ({
+		...product,
+		name: decodeEntities(product?.name || ''),
+	}));
+}
+
+/**
+ * Decode HTML entities WooCommerce often leaves in product names (e.g. &#8211;).
+ *
+ * @param {string} value
+ * @return {string}
+ */
+function decodeEntities(value) {
+	if (!value || typeof value !== 'string') {
+		return '';
+	}
+	const node = document.createElement('textarea');
+	node.innerHTML = value;
+	return node.value;
 }
 
 /**

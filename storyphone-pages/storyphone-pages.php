@@ -38,9 +38,11 @@ function storyphone_pages_bootstrap() {
 	require_once STORYPHONE_PAGES_PLUGIN_DIR . 'includes/class-catalog.php';
 	require_once STORYPHONE_PAGES_PLUGIN_DIR . 'includes/class-render.php';
 	require_once STORYPHONE_PAGES_PLUGIN_DIR . 'includes/class-stories.php';
+	require_once STORYPHONE_PAGES_PLUGIN_DIR . 'includes/class-rest.php';
 
 	StoryPhone_Pages_Templates::init();
 	StoryPhone_Pages_Assets::init();
+	StoryPhone_Pages_REST::init();
 }
 add_action( 'plugins_loaded', 'storyphone_pages_bootstrap' );
 

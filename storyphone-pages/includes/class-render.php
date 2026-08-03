@@ -52,10 +52,11 @@ class StoryPhone_Pages_Render {
 	/**
 	 * Render one product card.
 	 *
-	 * @param WC_Product $product Product.
+	 * @param WC_Product           $product Product.
+	 * @param array<string, mixed> $args    Optional. `reveal` (bool) toggles scroll-reveal.
 	 * @return void
 	 */
-	public static function product_card( $product ) {
+	public static function product_card( $product, array $args = array() ) {
 		if ( ! $product instanceof WC_Product ) {
 			return;
 		}
@@ -65,6 +66,7 @@ class StoryPhone_Pages_Render {
 		$in_stock  = $product->is_in_stock();
 		$discount  = self::get_discount_percent( $product );
 		$quick_add = StoryPhone_Pages_Catalog::supports_quick_add( $product );
+		$reveal    = ! array_key_exists( 'reveal', $args ) || (bool) $args['reveal'];
 		$image     = $product->get_image(
 			'woocommerce_thumbnail',
 			array(
@@ -74,7 +76,11 @@ class StoryPhone_Pages_Render {
 			)
 		);
 		?>
-		<article class="sp-card" data-sp-reveal data-product-id="<?php echo esc_attr( (string) $product->get_id() ); ?>">
+		<article
+			class="sp-card"
+			data-product-id="<?php echo esc_attr( (string) $product->get_id() ); ?>"
+			<?php echo $reveal ? ' data-sp-reveal' : ''; ?>
+		>
 			<a class="sp-card__media" href="<?php echo esc_url( $permalink ); ?>" tabindex="-1" aria-hidden="true">
 				<?php echo wp_kses_post( $image ); ?>
 				<?php if ( ! $in_stock ) : ?>

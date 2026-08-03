@@ -1,0 +1,642 @@
+/**
+ * Category archive layout.
+ * Colors / type unchanged — positioning and flow only.
+ */
+
+/* ---------- page shell ---------- */
+
+.sp-page--category .sp-cat {
+	display: block;
+	width: 100%;
+	overflow-x: clip;
+}
+
+/* ---------- hero ---------- */
+
+.sp-catHero {
+	position: relative;
+	padding-block: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 3vw, 2rem);
+	overflow: hidden;
+}
+
+.sp-catHero__inner {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	gap: 1.25rem;
+	width: 100%;
+}
+
+.sp-catHero__row {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: clamp(1rem, 3vw, 1.75rem);
+	align-items: center;
+	width: 100%;
+}
+
+.sp-catHero__badge {
+	inline-size: clamp(88px, 14vw, 128px);
+	block-size: clamp(88px, 14vw, 128px);
+	border-radius: 28%;
+	border: 1px solid rgba(36, 227, 210, 0.28);
+	background:
+		radial-gradient(circle at 30% 25%, rgba(255, 176, 32, 0.22), transparent 55%),
+		var(--sp-ink-700);
+	box-shadow:
+		0 0 0 1px rgba(255, 176, 32, 0.12),
+		0 18px 40px rgba(0, 0, 0, 0.35);
+	display: grid;
+	place-items: center;
+	overflow: hidden;
+	opacity: 0;
+	transform: scale(0.72);
+	transition:
+		opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+		transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sp-catHero.is-ready .sp-catHero__badge {
+	opacity: 1;
+	transform: none;
+}
+
+.sp-catHero__badge img {
+	inline-size: 72%;
+	block-size: 72%;
+	object-fit: contain;
+}
+
+.sp-catHero__glyph {
+	inline-size: 42%;
+	block-size: 42%;
+	border-radius: 30%;
+	background: var(--sp-grad-cool);
+	box-shadow: 0 0 24px rgba(36, 227, 210, 0.45);
+}
+
+.sp-catHero__copy {
+	display: grid;
+	gap: 0.55rem;
+	min-inline-size: 0;
+	max-inline-size: 100%;
+}
+
+.sp-catHero__kicker {
+	margin: 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	color: var(--sp-amber);
+	font-size: var(--sp-fs-micro);
+	font-weight: 800;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.sp-catHero__pepper {
+	inline-size: 0.55rem;
+	block-size: 0.55rem;
+	border-radius: 50%;
+	background: var(--sp-amber);
+	box-shadow: 0 0 12px rgba(255, 176, 32, 0.75);
+}
+
+.sp-catHero__title {
+	margin: 0;
+	font-family: var(--sp-font-display);
+	font-size: clamp(2.2rem, 5.5vw, 3.75rem);
+	font-weight: 900;
+	line-height: 1.1;
+	letter-spacing: -0.03em;
+	color: var(--sp-text);
+	overflow-wrap: anywhere;
+	opacity: 0;
+	transform: translateY(12px);
+	transition:
+		opacity 480ms cubic-bezier(0.22, 1, 0.36, 1),
+		transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sp-catHero.is-ready .sp-catHero__title {
+	opacity: 1;
+	transform: none;
+}
+
+.sp-catHero__desc {
+	margin: 0;
+	max-inline-size: 42ch;
+	color: var(--sp-text-soft);
+	font-size: 1.05rem;
+	line-height: 1.55;
+	opacity: 0;
+	transform: translateY(10px);
+	transition:
+		opacity 480ms 160ms var(--sp-ease),
+		transform 520ms 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sp-catHero.is-ready .sp-catHero__desc {
+	opacity: 1;
+	transform: none;
+}
+
+/* Trust marquee: own row under hero — not inside the product grid. */
+.sp-page--category .sp-cat > .sp-marquee {
+	position: relative;
+	z-index: 1;
+	margin: 0;
+	width: 100%;
+}
+
+/* ---------- subcategory chips ---------- */
+
+.sp-catSubs {
+	position: sticky;
+	inset-block-start: var(--sp-header-h);
+	z-index: calc(var(--sp-z-header) - 1);
+	padding-block: 0.75rem 0.9rem;
+	background: rgba(7, 9, 25, 0.78);
+	backdrop-filter: blur(18px) saturate(150%);
+	-webkit-backdrop-filter: blur(18px) saturate(150%);
+	border-block-end: 1px solid var(--sp-line);
+}
+
+.sp-catSubs__track {
+	display: flex;
+	flex-direction: row;
+	gap: 0.55rem;
+	overflow-x: auto;
+	padding-block-end: 0.15rem;
+	scrollbar-width: thin;
+	scroll-snap-type: x proximity;
+	-webkit-overflow-scrolling: touch;
+}
+
+.sp-catChip {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.45rem 0.85rem 0.45rem 0.45rem;
+	border: 1px solid var(--sp-line);
+	border-radius: var(--sp-radius-pill);
+	background: rgba(255, 255, 255, 0.03);
+	color: var(--sp-text-soft);
+	font: inherit;
+	font-size: 0.9rem;
+	font-weight: 700;
+	cursor: pointer;
+	scroll-snap-align: start;
+	transition:
+		color var(--sp-dur) var(--sp-ease),
+		border-color var(--sp-dur) var(--sp-ease),
+		background var(--sp-dur) var(--sp-ease),
+		box-shadow var(--sp-dur) var(--sp-ease),
+		transform var(--sp-dur) var(--sp-ease);
+}
+
+.sp-catChip__icon {
+	inline-size: 1.85rem;
+	block-size: 1.85rem;
+	border-radius: 50%;
+	background: var(--sp-ink-700);
+	border: 1px solid var(--sp-line);
+	display: grid;
+	place-items: center;
+	overflow: hidden;
+}
+
+.sp-catChip__icon img {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: cover;
+}
+
+.sp-catChip__icon:empty::after {
+	content: '';
+	inline-size: 0.45rem;
+	block-size: 0.45rem;
+	border-radius: 50%;
+	background: var(--sp-cyan);
+	box-shadow: 0 0 8px rgba(36, 227, 210, 0.7);
+}
+
+.sp-catChip__count {
+	margin-inline-start: 0.15rem;
+	padding: 0.1rem 0.4rem;
+	border-radius: var(--sp-radius-pill);
+	background: rgba(255, 255, 255, 0.06);
+	color: var(--sp-text-dim);
+	font-size: 0.75rem;
+	font-weight: 700;
+}
+
+.sp-catChip:hover,
+.sp-catChip:focus-visible {
+	color: var(--sp-text);
+	border-color: rgba(36, 227, 210, 0.4);
+	transform: translateY(-1px);
+}
+
+.sp-catChip.is-active {
+	color: var(--sp-on-light);
+	border-color: transparent;
+	background: linear-gradient(120deg, var(--sp-cyan), #7ef5e8 55%, var(--sp-amber));
+	box-shadow:
+		0 0 0 1px rgba(36, 227, 210, 0.25),
+		0 10px 28px rgba(36, 227, 210, 0.28);
+}
+
+.sp-catChip.is-active .sp-catChip__count {
+	background: rgba(10, 13, 32, 0.18);
+	color: var(--sp-on-light);
+}
+
+/* ---------- browse row: rail + grid ---------- */
+
+.sp-catBrowse {
+	padding-block: clamp(1.5rem, 4vw, 2.75rem) var(--sp-section-y);
+	width: 100%;
+}
+
+.sp-catBrowse__inner {
+	display: grid;
+	/* Rail on inline-start (right in RTL), products take the rest. */
+	grid-template-columns: var(--sp-cat-rail-w, 5.5rem) minmax(0, 1fr);
+	gap: clamp(1rem, 2.5vw, 2rem);
+	align-items: start;
+	width: 100%;
+}
+
+/* Vertical stacked title — sized for long names, never clipped by viewport. */
+.sp-catRail {
+	position: sticky;
+	inset-block-start: calc(var(--sp-header-h) + 4.5rem);
+	z-index: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--sp-cat-rail-w, 5.5rem);
+	min-width: var(--sp-cat-rail-w, 5.5rem);
+	min-block-size: min(52vh, 26rem);
+	overflow: visible;
+	pointer-events: none;
+}
+
+.sp-catRail__frame {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	max-block-size: min(70vh, 34rem);
+	overflow: visible;
+	padding-block: 0.5rem;
+}
+
+.sp-catRail__title {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.02em;
+	width: 100%;
+	overflow: visible;
+	font-family: var(--sp-font-display);
+	font-size: clamp(1.35rem, 2.4vw, 2.1rem);
+	font-weight: 900;
+	line-height: 1.05;
+	letter-spacing: 0.04em;
+	color: var(--sp-text);
+	text-align: center;
+	opacity: 0.92;
+}
+
+.sp-catRail__char {
+	display: block;
+	width: 100%;
+	text-align: center;
+	opacity: 0;
+	transform: translateY(8px);
+	transition:
+		opacity 360ms cubic-bezier(0.22, 1, 0.36, 1),
+		transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+	transition-delay: calc(var(--i, 0) * 24ms + 60ms);
+}
+
+.sp-page--category.sp-cat-ready .sp-catRail__char {
+	opacity: 1;
+	transform: none;
+}
+
+/* Long names: shrink letter size so the stack fits the rail frame. */
+.sp-catRail__title[data-len='long'] {
+	font-size: clamp(1.05rem, 1.8vw, 1.55rem);
+}
+
+.sp-catRail__title[data-len='xl'] {
+	font-size: clamp(0.9rem, 1.45vw, 1.25rem);
+	letter-spacing: 0.02em;
+}
+
+/* ---------- product grid ---------- */
+
+.sp-catGrid {
+	min-width: 0;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1.15rem;
+}
+
+.sp-catGrid__bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.65rem 1.25rem;
+	width: 100%;
+}
+
+.sp-catGrid__title {
+	margin: 0;
+	font-size: clamp(1.25rem, 2vw, 1.55rem);
+	font-weight: 800;
+	color: var(--sp-text);
+}
+
+.sp-catGrid__live {
+	margin: 0;
+	color: var(--sp-text-dim);
+	font-size: var(--sp-fs-small);
+	font-weight: 600;
+}
+
+.sp-catGrid__stage {
+	width: 100%;
+	min-width: 0;
+}
+
+.sp-catGrid__list,
+.sp-catGrid__list--skeleton {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 24px;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	/* Kill any theme/Woo float leftovers. */
+	float: none;
+	clear: both;
+}
+
+.sp-catGrid__list > .sp-card,
+.sp-catGrid__list > .sp-catCard,
+.sp-catGrid__list--skeleton > .sp-catSkeleton {
+	float: none;
+	position: relative;
+	inset: auto;
+	width: 100%;
+	max-width: none;
+	min-width: 0;
+	margin: 0;
+	opacity: 1;
+	transform: none;
+}
+
+/* Entrance only after .is-in — cards stay visible without JS too. */
+.sp-catGrid__list.is-in > .sp-card,
+.sp-catGrid__list.is-in > .sp-catCard {
+	animation: sp-cat-card-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation-delay: calc(var(--i, 0) * 50ms);
+}
+
+.sp-catGrid__list.is-out {
+	opacity: 0;
+	transform: translateY(12px);
+	transition:
+		opacity 220ms var(--sp-ease),
+		transform 220ms var(--sp-ease);
+}
+
+@keyframes sp-cat-card-in {
+	from {
+		opacity: 0;
+		transform: translateY(18px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* Category cards must not inherit scroll-reveal hide state. */
+.sp-page--category.sp-can-reveal .sp-catGrid [data-sp-reveal],
+.sp-page--category .sp-catGrid .sp-card {
+	opacity: 1;
+	transform: none;
+}
+
+.sp-catCard {
+	position: relative;
+	transition:
+		transform 280ms var(--sp-ease),
+		box-shadow 280ms var(--sp-ease);
+}
+
+.sp-catCard:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 18px 36px rgba(0, 0, 0, 0.35);
+}
+
+.sp-catCard__pepper {
+	background: var(--sp-amber) !important;
+	border-color: transparent !important;
+	color: var(--sp-on-light) !important;
+}
+
+.sp-catCard__quick {
+	opacity: 0;
+	transform: translateY(6px);
+	transition:
+		opacity 220ms var(--sp-ease),
+		transform 220ms var(--sp-ease);
+}
+
+.sp-catCard:hover .sp-catCard__quick,
+.sp-catCard:focus-within .sp-catCard__quick {
+	opacity: 1;
+	transform: none;
+}
+
+/* ---------- empty + skeleton ---------- */
+
+.sp-catEmpty {
+	display: grid;
+	place-items: center;
+	gap: 0.75rem;
+	width: 100%;
+	min-block-size: 16rem;
+	padding: clamp(2.5rem, 6vw, 4rem) 1rem;
+	border: 1px dashed rgba(36, 227, 210, 0.28);
+	border-radius: var(--sp-radius-xl);
+	background:
+		radial-gradient(circle at 50% 30%, rgba(36, 227, 210, 0.1), transparent 55%),
+		rgba(255, 255, 255, 0.02);
+	text-align: center;
+	animation: sp-cat-empty-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sp-catEmpty__mark {
+	inline-size: 3.2rem;
+	block-size: 3.2rem;
+	border-radius: 50%;
+	background: conic-gradient(from 180deg, var(--sp-cyan), var(--sp-amber), var(--sp-magenta), var(--sp-cyan));
+	mask: radial-gradient(circle at center, transparent 42%, #000 44%);
+	-webkit-mask: radial-gradient(circle at center, transparent 42%, #000 44%);
+	animation: sp-spin 8s linear infinite;
+}
+
+.sp-catEmpty__title {
+	margin: 0;
+	color: var(--sp-text-soft);
+	font-size: 1.05rem;
+	font-weight: 700;
+}
+
+@keyframes sp-cat-empty-in {
+	from {
+		opacity: 0;
+		transform: scale(0.97);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+.sp-catSkeleton {
+	display: grid;
+	gap: 0.65rem;
+	padding: 0.85rem;
+	border-radius: var(--sp-radius);
+	border: 1px solid var(--sp-line);
+	background: var(--sp-surface);
+}
+
+.sp-catSkeleton__media {
+	aspect-ratio: 1;
+	border-radius: calc(var(--sp-radius) - 4px);
+	background: linear-gradient(100deg, rgba(255, 255, 255, 0.04), rgba(36, 227, 210, 0.12), rgba(255, 255, 255, 0.04));
+	background-size: 200% 100%;
+	animation: sp-cat-shimmer 1.2s linear infinite;
+}
+
+.sp-catSkeleton__line {
+	block-size: 0.75rem;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.08);
+	animation: sp-cat-shimmer 1.2s linear infinite;
+}
+
+.sp-catSkeleton__line--short {
+	inline-size: 55%;
+}
+
+@keyframes sp-cat-shimmer {
+	0% {
+		background-position: 100% 0;
+	}
+	100% {
+		background-position: -100% 0;
+	}
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1100px) {
+	.sp-catBrowse__inner {
+		--sp-cat-rail-w: 4.25rem;
+	}
+}
+
+@media (max-width: 768px) {
+	.sp-catHero__row {
+		grid-template-columns: 1fr;
+		justify-items: start;
+	}
+
+	.sp-catBrowse__inner {
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	.sp-catRail {
+		position: relative;
+		inset-block-start: auto;
+		width: 100%;
+		min-width: 0;
+		min-block-size: 0;
+		justify-content: flex-start;
+	}
+
+	.sp-catRail__frame {
+		max-block-size: none;
+		width: 100%;
+		justify-content: flex-start;
+	}
+
+	/* Horizontal stack on small screens so it never overlaps the grid. */
+	.sp-catRail__title {
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		gap: 0.05em;
+		font-size: clamp(1.5rem, 6vw, 2rem);
+		letter-spacing: -0.02em;
+	}
+
+	.sp-catRail__char {
+		display: inline-block;
+		width: auto;
+	}
+
+	.sp-catCard__quick {
+		opacity: 1;
+		transform: none;
+	}
+
+	.sp-catGrid__list,
+	.sp-catGrid__list--skeleton {
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+		gap: 16px;
+	}
+}
+
+@media (max-width: 375px) {
+	.sp-catGrid__list,
+	.sp-catGrid__list--skeleton {
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sp-catHero__badge,
+	.sp-catHero__title,
+	.sp-catHero__desc,
+	.sp-catRail__char,
+	.sp-catGrid__list.is-in > .sp-card,
+	.sp-catEmpty,
+	.sp-catEmpty__mark,
+	.sp-catSkeleton__media,
+	.sp-catSkeleton__line {
+		animation: none !important;
+		transition: none !important;
+		opacity: 1;
+		transform: none;
+		filter: none;
+	}
+}

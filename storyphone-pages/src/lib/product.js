@@ -376,10 +376,12 @@ function revealLede(shell, node) {
 
 	const charge = () => {
 		target.classList.add('is-lit');
+		// Stagger: start after panel settles, then ~280ms between bolts —
+		// readable one-by-one without feeling sluggish.
 		node.querySelectorAll('.sp-pdpLede__point').forEach((point, index) => {
 			window.setTimeout(() => {
 				point.classList.add('is-struck');
-			}, reduced.matches ? 0 : 120 + index * 180);
+			}, reduced.matches ? 0 : 220 + index * 280);
 		});
 	};
 

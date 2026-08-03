@@ -128,7 +128,9 @@ class StoryPhone_Pages_Assets {
 
 		return array(
 			'storeApi'    => esc_url_raw( rest_url( 'wc/store/v1/' ) ),
+			'restUrl'     => esc_url_raw( rest_url( StoryPhone_Pages_REST::NS . '/' ) ),
 			'nonce'       => wp_create_nonce( 'wc_store_api' ),
+			'wpNonce'     => wp_create_nonce( 'wp_rest' ),
 			'hasWoo'      => $has_wc,
 			'homeUrl'     => StoryPhone_Pages_Templates::get_home_url(),
 			'cartUrl'     => $has_wc ? wc_get_cart_url() : StoryPhone_Pages_Templates::get_home_url(),
@@ -155,6 +157,14 @@ class StoryPhone_Pages_Assets {
 				'searchError'       => __( 'החיפוש נכשל. נסו שוב.', 'storyphone-pages' ),
 				'searchAll'         => __( 'לכל התוצאות עבור', 'storyphone-pages' ),
 				'searchUnavailable' => __( 'החיפוש אינו זמין כרגע.', 'storyphone-pages' ),
+
+				'catAll'       => __( 'הכל', 'storyphone-pages' ),
+				'catEmpty'     => __( 'אין מוצרים בקטגוריה הזו כרגע.', 'storyphone-pages' ),
+				'catError'     => __( 'טעינת המוצרים נכשלה. נסו שוב.', 'storyphone-pages' ),
+				'catShowing'   => __( 'מציגים %1$s מוצרים ב%2$s', 'storyphone-pages' ),
+				'catViewProduct' => __( 'לצפייה במוצר', 'storyphone-pages' ),
+				'catOutOfStock'  => __( 'אזל מהמלאי', 'storyphone-pages' ),
+				'catSale'        => __( '%d%%- הנחה', 'storyphone-pages' ),
 			),
 		);
 	}

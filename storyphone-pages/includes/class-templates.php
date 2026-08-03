@@ -101,6 +101,15 @@ class StoryPhone_Pages_Templates {
 			}
 		}
 
+		// Product category archives use our energetic category browser.
+		if ( function_exists( 'is_product_category' ) && is_product_category() ) {
+			$path = STORYPHONE_PAGES_PLUGIN_DIR . 'templates/category.php';
+			if ( file_exists( $path ) ) {
+				self::$active_slug = 'storyphone-category';
+				return $path;
+			}
+		}
+
 		if ( ! is_page() ) {
 			return $template;
 		}
@@ -204,6 +213,10 @@ class StoryPhone_Pages_Templates {
 
 		if ( function_exists( 'is_product' ) && is_product() ) {
 			return file_exists( STORYPHONE_PAGES_PLUGIN_DIR . 'templates/product.php' );
+		}
+
+		if ( function_exists( 'is_product_category' ) && is_product_category() ) {
+			return file_exists( STORYPHONE_PAGES_PLUGIN_DIR . 'templates/category.php' );
 		}
 
 		if ( ! is_page() ) {

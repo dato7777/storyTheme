@@ -590,6 +590,72 @@ class StoryPhone_Pages_Catalog {
 	}
 
 	/**
+	 * Paginated category products for the category archive / REST.
+	 *
+	 * @param WP_Term              $term Category.
+	 * @param array<string, mixed> $args page, per_page, search.
+	 * @return array{products: WC_Product[], total: int, pages: int}
+	 */
+	public static function query_category_products( $term, array $args = array() ) {
+		$empty = array(
+			'products' => array(),
+			'total'    => 0,
+			'pages'    => 0,
+		);
+
+		if ( ! $term instanceof WP_Term || ! storyphone_pages_has_woocommerce() ) {
+			return $empty;
+		}
+
+		$page     = max( 1, absint( isset( $args['page'] ) ? $args['page'] : 1 ) );
+		$per_page = min( 48, max( 1, absint( isset( $args['per_page'] ) ? $args['per_page'] : 24 ) ) );
+		$search   = isset( $args['search'] ) ? trim( (string) $args['search'] ) : '';
+
+		$query_args = array(
+			'status'   => 'publish',
+			'limit'    => $per_page,
+			'page'     => $page,
+			'paginate' => true,
+			'category' => array( $term->slug ),
+			'orderby'  => 'popularity',
+			'order'    => 'DESC',
+		);
+
+		if ( '' !== $search ) {
+			$query_args['s'] = $search;
+		}
+
+		$result = wc_get_products( $query_args );
+
+		if ( is_object( $result ) && isset( $result->products ) ) {
+			$products = array_values(
+				array_filter(
+					(array) $result->products,
+					static function ( $product ) {
+						return $product instanceof WC_Product && $product->is_visible();
+					}
+				)
+			);
+
+			return array(
+				'products' => $products,
+				'total'    => isset( $result->total ) ? (int) $result->total : count( $products ),
+				'pages'    => isset( $result->max_num_pages ) ? (int) $result->max_num_pages : 1,
+			);
+		}
+
+		// Older Woo / unexpected shape — fall back to a simple slice.
+		$products = self::get_category_products( $term, $per_page * $page );
+		$slice    = array_slice( $products, ( $page - 1 ) * $per_page, $per_page );
+
+		return array(
+			'products' => $slice,
+			'total'    => count( $products ),
+			'pages'    => (int) max( 1, ceil( count( $products ) / $per_page ) ),
+		);
+	}
+
+	/**
 	 * Related products for a PDP reel.
 	 *
 	 * Ranking blends shared categories with overlapping name tokens (so
