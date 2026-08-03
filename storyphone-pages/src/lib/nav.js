@@ -62,83 +62,11 @@ export function initNav() {
 		return;
 	}
 
+	// Homepage: hero stage. Product/category: header dropdown mega (same cards).
 	if (stage) {
 		initNavMega(triggers, stage);
-	} else {
-		initFlyoutNav(triggers);
 	}
 	initMobileAccordions(triggers);
-}
-
-/**
- * Product (and other non-home) pages: no hero stage, so children open as a
- * compact flyout under the hovered parent instead.
- *
- * @param {HTMLElement[]} triggers Nav trigger buttons.
- * @return {void}
- */
-function initFlyoutNav(triggers) {
-	let leaveTimer = null;
-
-	const closeAll = () => {
-		triggers.forEach((trigger) => {
-			trigger.classList.remove('is-hot');
-			if (DESKTOP_NAV.matches) {
-				trigger.setAttribute('aria-expanded', 'false');
-			}
-			const item = trigger.closest('.sp-nav__item');
-			const drawer = item ? item.querySelector('.sp-nav__drawer') : null;
-			if (drawer && DESKTOP_NAV.matches) {
-				drawer.hidden = true;
-			}
-		});
-	};
-
-	const open = (trigger) => {
-		if (!DESKTOP_NAV.matches) {
-			return;
-		}
-		closeAll();
-		const item = trigger.closest('.sp-nav__item');
-		const drawer = item ? item.querySelector('.sp-nav__drawer') : null;
-		trigger.classList.add('is-hot');
-		trigger.setAttribute('aria-expanded', 'true');
-		if (drawer) {
-			drawer.hidden = false;
-		}
-	};
-
-	triggers.forEach((trigger) => {
-		const item = trigger.closest('.sp-nav__item');
-
-		trigger.addEventListener('pointerenter', () => {
-			if (!FINE_HOVER.matches || !DESKTOP_NAV.matches) {
-				return;
-			}
-			window.clearTimeout(leaveTimer);
-			open(trigger);
-		});
-
-		item?.addEventListener('pointerleave', () => {
-			if (!DESKTOP_NAV.matches) {
-				return;
-			}
-			window.clearTimeout(leaveTimer);
-			leaveTimer = window.setTimeout(closeAll, 140);
-		});
-
-		trigger.addEventListener('click', (event) => {
-			if (!DESKTOP_NAV.matches) {
-				return;
-			}
-			event.preventDefault();
-			if (trigger.getAttribute('aria-expanded') === 'true') {
-				closeAll();
-			} else {
-				open(trigger);
-			}
-		});
-	});
 }
 
 /**
@@ -235,7 +163,10 @@ function initNavMega(triggers, stage) {
 			trigger.setAttribute('aria-expanded', on ? 'true' : 'false');
 		});
 
+		stage.hidden = false;
 		stage.classList.add('is-open');
+		// Dropdown mega: frost the sticky header so the panel reads as one surface.
+		stage.closest('[data-sp-header]')?.classList.add('is-mega-open');
 
 		if (activePanel) {
 			startCardGlow(activePanel);

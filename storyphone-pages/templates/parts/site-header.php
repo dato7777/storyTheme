@@ -180,4 +180,14 @@ $sp_logo_id     = (int) get_theme_mod( 'custom_logo' );
 		</div>
 
 	</div>
+
+	<?php
+	/*
+	 * Non-home pages have no hero stage. Drop the same child-category card
+	 * mega under the header so hover behaves identically to the homepage.
+	 */
+	if ( 'storyphone-home' !== StoryPhone_Pages_Templates::get_active_slug() ) {
+		StoryPhone_Pages_Render::part( 'nav-mega', array( 'nav' => $sp_nav ) );
+	}
+	?>
 </header>

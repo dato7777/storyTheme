@@ -16,12 +16,84 @@
 	border-block-end: 1px solid transparent;
 }
 
-.sp-header.is-stuck {
+/* Dropdown mega (product / category pages) — same cards as homepage stage. */
+.sp-navMega {
+	position: absolute;
+	inset-inline: 0;
+	inset-block-start: 100%;
+	z-index: 2;
+	padding-block: 1rem 1.25rem;
+	border-block-end: 1px solid var(--sp-line);
+	background: rgba(7, 9, 25, 0.96);
+	backdrop-filter: blur(22px) saturate(160%);
+	-webkit-backdrop-filter: blur(22px) saturate(160%);
+	box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transform: translateY(-8px);
+	transition:
+		opacity 240ms var(--sp-ease),
+		transform 280ms var(--sp-ease),
+		visibility 280ms;
+}
+
+.sp-navMega.is-open {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transform: none;
+}
+
+.sp-navMega__inner {
+	position: relative;
+	min-block-size: 0;
+}
+
+.sp-navMega .sp-navStage {
+	position: relative;
+	inset: auto;
+}
+
+.sp-navMega .sp-navStage:not(.is-active) {
+	display: none;
+}
+
+.sp-navMega .sp-navStage.is-active {
+	display: flex;
+}
+
+/* Inherit the shared fixed card size from .sp-navCards (hero.css). */
+.sp-navMega .sp-navCards {
+	flex: none;
+	max-block-size: min(52vh, 440px);
+	padding-block-end: 0.15rem;
+}
+
+/* Desktop only: mega replaces the plain-link flyout. Mobile keeps drawers. */
+@media (min-width: 861px) {
+	.sp-page:has([data-sp-nav-mega]) .sp-nav__drawer {
+		display: none !important;
+	}
+}
+
+@media (max-width: 860px) {
+	.sp-navMega {
+		display: none !important;
+	}
+}
+
+.sp-header.is-stuck,
+.sp-header.is-mega-open {
 	background: rgba(7, 9, 25, 0.72);
 	backdrop-filter: blur(20px) saturate(160%);
 	-webkit-backdrop-filter: blur(20px) saturate(160%);
 	border-block-end-color: var(--sp-line);
 	box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+
+.sp-header.is-mega-open {
+	border-block-end-color: transparent;
 }
 
 .sp-header__inner {
@@ -214,48 +286,9 @@
 	transform: rotate(180deg);
 }
 
-/* Desktop drawers stay in the DOM for mobile; hide them on wide screens —
-   except on product pages, where there is no hero stage to host children. */
+/* Desktop: drawers stay in the DOM for the mobile sheet only. */
 .sp-nav__drawer {
 	display: none;
-}
-
-@media (min-width: 861px) {
-	.sp-page:not(.sp-page--home) .sp-nav__drawer:not([hidden]) {
-		display: block;
-		position: absolute;
-		inset-block-start: calc(100% + 0.45rem);
-		inset-inline-end: 0;
-		z-index: 5;
-		min-inline-size: 220px;
-		padding: 0.55rem;
-		list-style: none;
-		margin: 0;
-		border: 1px solid var(--sp-line);
-		border-radius: var(--sp-radius-lg);
-		background: rgba(7, 9, 25, 0.94);
-		backdrop-filter: blur(18px);
-		-webkit-backdrop-filter: blur(18px);
-		box-shadow: var(--sp-shadow-lg);
-	}
-
-	.sp-page:not(.sp-page--home) .sp-nav__drawer a {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.75rem;
-		padding: 0.55rem 0.7rem;
-		border-radius: var(--sp-radius-sm);
-		color: var(--sp-text-soft);
-		font-size: 0.9rem;
-		font-weight: 600;
-		white-space: nowrap;
-	}
-
-	.sp-page:not(.sp-page--home) .sp-nav__drawer a:hover {
-		background: rgba(255, 255, 255, 0.05);
-		color: var(--sp-cyan);
-	}
 }
 
 /* ---------- actions ---------- */
