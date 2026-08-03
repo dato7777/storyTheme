@@ -78,9 +78,18 @@ if ( $sp_product->is_type( 'variable' ) && method_exists( $sp_product, 'get_avai
 	</p>
 
 	<?php if ( $sp_short ) : ?>
-		<div class="sp-pdpBuy__lede" data-sp-pdp-reveal>
-			<?php echo wp_kses_post( wpautop( $sp_short ) ); ?>
-		</div>
+		<section class="sp-pdpLede" data-sp-pdp-lede aria-label="<?php esc_attr_e( 'תיאור קצר', 'storyphone-pages' ); ?>">
+			<header class="sp-pdpLede__head">
+				<span class="sp-pdpLede__kicker">
+					<span class="sp-pdpLede__kickerZap" aria-hidden="true"></span>
+					<?php esc_html_e( 'בקצרה', 'storyphone-pages' ); ?>
+				</span>
+				<span class="sp-pdpLede__rail" aria-hidden="true"></span>
+			</header>
+			<div class="sp-pdpLede__body" data-sp-pdp-reveal>
+				<?php echo wp_kses_post( wpautop( $sp_short ) ); ?>
+			</div>
+		</section>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $sp_variations ) ) : ?>
@@ -153,13 +162,8 @@ if ( $sp_product->is_type( 'variable' ) && method_exists( $sp_product, 'get_avai
 
 	<?php if ( $sp_sku ) : ?>
 		<p class="sp-pdpBuy__sku">
-			<?php
-			printf(
-				/* translators: %s: SKU. */
-				esc_html__( 'מק״ט: %s', 'storyphone-pages' ),
-				esc_html( $sp_sku )
-			);
-			?>
+			<span class="sp-pdpBuy__skuLabel"><?php esc_html_e( 'מק״ט:', 'storyphone-pages' ); ?></span>
+			<span class="sp-pdpBuy__skuValue"><?php echo esc_html( $sp_sku ); ?></span>
 		</p>
 	<?php endif; ?>
 </div>

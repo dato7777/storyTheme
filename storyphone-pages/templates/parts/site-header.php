@@ -13,13 +13,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$sp_shop_url    = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+$sp_home_url    = StoryPhone_Pages_Templates::get_home_url();
+$sp_shop_url    = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : $sp_home_url;
 $sp_account_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : '';
 $sp_nav         = isset( $args['nav'] ) && is_array( $args['nav'] ) ? $args['nav'] : StoryPhone_Pages_Catalog::get_nav_tree( 9 );
 $sp_nav_meta    = StoryPhone_Pages_Catalog::get_last_nav_meta();
 $sp_nav_mode    = isset( $sp_nav_meta['mode'] ) ? (string) $sp_nav_meta['mode'] : 'auto';
 $sp_nav_count   = isset( $sp_nav_meta['count'] ) ? (int) $sp_nav_meta['count'] : count( $sp_nav );
 $sp_nav_ids     = isset( $sp_nav_meta['ids'] ) && is_array( $sp_nav_meta['ids'] ) ? implode( ',', array_map( 'intval', $sp_nav_meta['ids'] ) ) : '';
+$sp_logo_id     = (int) get_theme_mod( 'custom_logo' );
 ?>
 <!-- sp-nav mode=<?php echo esc_html( $sp_nav_mode ); ?> count=<?php echo esc_html( (string) $sp_nav_count ); ?> ids=<?php echo esc_html( $sp_nav_ids ); ?> catalog=<?php echo esc_html( (string) filemtime( STORYPHONE_PAGES_PLUGIN_DIR . 'includes/class-catalog.php' ) ); ?> -->
 <header
@@ -44,16 +46,29 @@ $sp_nav_ids     = isset( $sp_nav_meta['ids'] ) && is_array( $sp_nav_meta['ids'] 
 		</button>
 
 		<div class="sp-header__brand">
-			<?php if ( has_custom_logo() ) : ?>
-				<?php the_custom_logo(); ?>
-			<?php else : ?>
-				<a class="sp-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<a class="sp-brand" href="<?php echo esc_url( $sp_home_url ); ?>" aria-label="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+				<?php if ( $sp_logo_id ) : ?>
+					<?php
+					echo wp_get_attachment_image(
+						$sp_logo_id,
+						'full',
+						false,
+						array(
+							'class' => 'custom-logo',
+							'alt'   => get_bloginfo( 'name' ),
+						)
+					);
+					?>
+				<?php else : ?>
 					<span class="sp-brand__mark" aria-hidden="true">
 						<span class="sp-brand__ring"></span>
 					</span>
 					<span class="sp-brand__text"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
-				</a>
-			<?php endif; ?>
+				<?php endif; ?>
+			</a>
+			<a class="sp-header__home" href="<?php echo esc_url( $sp_home_url ); ?>">
+				<?php esc_html_e( 'ראשי', 'storyphone-pages' ); ?>
+			</a>
 		</div>
 
 		<nav id="sp-nav" class="sp-nav" aria-label="<?php esc_attr_e( 'תפריט ראשי', 'storyphone-pages' ); ?>">

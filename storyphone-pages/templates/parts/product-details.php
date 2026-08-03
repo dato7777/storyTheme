@@ -59,10 +59,16 @@ if ( ! $sp_desc && empty( $sp_attributes ) && '' === $sp_yt_raw ) {
 
 				<aside class="sp-pdpVideo" data-sp-reveal aria-label="<?php esc_attr_e( 'סרטון המוצר', 'storyphone-pages' ); ?>">
 					<?php if ( $sp_yt_id ) : ?>
+						<?php
+						$sp_yt_watch = 'https://www.youtube.com/watch?v=' . rawurlencode( $sp_yt_id );
+						$sp_yt_embed = 'https://www.youtube.com/embed/' . rawurlencode( $sp_yt_id );
+						?>
 						<div
 							class="sp-pdpVideo__shell"
 							data-sp-yt="<?php echo esc_attr( $sp_yt_id ); ?>"
 							data-sp-yt-title="<?php echo esc_attr( $sp_product->get_name() ); ?>"
+							data-sp-yt-embed="<?php echo esc_url( $sp_yt_embed ); ?>"
+							data-sp-yt-autoplay="1"
 						>
 							<img
 								class="sp-pdpVideo__poster"
@@ -70,11 +76,20 @@ if ( ! $sp_desc && empty( $sp_attributes ) && '' === $sp_yt_raw ) {
 								alt=""
 								loading="lazy"
 								decoding="async"
+								data-sp-yt-poster
 							>
 							<button type="button" class="sp-pdpVideo__play" data-sp-yt-play aria-label="<?php esc_attr_e( 'נגן סרטון', 'storyphone-pages' ); ?>">
 								<span class="sp-pdpVideo__playIcon" aria-hidden="true"></span>
 							</button>
-							<p class="sp-pdpVideo__caption"><?php esc_html_e( 'צפו במוצר בפעולה', 'storyphone-pages' ); ?></p>
+							<a
+								class="sp-pdpVideo__caption"
+								href="<?php echo esc_url( $sp_yt_watch ); ?>"
+								target="_blank"
+								rel="noopener noreferrer"
+								data-sp-yt-open
+							>
+								<?php esc_html_e( 'פתחו ביוטיוב ↗', 'storyphone-pages' ); ?>
+							</a>
 						</div>
 					<?php else : ?>
 						<div class="sp-pdpVideo__shell sp-pdpVideo__shell--empty">

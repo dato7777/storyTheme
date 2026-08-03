@@ -135,6 +135,61 @@ class StoryPhone_Pages_Templates {
 	}
 
 	/**
+	 * URL of the StoryPhone storefront home.
+	 *
+	 * Prefers a published page assigned the StoryPhone Home template (preview
+	 * and production before it is set as the WP front page). Falls back to
+	 * the site front URL once that page is (or when none is assigned).
+	 *
+	 * @return string
+	 */
+	public static function get_home_url() {
+		$cached = wp_cache_get( 'storyphone_pages_home_url', 'storyphone_pages' );
+		if ( is_string( $cached ) && '' !== $cached ) {
+			return $cached;
+		}
+
+		$pages = get_posts(
+			array(
+				'post_type'              => 'page',
+				'post_status'            => 'publish',
+				'posts_per_page'         => 1,
+				'orderby'                => 'menu_order date',
+				'order'                  => 'ASC',
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+				'meta_key'               => '_wp_page_template',
+				'meta_value'             => 'storyphone-home',
+				'fields'                 => 'ids',
+			)
+		);
+
+		$url = '';
+		if ( ! empty( $pages[0] ) ) {
+			$permalink = get_permalink( (int) $pages[0] );
+			if ( is_string( $permalink ) && '' !== $permalink ) {
+				$url = $permalink;
+			}
+		}
+
+		if ( '' === $url ) {
+			$url = home_url( '/' );
+		}
+
+		/**
+		 * Filter the StoryPhone storefront home URL (logo, crumbs, etc.).
+		 *
+		 * @param string $url Resolved home URL.
+		 */
+		$url = (string) apply_filters( 'storyphone_pages_home_url', $url );
+
+		wp_cache_set( 'storyphone_pages_home_url', $url, 'storyphone_pages', 5 * MINUTE_IN_SECONDS );
+
+		return $url;
+	}
+
+	/**
 	 * Whether this request renders one of our templates.
 	 *
 	 * Resolved without relying on dispatch() having run, so it is safe to call

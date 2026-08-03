@@ -130,9 +130,9 @@ class StoryPhone_Pages_Assets {
 			'storeApi'    => esc_url_raw( rest_url( 'wc/store/v1/' ) ),
 			'nonce'       => wp_create_nonce( 'wc_store_api' ),
 			'hasWoo'      => $has_wc,
-			'homeUrl'     => home_url( '/' ),
-			'cartUrl'     => $has_wc ? wc_get_cart_url() : home_url( '/' ),
-			'checkoutUrl' => $has_wc ? wc_get_checkout_url() : home_url( '/' ),
+			'homeUrl'     => StoryPhone_Pages_Templates::get_home_url(),
+			'cartUrl'     => $has_wc ? wc_get_cart_url() : StoryPhone_Pages_Templates::get_home_url(),
+			'checkoutUrl' => $has_wc ? wc_get_checkout_url() : StoryPhone_Pages_Templates::get_home_url(),
 			'searchHints' => self::get_search_hints(),
 			'i18n'        => array(
 				'cartTitle'   => __( 'סל הקניות', 'storyphone-pages' ),

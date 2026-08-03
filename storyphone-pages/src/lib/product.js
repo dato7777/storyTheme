@@ -138,43 +138,222 @@ function initGallery() {
 	window.setTimeout(schedule, reduced.matches ? 0 : SWEEP_MS);
 }
 
-/* ---------- buy-box letter typing ---------- */
+/* ---------- buy-box short description (neon lightning points) ---------- */
 
+/**
+ * Rebuild the short description into a styled lead + neon feature list.
+ *
+ * @return {void}
+ */
 function initBuyReveal() {
-	const node = document.querySelector('[data-sp-pdp-reveal]');
+	const shell = document.querySelector('[data-sp-pdp-lede]');
+	const node = shell?.querySelector('[data-sp-pdp-reveal]') || document.querySelector('[data-sp-pdp-reveal]');
 	if (!node) {
 		return;
 	}
 
-	const text = node.textContent.replace(/\s+/g, ' ').trim();
-	if (!text) {
+	const rawText = node.textContent.replace(/\s+/g, ' ').trim();
+	if (!rawText) {
 		return;
 	}
 
+	const { leadHtml, sparks } = extractLedeParts(node);
+
+	node.replaceChildren();
+	shell?.classList.add('is-ready');
+
+	if (leadHtml) {
+		const lead = document.createElement('div');
+		lead.className = 'sp-pdpLede__lead';
+		lead.innerHTML = leadHtml;
+		paintLeadAccents(lead);
+		node.append(lead);
+	}
+
+	if (sparks.length > 0) {
+		const list = document.createElement('ul');
+		list.className = 'sp-pdpLede__points';
+		list.setAttribute('role', 'list');
+
+		sparks.forEach((html, index) => {
+			const item = document.createElement('li');
+			item.className = 'sp-pdpLede__point';
+			item.style.setProperty('--i', String(index));
+
+			const zap = document.createElement('span');
+			zap.className = 'sp-pdpLede__zap';
+			zap.setAttribute('aria-hidden', 'true');
+			zap.innerHTML =
+				'<span class="sp-pdpLede__zapBolt"></span>' +
+				'<span class="sp-pdpLede__zapFlash"></span>';
+
+			const text = document.createElement('span');
+			text.className = 'sp-pdpLede__pointText';
+			text.innerHTML = html;
+
+			item.append(zap, text);
+			list.append(item);
+		});
+
+		node.append(list);
+	} else if (!leadHtml) {
+		const lead = document.createElement('div');
+		lead.className = 'sp-pdpLede__lead is-plain';
+		node.append(lead);
+		typePlainLead(lead, rawText);
+		revealLede(shell, node);
+		return;
+	}
+
+	revealLede(shell, node);
+}
+
+/**
+ * Split admin short-description HTML into lead copy + bullet lines.
+ *
+ * @param {HTMLElement} node
+ * @return {{ leadHtml: string, sparks: string[] }}
+ */
+function extractLedeParts(node) {
+	const clone = node.cloneNode(true);
+	const sparks = [];
+
+	clone.querySelectorAll('li').forEach((li) => {
+		const html = li.innerHTML.replace(/\s+/g, ' ').trim();
+		if (html) {
+			sparks.push(html);
+		}
+	});
+	clone.querySelectorAll('ul, ol').forEach((list) => list.remove());
+
+	// Soft-split br-only “lists” that editors paste without real <ul>.
+	if (sparks.length === 0) {
+		const brBlocks = [];
+		clone.querySelectorAll('p').forEach((p) => {
+			if (p.querySelector('br')) {
+				const parts = p.innerHTML.split(/<br\s*\/?>/i);
+				parts.forEach((part) => {
+					const clean = part.replace(/\s+/g, ' ').trim();
+					if (clean) {
+						brBlocks.push(clean);
+					}
+				});
+				p.remove();
+			}
+		});
+		if (brBlocks.length >= 2) {
+			sparks.push(...brBlocks);
+		}
+	}
+
+	let leadHtml = clone.innerHTML
+		.replace(/<p>\s*<\/p>/gi, '')
+		.replace(/\s+/g, ' ')
+		.trim();
+
+	// Plain “• item” / “- item” lines pasted without a real list.
+	if (sparks.length === 0 && leadHtml) {
+		const plain = clone.textContent.replace(/\r/g, '').trim();
+		const lines = plain
+			.split(/\n+/)
+			.map((line) => line.trim())
+			.filter(Boolean);
+		const bulletLines = lines.filter((line) => /^[-–—*•●▪]\s+/.test(line));
+		if (bulletLines.length >= 2) {
+			bulletLines.forEach((line) => {
+				sparks.push(line.replace(/^[-–—*•●▪]\s+/, ''));
+			});
+			const intro = lines.filter((line) => !/^[-–—*•●▪]\s+/.test(line));
+			leadHtml = intro.length
+				? `<p>${intro.map((line) => escapeHtml(line)).join('<br>')}</p>`
+				: '';
+		}
+	}
+
+	return { leadHtml, sparks };
+}
+
+/**
+ * @param {string} value
+ * @return {string}
+ */
+function escapeHtml(value) {
+	return value
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;');
+}
+
+/**
+ * Tint the first strong/em phrase and wrap the opening words for gradient.
+ *
+ * @param {HTMLElement} lead
+ * @return {void}
+ */
+function paintLeadAccents(lead) {
+	lead.querySelectorAll('strong, b').forEach((el, i) => {
+		el.classList.add('sp-pdpLede__neon');
+		if (i === 0) {
+			el.classList.add('is-primary');
+		}
+	});
+	lead.querySelectorAll('em, i').forEach((el) => {
+		el.classList.add('sp-pdpLede__cool');
+	});
+
+	const firstP = lead.querySelector('p') || lead;
+	if (firstP.querySelector('.sp-pdpLede__neon, .sp-pdpLede__cool')) {
+		return;
+	}
+
+	const walker = document.createTreeWalker(firstP, NodeFilter.SHOW_TEXT);
+	const textNode = walker.nextNode();
+	if (!textNode || !textNode.textContent) {
+		return;
+	}
+
+	const raw = textNode.textContent;
+	const match = raw.match(/^(\s*.{0,42}?(?:[.!?…׃:]|\s|$))/u);
+	if (!match) {
+		return;
+	}
+
+	const head = match[1];
+	const rest = raw.slice(head.length);
+	const mark = document.createElement('span');
+	mark.className = 'sp-pdpLede__neon is-primary';
+	mark.textContent = head.trimEnd();
+	const after = document.createTextNode((head.endsWith(' ') ? ' ' : '') + rest);
+	textNode.replaceWith(mark, after);
+}
+
+/**
+ * @param {HTMLElement} lead
+ * @param {string} text
+ * @return {void}
+ */
+function typePlainLead(lead, text) {
 	if (reduced.matches) {
-		node.classList.add('is-revealed');
+		lead.textContent = text;
 		return;
 	}
 
-	node.textContent = '';
-	node.classList.add('is-typing');
-
-	const chars = Array.from(text);
+	lead.classList.add('is-typing');
 	const stream = document.createElement('span');
 	stream.className = 'sp-typeStream';
 	const caret = document.createElement('span');
 	caret.className = 'sp-typeCaret';
 	caret.setAttribute('aria-hidden', 'true');
-	node.append(stream, caret);
+	lead.append(stream, caret);
 
-	// Cap total runtime ~1.1s so longer blurbs still feel snappy.
+	const chars = Array.from(text);
 	const step = Math.max(12, Math.min(28, 1100 / Math.max(chars.length, 1)));
 	let i = 0;
 
 	const tick = () => {
 		if (i >= chars.length) {
-			node.classList.remove('is-typing');
-			node.classList.add('is-revealed');
+			lead.classList.remove('is-typing');
 			caret.remove();
 			return;
 		}
@@ -183,10 +362,38 @@ function initBuyReveal() {
 		window.setTimeout(tick, step);
 	};
 
-	window.setTimeout(tick, 160);
+	window.setTimeout(tick, 120);
 }
 
-/* ---------- YouTube placeholder (click-to-play) ---------- */
+/**
+ * @param {HTMLElement|null|undefined} shell
+ * @param {HTMLElement} node
+ * @return {void}
+ */
+function revealLede(shell, node) {
+	const target = shell || node;
+	target.classList.add('is-built');
+
+	const charge = () => {
+		target.classList.add('is-lit');
+		node.querySelectorAll('.sp-pdpLede__point').forEach((point, index) => {
+			window.setTimeout(() => {
+				point.classList.add('is-struck');
+			}, reduced.matches ? 0 : 120 + index * 180);
+		});
+	};
+
+	if (reduced.matches) {
+		charge();
+		return;
+	}
+
+	window.requestAnimationFrame(() => {
+		window.requestAnimationFrame(charge);
+	});
+}
+
+/* ---------- YouTube (muted autoplay embed + watch fallback) ---------- */
 
 function initProductVideo() {
 	const shell = document.querySelector('[data-sp-yt]');
@@ -195,32 +402,75 @@ function initProductVideo() {
 	}
 
 	const id = shell.dataset.spYt;
-	const play = shell.querySelector('[data-sp-yt-play]');
-	if (!id || !play) {
+	if (!id) {
 		return;
 	}
 
-	const mount = () => {
-		if (shell.dataset.spYtReady) {
-			return;
-		}
-		shell.dataset.spYtReady = '1';
+	const title = shell.dataset.spYtTitle || 'YouTube video';
+	const watchUrl = `https://www.youtube.com/watch?v=${encodeURIComponent(id)}`;
+	const play = shell.querySelector('[data-sp-yt-play]');
+	let mounted = false;
 
-		const iframe = document.createElement('iframe');
-		iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&modestbranding=1`;
-		iframe.title = shell.getAttribute('data-sp-yt-title') || 'YouTube';
-		iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-		iframe.allowFullscreen = true;
-		iframe.loading = 'lazy';
-		iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-		iframe.className = 'sp-pdpVideo__frame';
-
-		shell.innerHTML = '';
-		shell.append(iframe);
-		shell.classList.add('is-playing');
+	const buildEmbedSrc = () => {
+		const origin = encodeURIComponent(window.location.origin);
+		const params = new URLSearchParams({
+			autoplay: '1',
+			mute: '1',
+			playsinline: '1',
+			rel: '0',
+			modestbranding: '1',
+			controls: '1',
+			enablejsapi: '1',
+			origin,
+		});
+		return `https://www.youtube.com/embed/${encodeURIComponent(id)}?${params.toString()}`;
 	};
 
-	play.addEventListener('click', mount);
+	const mountPlayer = () => {
+		if (mounted) {
+			return;
+		}
+		mounted = true;
+
+		const frame = document.createElement('iframe');
+		frame.className = 'sp-pdpVideo__frame';
+		frame.src = buildEmbedSrc();
+		frame.title = title;
+		frame.allow =
+			'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+		frame.allowFullscreen = true;
+		frame.setAttribute('allowfullscreen', '');
+		// Keep a normal referrer so YouTube is less likely to trip bot checks.
+		frame.referrerPolicy = 'origin-when-cross-origin';
+		frame.loading = 'eager';
+
+		shell.append(frame);
+		shell.classList.add('is-playing');
+		play?.setAttribute('hidden', '');
+		shell.querySelector('[data-sp-yt-poster]')?.setAttribute('hidden', '');
+	};
+
+	play?.addEventListener('click', (event) => {
+		event.preventDefault();
+		mountPlayer();
+	});
+
+	// Autoplay as soon as the video slot enters the viewport (muted — required
+	// by browser + YouTube policy). Caption still opens the full watch page.
+	if ('IntersectionObserver' in window) {
+		const io = new IntersectionObserver(
+			(entries) => {
+				if (entries.some((entry) => entry.isIntersecting)) {
+					mountPlayer();
+					io.disconnect();
+				}
+			},
+			{ rootMargin: '120px 0px', threshold: 0.2 }
+		);
+		io.observe(shell);
+	} else {
+		mountPlayer();
+	}
 }
 
 /* ---------- quantity ---------- */

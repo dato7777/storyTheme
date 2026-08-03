@@ -35,12 +35,42 @@
 
 .sp-header__brand {
 	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.65rem;
 }
 
 .sp-brand {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.6rem;
+	text-decoration: none;
+	color: inherit;
+}
+
+.sp-header__home {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.28rem 0.7rem;
+	border: 1px solid var(--sp-line);
+	border-radius: var(--sp-radius-pill);
+	background: rgba(255, 255, 255, 0.04);
+	color: var(--sp-text-soft);
+	font-size: 0.8125rem;
+	font-weight: 700;
+	text-decoration: none;
+	white-space: nowrap;
+	transition:
+		color var(--sp-dur) var(--sp-ease),
+		border-color var(--sp-dur) var(--sp-ease),
+		background var(--sp-dur) var(--sp-ease);
+}
+
+.sp-header__home:hover,
+.sp-header__home:focus-visible {
+	color: var(--sp-cyan);
+	border-color: rgba(36, 227, 210, 0.45);
+	background: rgba(36, 227, 210, 0.1);
 }
 
 .sp-brand__mark {
@@ -95,10 +125,10 @@
 	white-space: nowrap;
 }
 
-.sp-header__brand .custom-logo-link img,
 .sp-header__brand .custom-logo {
 	max-block-size: 40px;
 	inline-size: auto;
+	display: block;
 }
 
 /* ---------- nav ---------- */

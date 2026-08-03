@@ -17,7 +17,7 @@ if ( ! $product instanceof WC_Product ) {
 }
 
 if ( ! $product instanceof WC_Product ) {
-	wp_safe_redirect( home_url( '/' ) );
+	wp_safe_redirect( StoryPhone_Pages_Templates::get_home_url() );
 	exit;
 }
 
@@ -71,7 +71,7 @@ if ( ! is_array( $sp_cats ) ) {
 		<div class="sp-shell sp-pdpHero__inner">
 
 			<nav class="sp-crumbs" aria-label="<?php esc_attr_e( 'ניווט פירורים', 'storyphone-pages' ); ?>" data-sp-reveal>
-				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'ראשי', 'storyphone-pages' ); ?></a>
+				<a href="<?php echo esc_url( StoryPhone_Pages_Templates::get_home_url() ); ?>"><?php esc_html_e( 'ראשי', 'storyphone-pages' ); ?></a>
 				<?php if ( ! empty( $sp_cats ) ) : ?>
 					<?php
 					$sp_crumb = $sp_cats[0];
