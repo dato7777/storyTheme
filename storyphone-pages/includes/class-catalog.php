@@ -439,7 +439,7 @@ class StoryPhone_Pages_Catalog {
 				$ids[]  = (int) $term->term_id;
 				$tree[] = array(
 					'term'     => $term,
-					'children' => self::get_child_categories( $term, 6 ),
+					'children' => self::get_child_categories( $term, 9 ),
 				);
 			}
 			self::$last_nav_meta = array(
@@ -465,7 +465,7 @@ class StoryPhone_Pages_Catalog {
 		$without_kids = array();
 
 		foreach ( $parents as $parent ) {
-			$children = self::get_child_categories( $parent, 6 );
+			$children = self::get_child_categories( $parent, 9 );
 			$entry    = array(
 				'term'     => $parent,
 				'children' => $children,

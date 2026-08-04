@@ -16,19 +16,12 @@ defined( 'ABSPATH' ) || exit;
 $sp_home_url    = StoryPhone_Pages_Templates::get_home_url();
 $sp_shop_url    = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : $sp_home_url;
 $sp_account_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : '';
-$sp_nav         = isset( $args['nav'] ) && is_array( $args['nav'] ) ? $args['nav'] : StoryPhone_Pages_Catalog::get_nav_tree( 9 );
-$sp_nav_meta    = StoryPhone_Pages_Catalog::get_last_nav_meta();
-$sp_nav_mode    = isset( $sp_nav_meta['mode'] ) ? (string) $sp_nav_meta['mode'] : 'auto';
-$sp_nav_count   = isset( $sp_nav_meta['count'] ) ? (int) $sp_nav_meta['count'] : count( $sp_nav );
-$sp_nav_ids     = isset( $sp_nav_meta['ids'] ) && is_array( $sp_nav_meta['ids'] ) ? implode( ',', array_map( 'intval', $sp_nav_meta['ids'] ) ) : '';
-$sp_logo_id     = (int) get_theme_mod( 'custom_logo' );
+$sp_nav     = isset( $args['nav'] ) && is_array( $args['nav'] ) ? $args['nav'] : StoryPhone_Pages_Catalog::get_nav_tree( 9 );
+$sp_logo_id = (int) get_theme_mod( 'custom_logo' );
 ?>
-<!-- sp-nav mode=<?php echo esc_html( $sp_nav_mode ); ?> count=<?php echo esc_html( (string) $sp_nav_count ); ?> ids=<?php echo esc_html( $sp_nav_ids ); ?> catalog=<?php echo esc_html( (string) filemtime( STORYPHONE_PAGES_PLUGIN_DIR . 'includes/class-catalog.php' ) ); ?> -->
 <header
 	class="sp-header"
 	data-sp-header
-	data-sp-nav-mode="<?php echo esc_attr( $sp_nav_mode ); ?>"
-	data-sp-nav-count="<?php echo esc_attr( (string) $sp_nav_count ); ?>"
 >
 	<div class="sp-header__inner sp-shell">
 

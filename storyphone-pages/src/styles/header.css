@@ -63,11 +63,12 @@
 	display: flex;
 }
 
-/* Inherit the shared fixed card size from .sp-navCards (hero.css). */
+/* Same 3×3 board as the hero stage — hug content, never scroll. */
 .sp-navMega .sp-navCards {
 	flex: none;
-	max-block-size: min(52vh, 440px);
-	padding-block-end: 0.15rem;
+	max-block-size: none;
+	padding-block: 0.25rem;
+	overflow: hidden;
 }
 
 /* Desktop only: mega replaces the plain-link flyout. Mobile keeps drawers. */

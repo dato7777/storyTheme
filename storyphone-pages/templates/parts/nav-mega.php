@@ -31,7 +31,7 @@ if ( empty( $sp_nav ) ) {
 				continue;
 			}
 			$sp_parent   = $sp_entry['term'];
-			$sp_children = isset( $sp_entry['children'] ) && is_array( $sp_entry['children'] ) ? $sp_entry['children'] : array();
+			$sp_children = isset( $sp_entry['children'] ) && is_array( $sp_entry['children'] ) ? array_slice( $sp_entry['children'], 0, 9 ) : array();
 			$sp_panel_id = 'cat-' . (int) $sp_parent->term_id;
 			?>
 			<div class="sp-navStage" data-sp-nav-panel="<?php echo esc_attr( $sp_panel_id ); ?>" hidden>

@@ -273,27 +273,33 @@
 }
 
 /*
- * Standard subcategory card size — same on homepage stage and header mega,
- * regardless of how many children a parent has.
- * Width/height stay in a mid band via clamp (not tiny, not oversized).
+ * Fixed 3×3 subcategory board (max 9 cards) — centered, no scrollbars.
+ * Same footprint on homepage stage and header mega.
  */
 .sp-navCards {
-	--sp-nav-card-w: clamp(148px, 11.5vw, 172px);
-	--sp-nav-card-h: clamp(188px, 15vw, 220px);
-	--sp-nav-card-gap: clamp(0.5rem, 1vw, 0.75rem);
+	--sp-nav-card-w: clamp(118px, 9.5vw, 148px);
+	--sp-nav-card-h: clamp(142px, 12vw, 172px);
+	--sp-nav-card-gap: 0.5rem;
 
 	flex: 1 1 auto;
 	min-block-size: 0;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, var(--sp-nav-card-w));
+	grid-template-columns: repeat(3, var(--sp-nav-card-w));
 	grid-auto-rows: var(--sp-nav-card-h);
 	grid-auto-flow: row;
 	justify-content: center;
-	align-content: start;
+	align-content: center;
+	justify-items: center;
 	gap: var(--sp-nav-card-gap);
-	overflow-x: hidden;
-	overflow-y: auto;
-	scrollbar-width: thin;
+	overflow: hidden;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.sp-navCards::-webkit-scrollbar {
+	display: none;
+	inline-size: 0;
+	block-size: 0;
 }
 
 .sp-navCard {
@@ -466,15 +472,15 @@
 
 @media (max-width: 1100px) {
 	.sp-navCards {
-		--sp-nav-card-w: clamp(136px, 14vw, 158px);
-		--sp-nav-card-h: clamp(176px, 18vw, 204px);
+		--sp-nav-card-w: clamp(104px, 9vw, 132px);
+		--sp-nav-card-h: clamp(128px, 11vw, 158px);
 	}
 }
 
 @media (max-width: 860px) {
 	.sp-navCards {
-		--sp-nav-card-w: clamp(128px, 40vw, 152px);
-		--sp-nav-card-h: clamp(168px, 48vw, 196px);
+		--sp-nav-card-w: clamp(96px, 28vw, 120px);
+		--sp-nav-card-h: clamp(120px, 34vw, 148px);
 	}
 }
 

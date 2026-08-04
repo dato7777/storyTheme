@@ -18,7 +18,27 @@ import { initStories } from './lib/stories.js';
  *
  * @return {void}
  */
+/**
+ * Remove leftover Design-nav debug badge from older Inventory Manager builds.
+ *
+ * @return {void}
+ */
+function killDesignNavBadge() {
+	const needle = 'StoryPhone Design nav';
+	document.querySelectorAll('div').forEach((el) => {
+		const text = (el.textContent || '').trim();
+		if (
+			text.includes(needle) &&
+			text.includes('IM override') &&
+			text.length < 240
+		) {
+			el.remove();
+		}
+	});
+}
+
 function boot() {
+	killDesignNavBadge();
 	[initNav, initReveal, initMotion, initStories, initSearch, initCart, initProduct, initCategory].forEach((init) => {
 		try {
 			init();
