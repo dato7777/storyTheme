@@ -39,7 +39,7 @@
 	inline-size: clamp(88px, 14vw, 128px);
 	block-size: clamp(88px, 14vw, 128px);
 	border-radius: 28%;
-	border: 1px solid rgba(36, 227, 210, 0.28);
+	border: 1px solid rgba(168, 255, 42, 0.28);
 	background:
 		radial-gradient(circle at 30% 25%, rgba(255, 176, 32, 0.22), transparent 55%),
 		var(--sp-ink-700);
@@ -72,7 +72,7 @@
 	block-size: 42%;
 	border-radius: 30%;
 	background: var(--sp-grad-cool);
-	box-shadow: 0 0 24px rgba(36, 227, 210, 0.45);
+	box-shadow: 0 0 24px rgba(168, 255, 42, 0.45);
 }
 
 .sp-catHero__copy {
@@ -219,7 +219,7 @@
 	block-size: 0.45rem;
 	border-radius: 50%;
 	background: var(--sp-cyan);
-	box-shadow: 0 0 8px rgba(36, 227, 210, 0.7);
+	box-shadow: 0 0 8px rgba(168, 255, 42, 0.7);
 }
 
 .sp-catChip__count {
@@ -235,17 +235,17 @@
 .sp-catChip:hover,
 .sp-catChip:focus-visible {
 	color: var(--sp-text);
-	border-color: rgba(36, 227, 210, 0.4);
+	border-color: rgba(168, 255, 42, 0.4);
 	transform: translateY(-1px);
 }
 
 .sp-catChip.is-active {
 	color: var(--sp-on-light);
 	border-color: transparent;
-	background: linear-gradient(120deg, var(--sp-cyan), #7ef5e8 55%, var(--sp-amber));
+	background: linear-gradient(120deg, var(--sp-cyan), #c8ff8a 55%, var(--sp-amber));
 	box-shadow:
-		0 0 0 1px rgba(36, 227, 210, 0.25),
-		0 10px 28px rgba(36, 227, 210, 0.28);
+		0 0 0 1px rgba(168, 255, 42, 0.25),
+		0 10px 28px rgba(168, 255, 42, 0.28);
 }
 
 .sp-catChip.is-active .sp-catChip__count {
@@ -480,10 +480,10 @@
 	width: 100%;
 	min-block-size: 16rem;
 	padding: clamp(2.5rem, 6vw, 4rem) 1rem;
-	border: 1px dashed rgba(36, 227, 210, 0.28);
+	border: 1px dashed rgba(168, 255, 42, 0.28);
 	border-radius: var(--sp-radius-xl);
 	background:
-		radial-gradient(circle at 50% 30%, rgba(36, 227, 210, 0.1), transparent 55%),
+		radial-gradient(circle at 50% 30%, rgba(168, 255, 42, 0.1), transparent 55%),
 		rgba(255, 255, 255, 0.02);
 	text-align: center;
 	animation: sp-cat-empty-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -529,7 +529,7 @@
 .sp-catSkeleton__media {
 	aspect-ratio: 1;
 	border-radius: calc(var(--sp-radius) - 4px);
-	background: linear-gradient(100deg, rgba(255, 255, 255, 0.04), rgba(36, 227, 210, 0.12), rgba(255, 255, 255, 0.04));
+	background: linear-gradient(100deg, rgba(255, 255, 255, 0.04), rgba(168, 255, 42, 0.12), rgba(255, 255, 255, 0.04));
 	background-size: 200% 100%;
 	animation: sp-cat-shimmer 1.2s linear infinite;
 }

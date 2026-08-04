@@ -92,8 +92,8 @@
 }
 
 .sp-heroSearch:hover {
-	border-color: rgba(124, 92, 255, 0.7);
-	box-shadow: var(--sp-shadow-lg), 0 0 0 6px rgba(124, 92, 255, 0.12);
+	border-color: rgba(168, 255, 42, 0.7);
+	box-shadow: var(--sp-shadow-lg), 0 0 0 6px rgba(168, 255, 42, 0.12);
 	transform: translateY(-2px);
 }
 
@@ -150,7 +150,7 @@
 	padding: 0.65rem 1.35rem;
 	border-radius: var(--sp-radius-pill);
 	background: var(--sp-grad-primary);
-	color: #fff;
+	color: var(--sp-on-light);
 	font-weight: 800;
 	font-size: 0.9375rem;
 	box-shadow: var(--sp-shadow-accent);
@@ -330,7 +330,7 @@
 }
 
 .sp-navCard:hover {
-	border-color: rgba(36, 227, 210, 0.45);
+	border-color: rgba(168, 255, 42, 0.45);
 	box-shadow: var(--sp-shadow-lg);
 }
 
@@ -345,21 +345,21 @@
 	background: linear-gradient(
 		115deg,
 		transparent 30%,
-		rgba(36, 227, 210, 0.14) 45%,
+		rgba(168, 255, 42, 0.14) 45%,
 		rgba(255, 255, 255, 0.28) 50%,
-		rgba(124, 92, 255, 0.18) 55%,
+		rgba(168, 255, 42, 0.18) 55%,
 		transparent 70%
 	);
 	transform: translateX(-120%);
 }
 
 .sp-navCard.is-lit {
-	border-color: rgba(36, 227, 210, 0.55);
+	border-color: rgba(168, 255, 42, 0.55);
 	box-shadow:
 		var(--sp-shadow-lg),
-		0 0 0 1px rgba(36, 227, 210, 0.2),
-		0 0 28px rgba(36, 227, 210, 0.22),
-		0 0 48px rgba(124, 92, 255, 0.16);
+		0 0 0 1px rgba(168, 255, 42, 0.2),
+		0 0 28px rgba(168, 255, 42, 0.22),
+		0 0 48px rgba(168, 255, 42, 0.16);
 }
 
 .sp-navCard.is-lit .sp-navCard__shine {
@@ -404,7 +404,7 @@
 .sp-navCard__media--empty {
 	display: grid;
 	place-items: center;
-	background: linear-gradient(145deg, rgba(124, 92, 255, 0.35), rgba(36, 227, 210, 0.2));
+	background: linear-gradient(145deg, rgba(168, 255, 42, 0.35), rgba(168, 255, 42, 0.2));
 }
 
 .sp-navCard__img {
@@ -447,12 +447,12 @@
 	line-height: 1.25;
 	letter-spacing: -0.012em;
 	/* Fallback colour first — gradient clips over it in supporting browsers. */
-	color: #5ef0e0;
-	background-image: linear-gradient(115deg, #5ef0e0 0%, #7ec8ff 48%, #b8a6ff 100%);
+	color: #c8ff6a;
+	background-image: linear-gradient(115deg, #c8ff6a 0%, #9dff6a 48%, #d4ff8a 100%);
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
-	filter: drop-shadow(0 0 10px rgba(36, 227, 210, 0.28));
+	filter: drop-shadow(0 0 10px rgba(168, 255, 42, 0.28));
 	overflow-wrap: anywhere;
 	word-break: break-word;
 	hyphens: auto;
@@ -465,8 +465,8 @@
 @supports not ((background-clip: text) or (-webkit-background-clip: text)) {
 	.sp-navCard__name {
 		background-image: none;
-		-webkit-text-fill-color: #7ee8dc;
-		color: #7ee8dc;
+		-webkit-text-fill-color: #b8ff7a;
+		color: #b8ff7a;
 	}
 }
 
@@ -728,8 +728,8 @@
 /* ---------- deal face ---------- */
 
 .sp-pick__kicker--deal {
-	background: rgba(255, 77, 157, 0.14);
-	border-color: rgba(255, 77, 157, 0.38);
+	background: rgba(125, 255, 176, 0.14);
+	border-color: rgba(125, 255, 176, 0.38);
 	color: var(--sp-magenta);
 }
 

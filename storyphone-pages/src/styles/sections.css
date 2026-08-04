@@ -21,8 +21,8 @@
 	border: 1px solid var(--sp-line);
 	border-radius: var(--sp-radius-xl);
 	background:
-		radial-gradient(90% 140% at 90% 0%, rgba(124, 92, 255, 0.5) 0%, transparent 62%),
-		radial-gradient(70% 120% at 0% 100%, rgba(36, 227, 210, 0.28) 0%, transparent 60%),
+		radial-gradient(90% 140% at 90% 0%, rgba(168, 255, 42, 0.5) 0%, transparent 62%),
+		radial-gradient(70% 120% at 0% 100%, rgba(168, 255, 42, 0.28) 0%, transparent 60%),
 		linear-gradient(150deg, var(--sp-ink-700) 0%, var(--sp-ink-900) 100%);
 	color: #fff;
 	box-shadow: var(--sp-shadow-lg);

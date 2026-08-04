@@ -40,9 +40,9 @@ body.sp-page::before {
 	z-index: -1;
 	pointer-events: none;
 	background:
-		radial-gradient(120% 80% at 85% -10%, rgba(124, 92, 255, 0.22), transparent 60%),
-		radial-gradient(90% 70% at 5% 5%, rgba(36, 227, 210, 0.12), transparent 55%),
-		linear-gradient(180deg, var(--sp-ink-850) 0%, var(--sp-ink-900) 55%, #03040b 100%);
+		radial-gradient(120% 80% at 85% -10%, rgba(168, 255, 42, 0.22), transparent 60%),
+		radial-gradient(90% 70% at 5% 5%, rgba(168, 255, 42, 0.12), transparent 55%),
+		linear-gradient(180deg, var(--sp-ink-850) 0%, var(--sp-ink-900) 55%, #030805 100%);
 }
 
 html.sp-locked,

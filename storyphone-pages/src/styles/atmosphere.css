@@ -29,7 +29,7 @@
 	block-size: 46vw;
 	min-inline-size: 340px;
 	min-block-size: 340px;
-	background: radial-gradient(circle, rgba(124, 92, 255, 0.85), transparent 68%);
+	background: radial-gradient(circle, rgba(168, 255, 42, 0.85), transparent 68%);
 	animation: sp-drift-a 22s var(--sp-ease) infinite alternate;
 }
 
@@ -40,7 +40,7 @@
 	block-size: 38vw;
 	min-inline-size: 280px;
 	min-block-size: 280px;
-	background: radial-gradient(circle, rgba(36, 227, 210, 0.6), transparent 68%);
+	background: radial-gradient(circle, rgba(168, 255, 42, 0.6), transparent 68%);
 	animation: sp-drift-b 26s var(--sp-ease) infinite alternate;
 }
 
@@ -51,7 +51,7 @@
 	block-size: 40vw;
 	min-inline-size: 300px;
 	min-block-size: 300px;
-	background: radial-gradient(circle, rgba(255, 77, 157, 0.55), transparent 70%);
+	background: radial-gradient(circle, rgba(125, 255, 176, 0.55), transparent 70%);
 	animation: sp-drift-c 30s var(--sp-ease) infinite alternate;
 }
 
@@ -166,14 +166,14 @@
 	block-size: 7px;
 	border-radius: 50%;
 	background: var(--sp-cyan);
-	box-shadow: 0 0 0 0 rgba(36, 227, 210, 0.7);
+	box-shadow: 0 0 0 0 rgba(168, 255, 42, 0.7);
 	animation: sp-ping 2.4s ease-out infinite;
 }
 
 @keyframes sp-ping {
 	70%,
 	100% {
-		box-shadow: 0 0 0 10px rgba(36, 227, 210, 0);
+		box-shadow: 0 0 0 10px rgba(168, 255, 42, 0);
 	}
 }
 
@@ -198,8 +198,8 @@
 }
 
 .sp-chip:hover {
-	border-color: rgba(124, 92, 255, 0.55);
-	background: rgba(124, 92, 255, 0.14);
+	border-color: rgba(168, 255, 42, 0.55);
+	background: rgba(168, 255, 42, 0.14);
 	color: var(--sp-text);
 	transform: translateY(-2px);
 }

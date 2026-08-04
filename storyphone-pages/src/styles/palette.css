@@ -163,7 +163,7 @@
 .sp-result:hover,
 .sp-result.is-active {
 	background: var(--sp-surface-2);
-	border-color: rgba(124, 92, 255, 0.4);
+	border-color: rgba(168, 255, 42, 0.4);
 }
 
 .sp-result__media {

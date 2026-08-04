@@ -16,7 +16,7 @@
 	padding: clamp(1.5rem, 4vw, 3.25rem);
 	border: 1px solid var(--sp-line);
 	border-radius: var(--sp-radius-xl);
-	background: linear-gradient(135deg, rgba(124, 92, 255, 0.16), rgba(255, 77, 157, 0.08));
+	background: linear-gradient(135deg, rgba(168, 255, 42, 0.16), rgba(125, 255, 176, 0.08));
 	overflow: hidden;
 	isolation: isolate;
 	box-shadow: var(--sp-shadow-lg);

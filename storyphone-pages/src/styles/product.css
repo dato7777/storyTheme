@@ -210,8 +210,8 @@
 .sp-pdpGallery__thumb:hover,
 .sp-pdpGallery__thumb.is-active {
 	opacity: 1;
-	border-color: rgba(36, 227, 210, 0.55);
-	box-shadow: 0 0 0 3px rgba(36, 227, 210, 0.15);
+	border-color: rgba(168, 255, 42, 0.55);
+	box-shadow: 0 0 0 3px rgba(168, 255, 42, 0.15);
 	transform: translateY(-2px);
 }
 
@@ -280,8 +280,8 @@
 .sp-pdpBuy__save {
 	padding: 0.2rem 0.65rem;
 	border-radius: var(--sp-radius-pill);
-	background: rgba(255, 77, 157, 0.16);
-	border: 1px solid rgba(255, 77, 157, 0.35);
+	background: rgba(125, 255, 176, 0.16);
+	border: 1px solid rgba(125, 255, 176, 0.35);
 	color: var(--sp-magenta);
 	font-size: 0.8125rem;
 	font-weight: 800;
@@ -330,14 +330,14 @@
 	gap: 0.85rem;
 	padding: 1rem 1.05rem 1.15rem;
 	border-radius: calc(var(--sp-radius-xl) - 4px);
-	border: 1px solid rgba(36, 227, 210, 0.22);
+	border: 1px solid rgba(168, 255, 42, 0.22);
 	background:
-		radial-gradient(120% 90% at 100% 0%, rgba(36, 227, 210, 0.14), transparent 55%),
-		radial-gradient(90% 80% at 0% 100%, rgba(124, 92, 255, 0.1), transparent 50%),
+		radial-gradient(120% 90% at 100% 0%, rgba(168, 255, 42, 0.14), transparent 55%),
+		radial-gradient(90% 80% at 0% 100%, rgba(168, 255, 42, 0.1), transparent 50%),
 		linear-gradient(165deg, rgba(14, 18, 40, 0.95), rgba(8, 10, 24, 0.82));
 	box-shadow:
-		inset 0 1px 0 rgba(36, 227, 210, 0.1),
-		0 0 0 1px rgba(36, 227, 210, 0.04),
+		inset 0 1px 0 rgba(168, 255, 42, 0.1),
+		0 0 0 1px rgba(168, 255, 42, 0.04),
 		0 18px 40px rgba(0, 0, 0, 0.3);
 	overflow: hidden;
 	opacity: 0;
@@ -352,10 +352,10 @@
 .sp-pdpLede.is-lit {
 	opacity: 1;
 	transform: none;
-	border-color: rgba(36, 227, 210, 0.38);
+	border-color: rgba(168, 255, 42, 0.38);
 	box-shadow:
-		inset 0 1px 0 rgba(36, 227, 210, 0.14),
-		0 0 28px rgba(36, 227, 210, 0.08),
+		inset 0 1px 0 rgba(168, 255, 42, 0.14),
+		0 0 28px rgba(168, 255, 42, 0.08),
 		0 18px 40px rgba(0, 0, 0, 0.3);
 }
 
@@ -365,10 +365,10 @@
 	inset-block-start: 0;
 	inset-inline: 10%;
 	block-size: 2px;
-	background: linear-gradient(90deg, transparent, #5ef0e0, #a78bfa, #24e3d2, transparent);
+	background: linear-gradient(90deg, transparent, #c8ff6a, #9dff6a, #a8ff2a, transparent);
 	opacity: 0.9;
 	pointer-events: none;
-	box-shadow: 0 0 12px rgba(36, 227, 210, 0.55);
+	box-shadow: 0 0 12px rgba(168, 255, 42, 0.55);
 }
 
 .sp-pdpLede__head {
@@ -382,28 +382,28 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 0.45rem;
-	color: #7ef5e8;
+	color: #c8ff8a;
 	font-size: 0.72rem;
 	font-weight: 800;
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
 	white-space: nowrap;
-	text-shadow: 0 0 14px rgba(36, 227, 210, 0.45);
+	text-shadow: 0 0 14px rgba(168, 255, 42, 0.45);
 }
 
 .sp-pdpLede__kickerZap {
 	inline-size: 0.7rem;
 	block-size: 1rem;
-	background: linear-gradient(160deg, #fff 0%, #7ef5e8 40%, #24e3d2 70%, #7c5cff 100%);
+	background: linear-gradient(160deg, #fff 0%, #c8ff8a 40%, #a8ff2a 70%, #a8ff2a 100%);
 	clip-path: polygon(55% 0%, 18% 52%, 42% 52%, 30% 100%, 82% 42%, 56% 42%);
-	box-shadow: 0 0 10px rgba(36, 227, 210, 0.7);
+	box-shadow: 0 0 10px rgba(168, 255, 42, 0.7);
 	filter: drop-shadow(0 0 6px rgba(94, 240, 224, 0.8));
 }
 
 .sp-pdpLede__rail {
 	flex: 1 1 auto;
 	block-size: 1px;
-	background: linear-gradient(90deg, rgba(36, 227, 210, 0.65), rgba(124, 92, 255, 0.25), transparent);
+	background: linear-gradient(90deg, rgba(168, 255, 42, 0.65), rgba(168, 255, 42, 0.25), transparent);
 }
 
 .sp-pdpLede__body {
@@ -433,7 +433,7 @@
 }
 
 .sp-pdpLede__neon.is-primary {
-	background: linear-gradient(115deg, #e8fffc 0%, #5ef0e0 35%, #7c5cff 78%, #ff4d9d 120%);
+	background: linear-gradient(115deg, #f2ffe8 0%, #c8ff6a 35%, #a8ff2a 78%, #7dffb0 120%);
 	background-size: 180% 100%;
 	-webkit-background-clip: text;
 	background-clip: text;
@@ -464,7 +464,7 @@
 	gap: 0.75rem;
 	padding: 0.58rem 0.8rem;
 	border-radius: 0.8rem;
-	border: 1px solid rgba(36, 227, 210, 0.1);
+	border: 1px solid rgba(168, 255, 42, 0.1);
 	background: rgba(8, 14, 32, 0.55);
 	opacity: 0;
 	transform: translateX(22px) skewX(-2deg);
@@ -510,7 +510,7 @@
 .sp-pdpLede__zapBolt {
 	inline-size: 0.72rem;
 	block-size: 1.05rem;
-	background: linear-gradient(165deg, #fff 0%, #7ef5e8 45%, #24e3d2 100%);
+	background: linear-gradient(165deg, #fff 0%, #c8ff8a 45%, #a8ff2a 100%);
 	clip-path: polygon(55% 0%, 18% 52%, 42% 52%, 30% 100%, 82% 42%, 56% 42%);
 	filter: drop-shadow(0 0 6px rgba(94, 240, 224, 0.95));
 	opacity: 0.35;
@@ -549,7 +549,7 @@
 .sp-pdpLede__pointText :where(strong, b) {
 	color: #9af7ee;
 	font-weight: 800;
-	text-shadow: 0 0 12px rgba(36, 227, 210, 0.35);
+	text-shadow: 0 0 12px rgba(168, 255, 42, 0.35);
 }
 
 .sp-pdpLede__pointText :where(em, i) {
@@ -567,10 +567,10 @@
 	block-size: 1.05em;
 	margin-inline-start: 1px;
 	vertical-align: text-bottom;
-	background: linear-gradient(180deg, #7ef5e8, #7c5cff);
+	background: linear-gradient(180deg, #c8ff8a, #a8ff2a);
 	border-radius: 1px;
 	animation: sp-caret 0.7s steps(1, end) infinite;
-	box-shadow: 0 0 8px rgba(36, 227, 210, 0.65);
+	box-shadow: 0 0 8px rgba(168, 255, 42, 0.65);
 }
 
 @keyframes sp-caret {
@@ -596,18 +596,18 @@
 		filter: brightness(1.35);
 		border-color: rgba(94, 240, 224, 0.55);
 		box-shadow:
-			0 0 0 1px rgba(36, 227, 210, 0.35),
-			0 0 22px rgba(36, 227, 210, 0.4);
+			0 0 0 1px rgba(168, 255, 42, 0.35),
+			0 0 22px rgba(168, 255, 42, 0.4);
 	}
 	100% {
 		opacity: 1;
 		transform: none;
 		filter: none;
-		border-color: rgba(36, 227, 210, 0.22);
+		border-color: rgba(168, 255, 42, 0.22);
 		box-shadow:
-			0 0 0 1px rgba(36, 227, 210, 0.08),
-			0 8px 22px rgba(36, 227, 210, 0.08);
-		background: linear-gradient(115deg, rgba(36, 227, 210, 0.1), rgba(255, 255, 255, 0.02) 60%);
+			0 0 0 1px rgba(168, 255, 42, 0.08),
+			0 8px 22px rgba(168, 255, 42, 0.08);
+		background: linear-gradient(115deg, rgba(168, 255, 42, 0.1), rgba(255, 255, 255, 0.02) 60%);
 	}
 }
 
@@ -632,18 +632,18 @@
 		filter: brightness(1.35);
 		border-color: rgba(94, 240, 224, 0.55);
 		box-shadow:
-			0 0 0 1px rgba(36, 227, 210, 0.35),
-			0 0 22px rgba(36, 227, 210, 0.4);
+			0 0 0 1px rgba(168, 255, 42, 0.35),
+			0 0 22px rgba(168, 255, 42, 0.4);
 	}
 	100% {
 		opacity: 1;
 		transform: none;
 		filter: none;
-		border-color: rgba(36, 227, 210, 0.22);
+		border-color: rgba(168, 255, 42, 0.22);
 		box-shadow:
-			0 0 0 1px rgba(36, 227, 210, 0.08),
-			0 8px 22px rgba(36, 227, 210, 0.08);
-		background: linear-gradient(115deg, rgba(36, 227, 210, 0.1), rgba(255, 255, 255, 0.02) 60%);
+			0 0 0 1px rgba(168, 255, 42, 0.08),
+			0 8px 22px rgba(168, 255, 42, 0.08);
+		background: linear-gradient(115deg, rgba(168, 255, 42, 0.1), rgba(255, 255, 255, 0.02) 60%);
 	}
 }
 
@@ -890,7 +890,7 @@
 	content: '';
 	position: absolute;
 	inset: -40%;
-	background: conic-gradient(from 180deg, #24e3d2, #7c5cff, #ff4d9d, #24e3d2);
+	background: conic-gradient(from 180deg, #a8ff2a, #a8ff2a, #7dffb0, #a8ff2a);
 	opacity: 0.35;
 	animation: sp-spin 10s linear infinite;
 	z-index: 0;
@@ -961,7 +961,7 @@
 	block-size: 58px;
 	border-radius: 50%;
 	background: var(--sp-grad-primary);
-	box-shadow: 0 10px 30px rgba(124, 92, 255, 0.45);
+	box-shadow: 0 10px 30px rgba(168, 255, 42, 0.45);
 	transition: transform var(--sp-dur) var(--sp-ease);
 }
 
@@ -1002,7 +1002,7 @@
 }
 
 .sp-pdpVideo__caption:hover {
-	background: rgba(36, 227, 210, 0.18);
+	background: rgba(168, 255, 42, 0.18);
 	color: var(--sp-cyan);
 }
 
@@ -1149,21 +1149,21 @@
 	background: linear-gradient(
 		115deg,
 		transparent 30%,
-		rgba(36, 227, 210, 0.16) 46%,
+		rgba(168, 255, 42, 0.16) 46%,
 		rgba(255, 255, 255, 0.3) 50%,
-		rgba(124, 92, 255, 0.2) 54%,
+		rgba(168, 255, 42, 0.2) 54%,
 		transparent 70%
 	);
 	transform: translateX(-120%);
 }
 
 .sp-reelCard.is-lit {
-	border-color: rgba(36, 227, 210, 0.55);
+	border-color: rgba(168, 255, 42, 0.55);
 	box-shadow:
 		var(--sp-shadow-lg),
-		0 0 0 1px rgba(36, 227, 210, 0.22),
-		0 0 32px rgba(36, 227, 210, 0.22),
-		0 0 52px rgba(124, 92, 255, 0.16);
+		0 0 0 1px rgba(168, 255, 42, 0.22),
+		0 0 32px rgba(168, 255, 42, 0.22),
+		0 0 52px rgba(168, 255, 42, 0.16);
 }
 
 .sp-reelCard.is-lit .sp-reelCard__shine {
@@ -1214,11 +1214,11 @@
 }
 
 .sp-reelCard__title a {
-	background-image: linear-gradient(115deg, #5ef0e0 0%, #7ec8ff 48%, #c4b5ff 100%);
+	background-image: linear-gradient(115deg, #c8ff6a 0%, #9dff6a 48%, #d4ff8a 100%);
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
-	color: #5ef0e0;
+	color: #c8ff6a;
 }
 
 .sp-reelCard__price {
