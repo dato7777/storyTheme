@@ -1,0 +1,474 @@
+/**
+ * Cinematic orbit banner — cutouts only, full-width ellipse, text safe zone.
+ * Animate transform/opacity only. GSAP owns motion in cinema.js.
+ */
+
+.sp-cinema {
+	--sp-cinema-ink: #050806;
+	--sp-cinema-teal: #0e3b3b;
+	--sp-cinema-coral: #ff6b5b;
+	--sp-cinema-lime: var(--sp-lime, #a8ff2a);
+
+	position: relative;
+	inline-size: 100%;
+	max-inline-size: none;
+	block-size: clamp(640px, 100vh, 900px);
+	margin: 0;
+	margin-block-start: calc(var(--sp-header-h, 74px) * -1);
+	overflow: hidden;
+	isolation: isolate;
+	background: var(--sp-cinema-ink);
+	color: #f3fff4;
+}
+
+.sp-cinema + .sp-main .sp-hero {
+	margin-block-start: 0;
+	padding-block-start: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+/* Letterbox */
+.sp-cinema__letterbox {
+	position: absolute;
+	inset-inline: 0;
+	z-index: 120;
+	block-size: 5.5%;
+	background: #020403;
+	pointer-events: none;
+}
+
+.sp-cinema__letterbox--top {
+	inset-block-start: 0;
+}
+
+.sp-cinema__letterbox--bottom {
+	inset-block-end: 0;
+}
+
+/* Dolly + color grade (everything except text) */
+.sp-cinema__world {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	transform-origin: 50% 45%;
+	filter: contrast(1.08) saturate(1.15);
+	will-change: transform;
+}
+
+/* ---------- lights / bg ---------- */
+
+.sp-cinema__bg {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.sp-cinema__video {
+	position: absolute;
+	inset: 0;
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: cover;
+	opacity: 0.25;
+	mix-blend-mode: screen;
+}
+
+.sp-cinema__gradient {
+	position: absolute;
+	inset: 0;
+	background:
+		radial-gradient(90% 70% at 50% 40%, rgba(14, 59, 59, 0.55), transparent 65%),
+		linear-gradient(165deg, #050806 0%, #0a1a18 42%, #0e3b3b 72%, #050806 100%);
+}
+
+.sp-cinema__noise {
+	position: absolute;
+	inset: -25%;
+	opacity: 0.2;
+	mix-blend-mode: overlay;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+	background-size: 180px 180px;
+	animation: sp-cinema-grain 1.1s steps(4) infinite;
+}
+
+@keyframes sp-cinema-grain {
+	0% { transform: translate(0, 0); }
+	25% { transform: translate(-1.5%, 1%); }
+	50% { transform: translate(1%, -1.5%); }
+	75% { transform: translate(-1%, -1%); }
+	100% { transform: translate(0, 0); }
+}
+
+.sp-cinema__keylight,
+.sp-cinema__filllight {
+	position: absolute;
+	border-radius: 50%;
+	pointer-events: none;
+	will-change: transform;
+	mix-blend-mode: screen;
+}
+
+/* Warm coral rim / key */
+.sp-cinema__keylight {
+	inline-size: 70vmax;
+	block-size: 70vmax;
+	inset-block-start: -25%;
+	inset-inline-start: -10%;
+	background: radial-gradient(circle, rgba(255, 107, 91, 0.38) 0%, rgba(255, 107, 91, 0.08) 38%, transparent 68%);
+	filter: blur(6px);
+}
+
+/* Cool teal fill */
+.sp-cinema__filllight {
+	inline-size: 65vmax;
+	block-size: 65vmax;
+	inset-block-end: -30%;
+	inset-inline-end: -15%;
+	background: radial-gradient(circle, rgba(36, 180, 170, 0.32) 0%, rgba(14, 59, 59, 0.15) 40%, transparent 70%);
+	filter: blur(8px);
+}
+
+/* ---------- particles / flares / bursts ---------- */
+
+.sp-cinema__particles,
+.sp-cinema__flares,
+.sp-cinema__bursts {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	overflow: hidden;
+}
+
+.sp-cinema__particle {
+	position: absolute;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(168, 255, 42, 0.35) 50%, transparent 72%);
+	will-change: transform, opacity;
+}
+
+.sp-cinema__streak {
+	position: absolute;
+	inset-block-start: 42%;
+	inset-inline-start: -20%;
+	inline-size: 55%;
+	block-size: 2px;
+	opacity: 0;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		rgba(255, 255, 255, 0.15),
+		rgba(168, 255, 42, 0.85),
+		rgba(255, 255, 255, 0.55),
+		transparent
+	);
+	filter: blur(0.5px) drop-shadow(0 0 8px rgba(168, 255, 42, 0.8));
+	transform: scaleX(0.2);
+	will-change: transform, opacity;
+}
+
+.sp-cinema__streak--b {
+	inset-block-start: 58%;
+	inset-inline-start: 30%;
+	inline-size: 40%;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		rgba(255, 107, 91, 0.7),
+		rgba(255, 255, 255, 0.45),
+		transparent
+	);
+}
+
+.sp-cinema__burstDot {
+	position: absolute;
+	inline-size: 6px;
+	block-size: 6px;
+	margin: -3px;
+	border-radius: 50%;
+	background: radial-gradient(circle, #fff, var(--sp-cinema-lime));
+	box-shadow: 0 0 10px rgba(168, 255, 42, 0.8);
+	pointer-events: none;
+	will-change: transform, opacity;
+}
+
+/* ---------- orbit products: CUTOUTS ONLY ---------- */
+
+.sp-cinema__orbit {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.sp-cinema__product {
+	position: absolute;
+	/* Physical top-left — NOT inset-inline-start (RTL would pin to the right). */
+	top: 0;
+	left: 0;
+	right: auto;
+	inline-size: clamp(120px, 12vw, 200px);
+	margin: 0;
+	/* JS sets translate3d from the section's top-left toward ellipse points */
+	transform: translate3d(0, 0, 0);
+	transform-origin: 50% 50%;
+	will-change: transform, opacity, filter;
+	background: none !important;
+	border: 0 !important;
+	box-shadow: none !important;
+}
+
+.sp-cinema__glow {
+	position: absolute;
+	inset: 15% 5% auto;
+	block-size: 55%;
+	border-radius: 50%;
+	background: radial-gradient(ellipse, rgba(168, 255, 42, 0.55), transparent 70%);
+	filter: blur(18px);
+	opacity: 0.55;
+	z-index: 0;
+	pointer-events: none;
+}
+
+.sp-cinema__product--mint .sp-cinema__glow {
+	background: radial-gradient(ellipse, rgba(125, 255, 176, 0.5), transparent 70%);
+}
+
+.sp-cinema__product--amber .sp-cinema__glow {
+	background: radial-gradient(ellipse, rgba(255, 193, 74, 0.5), transparent 70%);
+}
+
+.sp-cinema__product--cyan .sp-cinema__glow {
+	background: radial-gradient(ellipse, rgba(80, 220, 255, 0.45), transparent 70%);
+}
+
+.sp-cinema__product--coral .sp-cinema__glow {
+	background: radial-gradient(ellipse, rgba(255, 107, 91, 0.5), transparent 70%);
+}
+
+.sp-cinema__cutout,
+.sp-cinema__trail img {
+	position: relative;
+	z-index: 1;
+	display: block;
+	inline-size: 100%;
+	block-size: auto;
+	max-block-size: clamp(140px, 22vh, 240px);
+	object-fit: contain;
+	background: none !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	box-shadow: none !important;
+	filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.55));
+	user-select: none;
+	-webkit-user-drag: none;
+	pointer-events: none;
+}
+
+.sp-cinema__trail {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	opacity: 0;
+	pointer-events: none;
+	will-change: transform, opacity;
+}
+
+.sp-cinema__trail img {
+	filter: blur(2px) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
+	opacity: 0.55;
+}
+
+/* Glow-only stand-in — NOT a gray card */
+.sp-cinema__ghost {
+	position: relative;
+	z-index: 1;
+	display: block;
+	inline-size: 70%;
+	aspect-ratio: 1;
+	margin-inline: auto;
+	border-radius: 50%;
+	background: radial-gradient(circle, rgba(168, 255, 42, 0.45) 0%, rgba(168, 255, 42, 0.12) 40%, transparent 70%);
+	filter: blur(2px);
+	box-shadow: none;
+}
+
+/* ---------- people ---------- */
+
+.sp-cinema__people {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.sp-cinema__person {
+	position: absolute;
+	inset-block-end: 8%;
+	inline-size: clamp(110px, 16vw, 210px);
+	will-change: transform;
+	opacity: 0.5;
+}
+
+.sp-cinema__person--a {
+	inset-inline-start: 1%;
+}
+
+.sp-cinema__person--b {
+	inset-inline-end: 1%;
+}
+
+.sp-cinema__silhouette {
+	display: block;
+	inline-size: 100%;
+	aspect-ratio: 2 / 5;
+	border-radius: 45% 45% 20% 20%;
+	background: linear-gradient(180deg, rgba(180, 220, 200, 0.18), rgba(5, 8, 6, 0.65));
+	-webkit-mask-image: linear-gradient(180deg, #000 50%, transparent 96%);
+	mask-image: linear-gradient(180deg, #000 50%, transparent 96%);
+}
+
+/* ---------- TEXT SAFE ZONE — always on top ---------- */
+
+.sp-cinema__copy {
+	position: absolute;
+	/* Physical centering — logical inset-inline-start breaks under dir=rtl. */
+	top: 50%;
+	left: 50%;
+	right: auto;
+	transform: translate(-50%, -50%);
+	z-index: 100;
+	inline-size: min(42vw, 540px);
+	max-inline-size: calc(100% - 7rem);
+	display: grid;
+	justify-items: center;
+	gap: 0.75rem;
+	padding: 1.25rem 1.25rem;
+	text-align: center;
+	pointer-events: none;
+	box-sizing: border-box;
+	/* Soft glass veil so orbit items behind stay readable as "behind" */
+	background: radial-gradient(ellipse at 50% 50%, rgba(5, 8, 6, 0.55) 0%, rgba(5, 8, 6, 0.22) 55%, transparent 78%);
+}
+
+.sp-cinema__headline {
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.28em 0.38em;
+	font-family: var(--sp-font-display, 'Heebo', 'Assistant', sans-serif);
+	font-size: clamp(1.85rem, 4.2vw, 3.6rem);
+	font-weight: 900;
+	line-height: 1.1;
+	letter-spacing: -0.03em;
+	color: #fff;
+	text-shadow: 0 10px 36px rgba(0, 0, 0, 0.75);
+}
+
+.sp-cinema__word {
+	display: inline-block;
+	opacity: 0;
+	transform: translate3d(-24px, 0, 0);
+	will-change: transform, opacity;
+}
+
+.sp-cinema__word--accent {
+	background: linear-gradient(100deg, #d4ff6a, #a8ff2a, #7dffb0);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.sp-cinema__sub {
+	margin: 0;
+	color: rgba(243, 255, 244, 0.82);
+	font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+	font-weight: 600;
+	opacity: 0;
+	transform: translate3d(0, 14px, 0);
+}
+
+.sp-cinema__cta {
+	pointer-events: auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.85rem 1.6rem;
+	border-radius: 999px;
+	border: 1px solid rgba(168, 255, 42, 0.55);
+	background: linear-gradient(135deg, #8cff2a, #a8ff2a, #d4ff6a);
+	color: #0c140f;
+	font-family: var(--sp-font-display, 'Heebo', sans-serif);
+	font-size: 1.02rem;
+	font-weight: 800;
+	text-decoration: none;
+	box-shadow: 0 0 0 0 rgba(168, 255, 42, 0.4), 0 14px 36px rgba(0, 0, 0, 0.4);
+	opacity: 0;
+	transform: translate3d(0, 16px, 0);
+	animation: sp-cinema-cta-pulse 2.4s ease-in-out infinite;
+	animation-play-state: paused;
+}
+
+.sp-cinema.is-ready .sp-cinema__cta {
+	animation-play-state: running;
+}
+
+.sp-cinema__cta:hover {
+	transform: scale(1.04);
+}
+
+@keyframes sp-cinema-cta-pulse {
+	50% {
+		box-shadow: 0 0 0 12px rgba(168, 255, 42, 0), 0 14px 36px rgba(0, 0, 0, 0.4);
+	}
+}
+
+.sp-cinema__trust {
+	margin: 0;
+	color: rgba(180, 207, 192, 0.9);
+	font-size: clamp(0.75rem, 1.1vw, 0.88rem);
+	font-weight: 600;
+	opacity: 0;
+	transform: translate3d(0, 10px, 0);
+}
+
+@media (max-width: 768px) {
+	.sp-cinema {
+		block-size: clamp(640px, 100svh, 820px);
+	}
+
+	.sp-cinema__copy {
+		inline-size: min(86vw, 420px);
+	}
+
+	.sp-cinema__product {
+		inline-size: clamp(96px, 24vw, 140px);
+	}
+
+	.sp-cinema__person--b {
+		opacity: 0.35;
+	}
+
+	.sp-cinema__headline {
+		font-size: clamp(1.7rem, 7.5vw, 2.4rem);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sp-cinema__noise,
+	.sp-cinema__cta {
+		animation: none !important;
+	}
+
+	.sp-cinema__word,
+	.sp-cinema__sub,
+	.sp-cinema__cta,
+	.sp-cinema__trust {
+		opacity: 1 !important;
+		transform: none !important;
+	}
+
+	.sp-cinema__particles,
+	.sp-cinema__bursts,
+	.sp-cinema__flares {
+		display: none;
+	}
+}

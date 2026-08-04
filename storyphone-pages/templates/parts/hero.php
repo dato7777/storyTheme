@@ -18,7 +18,7 @@ $sp_chips    = isset( $args['chips'] ) && is_array( $args['chips'] ) ? $args['ch
 $sp_title    = isset( $args['title'] ) ? trim( (string) $args['title'] ) : '';
 $sp_subtitle = isset( $args['subtitle'] ) ? trim( (string) $args['subtitle'] ) : '';
 ?>
-<section class="sp-hero">
+<section class="sp-hero" id="sp-hero">
 	<div class="sp-aurora" aria-hidden="true">
 		<span class="sp-aurora__blob sp-aurora__blob--1"></span>
 		<span class="sp-aurora__blob sp-aurora__blob--2"></span>

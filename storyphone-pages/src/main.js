@@ -6,6 +6,7 @@ import './styles/main.css';
 
 import { initCart } from './lib/cart.js';
 import { initCategory } from './lib/category/CategoryPage.js';
+import { initCinema } from './lib/cinema.js';
 import { initMotion } from './lib/motion.js';
 import { initNav } from './lib/nav.js';
 import { initProduct } from './lib/product.js';
@@ -39,7 +40,7 @@ function killDesignNavBadge() {
 
 function boot() {
 	killDesignNavBadge();
-	[initNav, initReveal, initMotion, initStories, initSearch, initCart, initProduct, initCategory].forEach((init) => {
+	[initCinema, initNav, initReveal, initMotion, initStories, initSearch, initCart, initProduct, initCategory].forEach((init) => {
 		try {
 			init();
 		} catch (error) {

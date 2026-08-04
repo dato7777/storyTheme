@@ -236,6 +236,8 @@ $sp_render_section = static function ( $sp_section_id ) use ( $sp_nav, $sp_stori
 
 <?php StoryPhone_Pages_Render::part( 'site-header', array( 'nav' => $sp_nav ) ); ?>
 
+<?php StoryPhone_Pages_Render::part( 'cinema-banner' ); ?>
+
 <main id="sp-main" class="sp-main">
 
 	<?php foreach ( $sp_sections as $sp_section_id ) : ?>

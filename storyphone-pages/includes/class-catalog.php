@@ -924,6 +924,38 @@ class StoryPhone_Pages_Catalog {
 	}
 
 	/**
+	 * First matching visible product for banner / promo art.
+	 *
+	 * @param string|string[] $terms Search term(s), tried in order.
+	 * @return WC_Product|null
+	 */
+	public static function find_product_by_search( $terms ) {
+		if ( ! function_exists( 'wc_get_products' ) ) {
+			return null;
+		}
+
+		foreach ( (array) $terms as $term ) {
+			$term = trim( (string) $term );
+			if ( '' === $term ) {
+				continue;
+			}
+
+			$products = self::get_products(
+				array(
+					'limit' => 1,
+					's'     => $term,
+				)
+			);
+
+			if ( ! empty( $products[0] ) && $products[0] instanceof WC_Product ) {
+				return $products[0];
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Whether a product can be added to the cart straight from a grid card.
 	 *
 	 * Variable, grouped and external products need their own page to pick

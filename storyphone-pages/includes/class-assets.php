@@ -52,6 +52,10 @@ class StoryPhone_Pages_Assets {
 			'crossorigin' => 'anonymous',
 		);
 
+		if ( self::is_home_template() ) {
+			$urls[] = 'https://cdn.jsdelivr.net';
+		}
+
 		return $urls;
 	}
 
@@ -103,15 +107,42 @@ class StoryPhone_Pages_Assets {
 			return;
 		}
 
+		$deps = array();
+
+		// GSAP powers the homepage cinematic orbit banner only.
+		if ( self::is_home_template() ) {
+			wp_enqueue_script(
+				'gsap',
+				'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js',
+				array(),
+				'3.12.5',
+				true
+			);
+			$deps[] = 'gsap';
+		}
+
 		wp_enqueue_script(
 			self::HANDLE,
 			STORYPHONE_PAGES_PLUGIN_URL . 'build/main.js',
-			array(),
+			$deps,
 			(string) filemtime( $js_path ),
 			true
 		);
 
 		wp_localize_script( self::HANDLE, 'storyphonePages', self::get_js_config() );
+	}
+
+	/**
+	 * Whether the current request is the StoryPhone Home page template.
+	 *
+	 * @return bool
+	 */
+	private static function is_home_template() {
+		if ( ! is_page() ) {
+			return false;
+		}
+
+		return 'storyphone-home' === (string) get_page_template_slug( get_queried_object_id() );
 	}
 
 	/**
