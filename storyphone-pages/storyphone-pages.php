@@ -3,7 +3,7 @@
  * Plugin Name:       StoryPhone Pages
  * Plugin URI:        https://storyphone.co.il
  * Description:       Hand-built, theme-independent front-end page templates for StoryPhone. Presentation only — WooCommerce keeps full control of catalog, pricing, cart, checkout and payment.
- * Version:           0.1.9
+ * Version:           0.2.5
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            StoryPhone
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STORYPHONE_PAGES_VERSION', '0.1.9' );
+define( 'STORYPHONE_PAGES_VERSION', '0.2.5' );
 define( 'STORYPHONE_PAGES_PLUGIN_FILE', __FILE__ );
 define( 'STORYPHONE_PAGES_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'STORYPHONE_PAGES_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

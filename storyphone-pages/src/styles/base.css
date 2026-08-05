@@ -17,6 +17,16 @@ html {
 	scroll-padding-block-start: calc(var(--sp-header-h) + 1rem);
 }
 
+html.wp-toolbar {
+	scroll-padding-block-start: calc(var(--sp-header-h) + 32px + 1rem);
+}
+
+@media screen and (max-width: 782px) {
+	html.wp-toolbar {
+		scroll-padding-block-start: calc(var(--sp-header-h) + 46px + 1rem);
+	}
+}
+
 body.sp-page {
 	margin: 0;
 	background: var(--sp-ink-900);
@@ -87,7 +97,7 @@ html.sp-nav-open {
 	background: none;
 }
 
-.sp-page :where(svg) {
+.sp-page :where(svg):not(.sp-logoMark__svg) {
 	fill: currentColor;
 }
 

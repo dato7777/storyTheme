@@ -16,6 +16,20 @@
 	border-block-end: 1px solid transparent;
 }
 
+/*
+ * Logged-in WP admin bar is fixed over the viewport. Sticky top:0 would
+ * slide the logo/nav under it when scrolling — keep the bar below the toolbar.
+ */
+body.admin-bar .sp-header {
+	inset-block-start: 32px;
+}
+
+@media screen and (max-width: 782px) {
+	body.admin-bar .sp-header {
+		inset-block-start: 46px;
+	}
+}
+
 /* Dropdown mega (product / category pages) — same cards as homepage stage. */
 .sp-navMega {
 	position: absolute;
@@ -111,6 +125,8 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 0.65rem;
+	/* Space between logo and nav (logical end = toward nav in RTL). */
+	margin-inline-end: 0.9rem;
 }
 
 .sp-brand {
@@ -119,6 +135,122 @@
 	gap: 0.6rem;
 	text-decoration: none;
 	color: inherit;
+	line-height: 0;
+	/* Physical nudge: away from nav (right on RTL) + slightly down. */
+	transform: translate(10px, 6px);
+}
+
+/*
+ * Animated Story Phone logo (story-phone-logo-animated-v2).
+ * Sized by height so it fills the sticky bar. ViewBox is cropped to the
+ * lockup — the source 680×260 canvas was ~60% empty padding, which made a
+ * 158px-wide mark paint as ~60px of real graphic.
+ */
+.sp-logoMark {
+	--sp-logo-h: calc(var(--sp-header-h) - 10px);
+	display: block;
+	block-size: var(--sp-logo-h);
+	/* viewBox 280×185 — includes Hebrew tagline + TEL AVIV */
+	inline-size: calc(var(--sp-logo-h) * 280 / 185);
+	flex: 0 0 auto;
+	/* Isolate from page dir=rtl — otherwise SVG text-anchor flips and letters collide. */
+	direction: ltr;
+	unicode-bidi: isolate;
+}
+
+.sp-logoMark__svg {
+	display: block;
+	inline-size: 100%;
+	block-size: 100%;
+	max-width: none;
+	overflow: visible;
+	direction: ltr;
+	unicode-bidi: isolate;
+	/* Beat global `.sp-page svg { fill: currentColor }` inheritance. */
+	fill: none;
+}
+
+/* Latin lockup — do NOT use Heebo (Hebrew display); metrics break the gap for the phone. */
+.sp-logoMark__svg text {
+	font-family: Arial, Helvetica, system-ui, -apple-system, 'Segoe UI', sans-serif;
+	font-weight: 700;
+}
+
+.sp-logoMark__svg text:not([lang='he']) {
+	direction: ltr;
+	unicode-bidi: isolate;
+}
+
+.sp-logoMark__tag {
+	font-family: var(--sp-font-display), 'Arial Hebrew', Arial, sans-serif;
+	font-weight: 500;
+}
+
+.sp-logoMark__city {
+	font-family: Arial, Helvetica, system-ui, sans-serif;
+	font-weight: 600;
+	letter-spacing: 0.2em;
+}
+
+.sp-logoMark__icon {
+	transform-box: fill-box;
+	transform-origin: center;
+	animation: sp-logo-icon-flip 6s ease-in-out infinite;
+}
+
+.sp-logoMark__story {
+	transform-box: fill-box;
+	transform-origin: center;
+	animation: sp-logo-story-zoom 6s ease-in-out infinite;
+}
+
+.sp-logoMark__phone {
+	transform-box: fill-box;
+	transform-origin: center;
+	animation: sp-logo-phone-zoom 6s ease-in-out infinite;
+}
+
+@keyframes sp-logo-icon-flip {
+	0% { transform: scaleX(1); }
+	5.4% { transform: scaleX(0); }
+	10.8% { transform: scaleX(1); }
+	14.2% { transform: scaleX(0); }
+	17.5% { transform: scaleX(1); }
+	20.4% { transform: scaleX(0); }
+	23.3% { transform: scaleX(1); }
+	27.9% { transform: scaleX(0); }
+	32.5% { transform: scaleX(1); }
+	100% { transform: scaleX(1); }
+}
+
+@keyframes sp-logo-story-zoom {
+	0%,
+	35% { transform: scale(1); }
+	41% { transform: scale(1.15); }
+	47%,
+	100% { transform: scale(1); }
+}
+
+@keyframes sp-logo-phone-zoom {
+	0%,
+	50% { transform: scale(1); }
+	56% { transform: scale(1.15); }
+	62%,
+	100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sp-logoMark__icon,
+	.sp-logoMark__story,
+	.sp-logoMark__phone {
+		animation: none;
+	}
+}
+
+@media (max-width: 860px) {
+	.sp-logoMark {
+		--sp-logo-h: 68px;
+	}
 }
 
 .sp-header__home {
@@ -434,6 +566,10 @@ html.sp-nav-open .sp-burger__bar:nth-child(3) {
 			visibility var(--sp-dur);
 		overflow-y: auto;
 		flex: none;
+	}
+
+	body.admin-bar .sp-nav {
+		inset-block-start: calc(var(--sp-header-h) + 46px);
 	}
 
 	html.sp-nav-open .sp-nav {

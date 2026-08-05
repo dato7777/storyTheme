@@ -16,8 +16,7 @@ defined( 'ABSPATH' ) || exit;
 $sp_home_url    = StoryPhone_Pages_Templates::get_home_url();
 $sp_shop_url    = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : $sp_home_url;
 $sp_account_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : '';
-$sp_nav     = isset( $args['nav'] ) && is_array( $args['nav'] ) ? $args['nav'] : StoryPhone_Pages_Catalog::get_nav_tree( 9 );
-$sp_logo_id = (int) get_theme_mod( 'custom_logo' );
+$sp_nav = isset( $args['nav'] ) && is_array( $args['nav'] ) ? $args['nav'] : StoryPhone_Pages_Catalog::get_nav_tree( 9 );
 ?>
 <header
 	class="sp-header"
@@ -40,27 +39,7 @@ $sp_logo_id = (int) get_theme_mod( 'custom_logo' );
 
 		<div class="sp-header__brand">
 			<a class="sp-brand" href="<?php echo esc_url( $sp_home_url ); ?>" aria-label="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
-				<?php if ( $sp_logo_id ) : ?>
-					<?php
-					echo wp_get_attachment_image(
-						$sp_logo_id,
-						'full',
-						false,
-						array(
-							'class' => 'custom-logo',
-							'alt'   => get_bloginfo( 'name' ),
-						)
-					);
-					?>
-				<?php else : ?>
-					<span class="sp-brand__mark" aria-hidden="true">
-						<span class="sp-brand__ring"></span>
-					</span>
-					<span class="sp-brand__text"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
-				<?php endif; ?>
-			</a>
-			<a class="sp-header__home" href="<?php echo esc_url( $sp_home_url ); ?>">
-				<?php esc_html_e( 'ראשי', 'storyphone-pages' ); ?>
+				<?php StoryPhone_Pages_Render::part( 'logo-mark' ); ?>
 			</a>
 		</div>
 

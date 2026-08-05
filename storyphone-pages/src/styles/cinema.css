@@ -263,6 +263,33 @@
 	pointer-events: none;
 }
 
+.sp-cinema__cutout--video {
+	max-block-size: clamp(140px, 22vh, 240px);
+	inline-size: auto;
+	max-inline-size: 100%;
+	border-radius: 12px;
+	object-fit: cover;
+	aspect-ratio: 4 / 5;
+	background: #0a1210 !important;
+}
+
+.sp-cinema__caption {
+	position: relative;
+	z-index: 2;
+	display: block;
+	margin-block-start: 0.45rem;
+	padding-inline: 0.35rem;
+	max-inline-size: 11rem;
+	margin-inline: auto;
+	color: var(--sp-text-soft, #c7d9cf);
+	font-size: clamp(0.68rem, 1.15vw, 0.82rem);
+	font-weight: 600;
+	line-height: 1.25;
+	text-align: center;
+	text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
+	pointer-events: none;
+}
+
 .sp-cinema__trail {
 	position: absolute;
 	inset: 0;

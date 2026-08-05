@@ -25,6 +25,8 @@ zip -r -q "$ZIP_PATH" "$PLUGIN_SLUG" \
 	-x "$PLUGIN_SLUG/src/*" \
 	-x "$PLUGIN_SLUG/scripts/*" \
 	-x "$PLUGIN_SLUG/.git/*" \
+	-x "$PLUGIN_SLUG/.tmp-*" \
+	-x "$PLUGIN_SLUG/.tmp-*/*" \
 	-x "$PLUGIN_SLUG/package.json" \
 	-x "$PLUGIN_SLUG/package-lock.json" \
 	-x "$PLUGIN_SLUG/vite.config.js" \

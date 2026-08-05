@@ -304,11 +304,23 @@ export function initCinema() {
 	timelines.push(orbitTween);
 	layoutOrbit();
 
-	// Re-measure after cutout images load (first paint often has 0 size).
+	// Re-measure after cutout images/videos load (first paint often has 0 size).
 	products.forEach((el) => {
-		const img = el.querySelector('.sp-cinema__cutout');
-		if (img && !img.complete) {
-			img.addEventListener('load', layoutOrbit, { once: true });
+		const media = el.querySelector('.sp-cinema__cutout');
+		if (!media) {
+			return;
+		}
+		if (media.tagName === 'VIDEO') {
+			media.addEventListener('loadeddata', layoutOrbit, { once: true });
+			try {
+				media.play()?.catch(() => {});
+			} catch {
+				/* autoplay may be blocked — muted loop usually ok */
+			}
+			return;
+		}
+		if (!media.complete) {
+			media.addEventListener('load', layoutOrbit, { once: true });
 		}
 	});
 
